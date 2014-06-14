@@ -16,11 +16,14 @@ def twitter_login():
         oauth_token, oauth_secret, CONSUMER_KEY, CONSUMER_SECRET))
     return twitter
 
-def lines_from_text(text):
-    return NotImplemented
+class lvbText(object):
+    @staticmethod
+    def lines_from_text(text):
+        return NotImplemented
 
-def longest_word(text):
-    return NotImplemented
+    @staticmethod
+    def longest_word(text):
+        return NotImplemented
 
 def date_from_created_at(cr):
     return NotImplemented
