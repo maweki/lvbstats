@@ -73,7 +73,7 @@ def parse_args():
     parser = argparse.ArgumentParser(description='Reads @lvb_direkt\'s Twitter feed and saves statistics on it',
                                      epilog=('Version: ' + VERSION))
     parser.add_argument('--tweetcount', default=5, type=int, help='Default number of tweets to load')
-    parser.add_argument('--lastid', type=int, help="Set last tweetid to load from. Resets lastid-store.")
+    parser.add_argument('--fromid', type=int, help="Set a tweetid to start from.")
     parser.add_argument('--json', help='Return the database as a JSON', action="store_true")
     parser.add_argument('--debug', help='Enable debug mode', action="store_true")
     parser.add_argument('--version', help='Print version information', action='store_true')
@@ -117,14 +117,22 @@ if __name__ == "__main__":
                 last_id = int(last_id_file.read())
             except:
                 pass
-    tweet_count = args.tweetcount
 
-    if args.lastid:
-        last_id = args.lastid
+    tweet_count = args.tweetcount
+    from_id = None
+
+    if args.fromid:
+        last_id = None
+        from_id = args.fromid
+
 
     if args.debug:
         print('Requesting', tweet_count, 'from', last_id)
     twitter_args = {'screen_name': target, 'count': tweet_count, 'exclude_replies': 'true'}
+
+    if from_id:
+        twitter_args['max_id'] = from_id
+
     if last_id:
         twitter_args['since_id'] = last_id
     statuses = api.statuses.user_timeline(**twitter_args)
