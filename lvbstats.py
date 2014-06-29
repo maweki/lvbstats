@@ -72,6 +72,7 @@ def parse_args():
     import argparse
     parser = argparse.ArgumentParser()
     parser.add_argument('--json', help='Return the database as a JSON', action="store_true")
+    parser.add_argument('--debug', help='Enable debug mode', action="store_true")
 
     return parser.parse_args()
 
@@ -105,11 +106,15 @@ if __name__ == "__main__":
             except:
                 pass
 
+    if args.debug:
+        print('Requesting', 5, 'from', last_id)
     statuses = api.statuses.user_timeline(screen_name=target, count=5, since_id=last_id)
 
     for s in statuses:
         tweet_id, data = entry_to_tuple(s)
         date, lines, longest_words = data
+        if args.debug:
+            print(tweet_id, data)
         if lines:
             db[str(tweet_id)] = {'date': date, 'lines': lines, 'longest_words': longest_words}
 
@@ -117,6 +122,8 @@ if __name__ == "__main__":
             last_id = int(tweet_id)
 
     if last_id:
+        if args.debug:
+            print('Lastid:', last_id)
         with open(last_id_filename, 'w') as last_id_file:
             last_id_file.write(str(last_id))
     db.sync()
