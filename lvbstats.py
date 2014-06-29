@@ -7,7 +7,7 @@ base_path = os.path.dirname(os.path.realpath(__file__))
 
 target = 'lvb_direkt'
 shelve_filename = os.path.join(base_path, 'data', 'lvb_direkt.db')
-last_id = os.path.join(base_path, 'data', 'lastid')
+last_id_filename = os.path.join(base_path, 'data', 'lastid')
 
 
 def twitter_login():
@@ -96,12 +96,28 @@ if __name__ == "__main__":
         exit(0)
 
     api = twitter_login()
-    statuses = api.statuses.user_timeline(screen_name=target, count=5)
+    last_id = None
+
+    if os.path.exists(last_id_filename):
+        with open(last_id_filename) as last_id_file:
+            try:
+                last_id = int(last_id_file.read())
+            except:
+                pass
+
+    statuses = api.statuses.user_timeline(screen_name=target, count=5, since_id=last_id)
 
     for s in statuses:
         tweet_id, data = entry_to_tuple(s)
         date, lines, longest_words = data
         if lines:
             db[str(tweet_id)] = {'date': date, 'lines': lines, 'longest_words': longest_words}
+
+        if not last_id or int(last_id) < int(tweet_id):
+            last_id = int(tweet_id)
+
+    if last_id:
+        with open(last_id_filename, 'w') as last_id_file:
+            last_id_file.write(str(last_id))
     db.sync()
     db.close()
