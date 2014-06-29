@@ -124,7 +124,7 @@ if __name__ == "__main__":
 
     if args.debug:
         print('Requesting', tweet_count, 'from', last_id)
-    twitter_args = {'screen_name': target, 'count': tweet_count}
+    twitter_args = {'screen_name': target, 'count': tweet_count, 'exclude_replies': 'true'}
     if last_id:
         twitter_args['since_id'] = last_id
     statuses = api.statuses.user_timeline(**twitter_args)
