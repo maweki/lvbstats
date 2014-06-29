@@ -1,11 +1,11 @@
 import os
 from twitter import *
 
-basepath = os.path.dirname(os.path.realpath(__file__))
+base_path = os.path.dirname(os.path.realpath(__file__))
 
 target = 'lvb_direkt'
-shelvefile = os.path.join(basepath, 'data','lvb_direkt.db')
-lastid = os.path.join(basepath, 'data','lastid')
+shelve_filename = os.path.join(base_path, 'data', 'lvb_direkt.db')
+last_id = os.path.join(base_path, 'data', 'lastid')
 
 
 def twitter_login():
@@ -23,10 +23,11 @@ def twitter_login():
         oauth_token, oauth_secret, CONSUMER_KEY, CONSUMER_SECRET))
     return twitter
 
-class lvbText(object):
+
+class LvbText(object):
     @staticmethod
     def lines_from_text(text):
-        if not  ':' in text:
+        if not ':' in text:
             return []
         else:
 
@@ -42,22 +43,28 @@ class lvbText(object):
 
     @staticmethod
     def longest_words(text):
-        if not  ':' in text:
+        if not ':' in text:
             return None
         else:
             _, _, info_text = text.partition(':')
-            words = sorted((item.strip('.,:!?/ ') for item in info_text.split(' ') if not item.startswith('http://')), key=len, reverse=True)
+            words = sorted((item.strip('.,:!?/ ') for item in info_text.split(' ') if not item.startswith('http://')),
+                           key=len, reverse=True)
             return list(words)[:3]
+
 
 def date_from_created_at(cr):
     # 'Fri Jun 13 15:50:52 +0000 2014'
     from datetime import datetime
+
     created_at = datetime.strptime(cr, '%a %b %d %X %z %Y')
     return created_at
 
+
 def entry_to_tuple(entry):
-    entryid = entry['id']
-    return entryid, (date_from_created_at(entry['created_at']), lvbText.lines_from_text(entry['text']), lvbText.longest_words(entry['text']))
+    entry_id = entry['id']
+    return entry_id, (date_from_created_at(entry['created_at']), LvbText.lines_from_text(entry['text']),
+                      LvbText.longest_words(entry['text']))
+
 
 if __name__ == "__main__":
     import shelve
@@ -65,10 +72,10 @@ if __name__ == "__main__":
     api = twitter_login()
     statuses = api.statuses.user_timeline(screen_name=target, count=5)
 
-    db = shelve.open(shelvefile)
+    db = shelve.open(shelve_filename)
     for s in statuses:
-        tweetid, data = entry_to_tuple(s)
+        tweet_id, data = entry_to_tuple(s)
         date, lines, longest_words = data
         if not lines:
-            db[tweetid] = data
+            db[tweet_id] = {'date': date, 'lines': lines, 'longest_words': longest_words}
     db.close()
