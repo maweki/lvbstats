@@ -107,7 +107,10 @@ if __name__ == "__main__":
 
     if args.debug:
         print('Requesting', 5, 'from', last_id)
-    statuses = api.statuses.user_timeline(screen_name=target, count=5, since_id=last_id)
+    twitter_args = {'screen_name': target, 'count': 5}
+    if last_id:
+        twitter_args['since_id'] = last_id
+    statuses = api.statuses.user_timeline(**twitter_args)
 
     for s in statuses:
         tweet_id, data = entry_to_tuple(s)
