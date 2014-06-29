@@ -54,7 +54,6 @@ class LvbText(object):
 
 
 def date_from_created_at(cr):
-    # 'Fri Jun 13 15:50:52 +0000 2014'
     from datetime import datetime
 
     created_at = datetime.strptime(cr, '%a %b %d %X %z %Y').timestamp()
