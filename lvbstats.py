@@ -30,7 +30,7 @@ def twitter_login():
 class LvbText(object):
     @staticmethod
     def lines_from_text(text):
-        if not ':' in text:
+        if not ': ' in text:
             return []
         else:
 
@@ -46,7 +46,7 @@ class LvbText(object):
 
     @staticmethod
     def longest_words(text):
-        if not ':' in text:
+        if not ': ' in text:
             return None
         else:
             _, _, info_text = text.partition(':')
