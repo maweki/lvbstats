@@ -1,6 +1,4 @@
 #!/usr/bin/python3
-
-import os
 from twitter import *
 
 base_path = os.path.dirname(os.path.realpath(__file__))
