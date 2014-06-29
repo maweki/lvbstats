@@ -1,7 +1,7 @@
 #!/usr/bin/python3
 import os
 
-VERSION = '~dev~'
+VERSION = '0.2.0'
 from twitter import *
 
 base_path = os.path.dirname(os.path.realpath(__file__))
