@@ -68,13 +68,36 @@ def entry_to_tuple(entry):
                       LvbText.longest_words(entry['text']))
 
 
+def parse_args():
+    import argparse
+    parser = argparse.ArgumentParser()
+    parser.add_argument('--json', help='Return the database as a JSON', action="store_true")
+
+    return parser.parse_args()
+
+
+def return_json(db):
+    import json
+    result = {}
+    for key in db.keys():
+        result[key] = db[key]
+    json.dumps(result)
+    return result
+
 if __name__ == "__main__":
+    args = parse_args()
     import shelve
+    db = shelve.open(shelve_filename)
+
+    if args.json:
+        print(return_json(db))
+        db.close()
+        from sys import exit
+        exit(0)
 
     api = twitter_login()
     statuses = api.statuses.user_timeline(screen_name=target, count=5)
 
-    db = shelve.open(shelve_filename)
     for s in statuses:
         tweet_id, data = entry_to_tuple(s)
         date, lines, longest_words = data
