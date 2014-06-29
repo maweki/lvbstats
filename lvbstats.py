@@ -101,6 +101,7 @@ if __name__ == "__main__":
     for s in statuses:
         tweet_id, data = entry_to_tuple(s)
         date, lines, longest_words = data
-        if not lines:
-            db[tweet_id] = {'date': date, 'lines': lines, 'longest_words': longest_words}
+        if lines:
+            db[str(tweet_id)] = {'date': date, 'lines': lines, 'longest_words': longest_words}
+    db.sync()
     db.close()
