@@ -41,7 +41,7 @@ class LvbText(object):
                     return str(num)
 
             lines_str, _, _ = text.partition(':')
-            lines = list(to_int_optional(l) for l in lines_str.split(', '))
+            lines = list(to_int_optional(l) for l in lines_str.split(', ') if len(l) <= 3)
             return lines
 
     @staticmethod
