@@ -140,10 +140,10 @@ if __name__ == "__main__":
     for s in statuses:
         tweet_id, data = entry_to_tuple(s)
         date, lines, longest_words = data
-        if args.debug:
-            from datetime import datetime
-            print(tweet_id, data, str(datetime.fromtimestamp(date)))
         if lines:
+            if args.debug:
+                from datetime import datetime
+                print(tweet_id, data, str(datetime.fromtimestamp(date)))
             db[str(tweet_id)] = {'date': date, 'lines': lines, 'longest_words': longest_words}
 
         if not last_id or int(last_id) < int(tweet_id):
