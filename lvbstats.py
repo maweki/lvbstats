@@ -1,4 +1,6 @@
 #!/usr/bin/python3
+import os
+
 VERSION = '~dev~'
 from twitter import *
 
