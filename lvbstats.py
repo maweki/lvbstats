@@ -70,7 +70,8 @@ def entry_to_tuple(entry):
 
 def parse_args():
     import argparse
-    parser = argparse.ArgumentParser()
+    parser = argparse.ArgumentParser(description='Reads @lvb_direkt\'s Twitter feed and saves statistics on it',
+                                     epilog=('Version: ' + VERSION))
     parser.add_argument('--tweetcount', default=5, type=int, help='Default number of tweets to load')
     parser.add_argument('--lastid', type=int, help="Set last tweetid to load from. Resets lastid-store.")
     parser.add_argument('--json', help='Return the database as a JSON', action="store_true")
