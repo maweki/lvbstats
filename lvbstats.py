@@ -133,7 +133,8 @@ if __name__ == "__main__":
         tweet_id, data = entry_to_tuple(s)
         date, lines, longest_words = data
         if args.debug:
-            print(tweet_id, data)
+            from datetime import datetime
+            print(tweet_id, data, str(datetime.fromtimestamp(date)))
         if lines:
             db[str(tweet_id)] = {'date': date, 'lines': lines, 'longest_words': longest_words}
 
