@@ -73,8 +73,13 @@ def parse_args():
     parser.add_argument('--lastid', type=int, help="Set last tweetid to load from. Resets lastid-store.")
     parser.add_argument('--json', help='Return the database as a JSON', action="store_true")
     parser.add_argument('--debug', help='Enable debug mode', action="store_true")
+    parser.add_argument('--version', help='Print version information', action='store_true')
 
     return parser.parse_args()
+
+
+def print_version():
+    print(VERSION)
 
 
 def return_json(db):
@@ -88,6 +93,11 @@ if __name__ == "__main__":
     args = parse_args()
     import shelve
     db = shelve.open(shelve_filename)
+
+    if args.version:
+        print_version()
+        from sys import exit
+        exit(0)
 
     if args.json:
         print(return_json(db))
