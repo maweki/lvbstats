@@ -29,13 +29,13 @@ class lvbText(object):
         if not  ':' in text:
             return []
         else:
-        
+
             def to_int_optional(num):
                 if str(num).isdigit():
                     return int(num)
                 else:
                     return str(num)
-        
+
             lines_str, _, _ = text.partition(':')
             lines = list(to_int_optional(l) for l in lines_str.split(', '))
             return lines
