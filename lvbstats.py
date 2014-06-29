@@ -82,8 +82,7 @@ def return_json(db):
     result = {}
     for key in db.keys():
         result[key] = db[key]
-    json.dumps(result)
-    return result
+    return json.dumps(result, indent=2)
 
 if __name__ == "__main__":
     args = parse_args()
