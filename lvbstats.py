@@ -71,6 +71,7 @@ def entry_to_tuple(entry):
 def parse_args():
     import argparse
     parser = argparse.ArgumentParser()
+    parser.add_argument('--tweetcount', default=5, type=int, help='Default number of tweets to load')
     parser.add_argument('--json', help='Return the database as a JSON', action="store_true")
     parser.add_argument('--debug', help='Enable debug mode', action="store_true")
 
@@ -104,10 +105,11 @@ if __name__ == "__main__":
                 last_id = int(last_id_file.read())
             except:
                 pass
+    tweet_count = args.tweetcount
 
     if args.debug:
-        print('Requesting', 5, 'from', last_id)
-    twitter_args = {'screen_name': target, 'count': 5}
+        print('Requesting', tweet_count, 'from', last_id)
+    twitter_args = {'screen_name': target, 'count': tweet_count}
     if last_id:
         twitter_args['since_id'] = last_id
     statuses = api.statuses.user_timeline(**twitter_args)
