@@ -72,7 +72,7 @@ def parse_args():
     import argparse
     parser = argparse.ArgumentParser(description='Reads @lvb_direkt\'s Twitter feed and saves statistics on it',
                                      epilog=('Version: ' + VERSION))
-    parser.add_argument('--tweetcount', default=5, type=int, help='Default number of tweets to load')
+    parser.add_argument('--tweetcount', default=200, type=int, help='Default number of tweets to load')
     parser.add_argument('--fromid', type=int, help="Set a tweetid to start from.")
     parser.add_argument('--json', help='Return the database as a JSON', action="store_true")
     parser.add_argument('--debug', help='Enable debug mode', action="store_true")
