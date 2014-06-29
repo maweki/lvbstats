@@ -72,6 +72,7 @@ def parse_args():
     import argparse
     parser = argparse.ArgumentParser()
     parser.add_argument('--tweetcount', default=5, type=int, help='Default number of tweets to load')
+    parser.add_argument('--lastid', type=int, help="Set last tweetid to load from. Resets lastid-store.")
     parser.add_argument('--json', help='Return the database as a JSON', action="store_true")
     parser.add_argument('--debug', help='Enable debug mode', action="store_true")
 
@@ -106,6 +107,9 @@ if __name__ == "__main__":
             except:
                 pass
     tweet_count = args.tweetcount
+
+    if args.lastid:
+        last_id = args.lastid
 
     if args.debug:
         print('Requesting', tweet_count, 'from', last_id)
