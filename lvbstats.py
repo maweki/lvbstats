@@ -75,6 +75,7 @@ def parse_args():
     parser.add_argument('--tweetcount', default=200, type=int, help='Default number of tweets to load')
     parser.add_argument('--fromid', type=int, help="Set a tweetid to start from.")
     parser.add_argument('--json', help='Return the database as a JSON', action="store_true")
+    parser.add_argument('--jsonstyle', type=str, default='indent', help='Style of JSON (plain or indent)')
     parser.add_argument('--debug', help='Enable debug mode', action="store_true")
     parser.add_argument('--version', help='Print version information', action='store_true')
 
@@ -85,11 +86,15 @@ def print_version():
     print(VERSION)
 
 
-def return_json(db):
+def return_json(db, jsonstyle):
     import json
     result = {}
     for key in db.keys():
         result[key] = db[key]
+    if jsonstyle == 'plain':
+        return json.dumps(result)
+    elif jsonstyle == 'indent':
+        return json.dumps(result, indent=2)
     return json.dumps(result, indent=2)
 
 if __name__ == "__main__":
@@ -103,7 +108,7 @@ if __name__ == "__main__":
         exit(0)
 
     if args.json:
-        print(return_json(db))
+        print(return_json(db, args.jsonstyle))
         db.close()
         from sys import exit
         exit(0)
