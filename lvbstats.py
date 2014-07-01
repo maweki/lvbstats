@@ -50,7 +50,7 @@ class LvbText(object):
             return None
         else:
             _, _, info_text = text.partition(':')
-            words = sorted((item.strip('.,:!?/ ') for item in info_text.split(' ') if not (item.startswith('http://') and len(item) <= 3)),
+            words = sorted((item.strip('.,:!?/ ') for item in info_text.split(' ') if not (item.startswith('http://') or len(item) <= 3)),
                            key=len, reverse=True)
             return list(words)[:5]
 
