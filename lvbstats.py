@@ -73,6 +73,8 @@ def parse_args():
     parser = argparse.ArgumentParser(description='Reads @lvb_direkt\'s Twitter feed and saves statistics on it',
                                      epilog=('Version: ' + VERSION))
     parser.add_argument('--tweetcount', default=200, type=int, help='Default number of tweets to load')
+    parser.add_argument('--history', help='Download full history', action='store_true')
+    parser.add_argument('--history_delay', default=90, type=int, help='Delay between history requests in seconds')
     parser.add_argument('--fromid', type=int, help="Set a tweetid to start from.")
     parser.add_argument('--json', help='Return the database as a JSON', action="store_true")
     parser.add_argument('--jsonstyle', type=str, default='indent', help='Style of JSON (plain or indent)')
@@ -84,6 +86,28 @@ def parse_args():
 
 def print_version():
     print(VERSION)
+
+
+def download_history(api, db, debug, tweet_count=200, download_delay=90):
+    max_id = None
+    while True:
+        twitter_args = {'screen_name': target, 'count': tweet_count, 'exclude_replies': 'true'}
+        if max_id:
+            twitter_args['max_id'] = max_id
+        statuses = api.statuses.user_timeline(**twitter_args)
+        for s in statuses:
+            persisted_tweet = do_persist(s, db, debug)
+            if max_id is None:
+                max_id = persisted_tweet
+            if persisted_tweet and max_id and (int(max_id) > int(persisted_tweet)):
+                max_id = int(persisted_tweet)
+        if statuses:
+            from time import sleep
+            sleep(download_delay)
+            continue
+        else:
+            break
+
 
 
 def do_persist(tweet, db, debug):
@@ -127,6 +151,12 @@ if __name__ == "__main__":
 
     api = twitter_login()
     last_id = None
+
+    if args.history:
+        download_history(api, db, args.debug, args.tweetcount, args.history_delay)
+        db.close()
+        from sys import exit
+        exit(0)
 
     if os.path.exists(last_id_filename):
         with open(last_id_filename) as last_id_file:
