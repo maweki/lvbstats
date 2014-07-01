@@ -86,6 +86,18 @@ def print_version():
     print(VERSION)
 
 
+def do_persist(tweet, db, debug):
+    tweet_id, data = entry_to_tuple(tweet)
+    date, lines, longest_words = data
+    if lines:
+        if debug:
+            from datetime import datetime
+            print(tweet_id, data, str(datetime.fromtimestamp(date)))
+        db[str(tweet_id)] = {'date': date, 'lines': lines, 'longest_words': longest_words}
+        return tweet_id
+    return None
+
+
 def return_json(db, jsonstyle):
     import json
     result = {}
@@ -143,16 +155,9 @@ if __name__ == "__main__":
     statuses = api.statuses.user_timeline(**twitter_args)
 
     for s in statuses:
-        tweet_id, data = entry_to_tuple(s)
-        date, lines, longest_words = data
-        if lines:
-            if args.debug:
-                from datetime import datetime
-                print(tweet_id, data, str(datetime.fromtimestamp(date)))
-            db[str(tweet_id)] = {'date': date, 'lines': lines, 'longest_words': longest_words}
-
-        if not last_id or int(last_id) < int(tweet_id):
-            last_id = int(tweet_id)
+        persisted_tweet = do_persist(s, db, args.debug)
+        if persisted_tweet and (not last_id or int(last_id) < int(persisted_tweet)):
+            last_id = int(persisted_tweet)
 
     if last_id:
         if args.debug:
