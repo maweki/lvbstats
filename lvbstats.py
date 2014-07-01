@@ -51,7 +51,7 @@ class LvbText(object):
         else:
             from more_itertools import unique_justseen
             _, _, info_text = text.partition(':')
-            words = sorted((item.strip('.,:!?/ \n') for item in info_text.split(' ') if not (item.startswith('http://') or len(item) <= 3)),
+            words = sorted((item.strip('.,:!?/ \n()') for item in info_text.split(' ') if not (item.startswith('http://') or len(item) <= 3)),
                            key=len, reverse=True)
             unique_words = unique_justseen(words)
             return list(unique_words)[:5]
