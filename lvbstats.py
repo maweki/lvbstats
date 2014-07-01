@@ -49,10 +49,12 @@ class LvbText(object):
         if not ': ' in text:
             return None
         else:
+            from more_itertools import unique_justseen
             _, _, info_text = text.partition(':')
             words = sorted((item.strip('.,:!?/ \n') for item in info_text.split(' ') if not (item.startswith('http://') or len(item) <= 3)),
                            key=len, reverse=True)
-            return list(words)[:5]
+            unique_words = unique_justseen(words)
+            return list(unique_words)[:5]
 
 
 def date_from_created_at(cr):
