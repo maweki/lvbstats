@@ -52,7 +52,7 @@ class LvbText(object):
             _, _, info_text = text.partition(':')
             words = sorted((item.strip('.,:!?/ ') for item in info_text.split(' ') if not item.startswith('http://')),
                            key=len, reverse=True)
-            return list(words)[:3]
+            return list(words)[:5]
 
 
 def date_from_created_at(cr):
