@@ -10,7 +10,11 @@
     <script src="heatmap.js"></script>
     <script>
     $().ready( function() {
-      lvbdata.init();
+      var start_graphs = function(){
+        lvbdata.create_heatmap(lvbdata.data.accumulate_by_weekday_hour(lvbdata.data.events));
+      };
+
+      lvbdata.init(start_graphs);
     });
     </script>
   </head>

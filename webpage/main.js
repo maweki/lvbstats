@@ -2,7 +2,7 @@ lvbdata = {
   data: {
     raw_data: {},
     events: {},
-    load: function(url) {
+    load: function(url, callback) {
       data = this;
       d3.json(url, function(downloaded) {
         console.log(downloaded);
@@ -15,7 +15,7 @@ lvbdata = {
         // convert raw data to events
         data.events = data.to_events(downloaded);
 
-        lvbdata.create_heatmap(lvbdata.data.accumulate_by_weekday_hour(lvbdata.data.events));
+        if (callback) { callback(); }
       });
     },
 
@@ -65,7 +65,7 @@ lvbdata = {
     }
   },
 
-  init: function() {
-    this.data.load('test.json');
+  init: function(callback) {
+    this.data.load('test.json', callback);
   }
 }
