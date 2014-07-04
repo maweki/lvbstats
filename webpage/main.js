@@ -15,7 +15,7 @@ lvbdata = {
         // convert raw data to events
         data.events = data.to_events(downloaded);
 
-        console.log(data.accumulate_by_weekday_hour(data.events));
+        lvbdata.create_heatmap(lvbdata.data.accumulate_by_weekday_hour(lvbdata.data.events));
       });
     },
 
