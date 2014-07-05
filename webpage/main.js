@@ -25,6 +25,23 @@ lvbdata = {
       });
     },
 
+    unique_lines: function(events) {
+      var linesort = function(a, b) {
+        if (a.length != b.length) {
+          return (a.length - b.length);
+        }
+        else {
+          if (a < b) {
+            return -1;
+          }
+          else {
+            return 1;
+          }
+        }
+      };
+      return _.uniq(_.pluck(events, 'line')).sort(linesort);
+    },
+
     to_events: function(raw_data) {
       result = [];
       _.forOwn(raw_data, function(tweetobj, tweetid){
