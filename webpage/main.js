@@ -98,4 +98,4 @@ lvbdata = {
   init: function(callback) {
     this.data.load('test.json', callback);
   }
-}
+};

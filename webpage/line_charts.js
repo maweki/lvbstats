@@ -61,9 +61,9 @@ $.extend(lvbdata, {
     this.chart_data.x.domain(d3.extent(data, function(d) { return d.date; }));
     this.chart_data.y.domain(d3.extent(data, function(d) { return d.acc; }));
 
-    var svg = d3.select("#eventshist").select("svg")
+    var svg = d3.select("#eventshist").select("svg");
     svg.select("g.x.axis").transition().duration(duration_amnt).call(this.chart_data.xAxis);
     svg.select("g.y.axis").transition().duration(duration_amnt).call(this.chart_data.yAxis);
     svg.select("path.line").datum(data).transition().duration(duration_amnt).attr("d", this.chart_data.line_function);
   }
-})
+});
