@@ -5,9 +5,8 @@ $.extend(lvbdata, {
   create_historical_chart: function(data) {
     data = _.sortBy(data, 'date');
 
-    var margin = {top: 20, right: 20, bottom: 30, left: 50},
-    width = 960 - margin.left - margin.right,
-    height = 500 - margin.top - margin.bottom;
+    var width = this.get_chart_width(),
+      height = 500 - this.margins.top - this.margins.bottom;
 
     this.chart_data.x = d3.time.scale()
         .range([0, width]);
@@ -24,10 +23,10 @@ $.extend(lvbdata, {
         .orient("left");
 
     var svg = d3.select("#eventshist").append("svg")
-        .attr("width", width + margin.left + margin.right)
-        .attr("height", height + margin.top + margin.bottom)
+        .attr("width", width + this.margins.left + this.margins.right)
+        .attr("height", height + this.margins.top + this.margins.bottom)
         .append("g")
-        .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+        .attr("transform", "translate(" + this.margins.left + "," + this.margins.top + ")");
 
     svg.append("g")
         .attr("class", "x axis")
@@ -59,6 +58,7 @@ $.extend(lvbdata, {
         .x(function(d) { return chart_data.x(d.date); })
         .y(function(d) { return chart_data.y(d.acc); });
 
+    this.chart_data.x.range([0, this.get_chart_width()]);
     this.chart_data.x.domain(d3.extent(data, function(d) { return d.date; }));
     this.chart_data.y.domain(d3.extent(data, function(d) { return d.acc; }));
 

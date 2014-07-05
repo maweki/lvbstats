@@ -2,9 +2,9 @@ $.extend(lvbdata,{
   create_heatmap: function(data) {
     data = this.data.accumulate_by_weekday_hour(data);
 
-    var margin = { top: 50, right: 0, bottom: 100, left: 30 },
-      width = 960 - margin.left - margin.right,
-      height = 430 - margin.top - margin.bottom,
+    var margin = this.margins,
+      width = this.get_main_div_width() -  margin.left - margin.right,
+      height = this.get_main_div_width()/3.3,
       gridSize = Math.floor(width / 24),
       legendElementWidth = gridSize*2,
       buckets = 9,
@@ -26,10 +26,16 @@ $.extend(lvbdata,{
           .attr("height", height + margin.top + margin.bottom)
           .append("g")
           .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+      } else {
+        d3.select('#heatmap').select('svg')
+        .attr("width", width + margin.left + margin.right)
+        .attr("height", height + margin.top + margin.bottom);
       }
 
       var dayLabels = svg.selectAll(".dayLabel")
           .data(days)
+          .attr("y", function (d, i) { return i * gridSize; })
+          .attr("transform", "translate(-6," + gridSize / 1.5 + ")")
           .enter().append("text")
             .text(function (d) { return d; })
             .attr("x", 0)
@@ -40,6 +46,8 @@ $.extend(lvbdata,{
 
       var timeLabels = svg.selectAll(".timeLabel")
           .data(times)
+          .attr("x", function(d, i) { return i * gridSize; })
+          .attr("transform", "translate(" + gridSize / 2 + ", -6)")
           .enter().append("text")
             .text(function(d) { return d; })
             .attr("x", function(d, i) { return i * gridSize; })
@@ -51,7 +59,13 @@ $.extend(lvbdata,{
       var heatMap = svg.selectAll(".hour")
           .data(data);
 
-      heatMap.transition().duration(1000).style("fill", function(d) { return colorScale(d.acc); });
+      heatMap
+        .attr("x", function(d) { return (d.hour) * gridSize; })
+        .attr("y", function(d) { return (d.day) * gridSize; })
+        .attr("width", gridSize)
+        .attr("height", gridSize)
+        .transition().duration(1000)
+        .style("fill", function(d) { return colorScale(d.acc); });
 
       heatMap.enter().append("rect")
           .attr("x", function(d) { return (d.hour) * gridSize; })

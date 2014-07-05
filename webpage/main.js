@@ -133,6 +133,16 @@ lvbdata = {
 
   },
 
+  margins: {top: 20, right: 30, bottom: 70, left: 50},
+
+  get_main_div_width: function() {
+    return $('.main').width();
+  },
+
+  get_chart_width: function() {
+    return this.get_main_div_width() - this.margins.left - this.margins.right;
+  },
+
   init: function(callback) {
     this.data.load('test.json', callback);
   }
