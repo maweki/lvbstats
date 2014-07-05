@@ -17,6 +17,7 @@ $.extend(lvbdata, {
   update_charts: function() {
     console.log('Update Charts');
     this.refresh_historical_chart(this.filter_events_by_line(this.data.events));
+    this.create_heatmap(this.filter_events_by_line(this.data.events));
   },
 
   read_filters_lines: function() {

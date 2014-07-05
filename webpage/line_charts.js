@@ -3,8 +3,6 @@ $.extend(lvbdata, {
   chart_data: {},
 
   create_historical_chart: function(data) {
-    console.log(data);
-
     data = _.sortBy(data, 'date');
 
     var margin = {top: 20, right: 20, bottom: 30, left: 50},

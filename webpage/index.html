@@ -28,15 +28,18 @@
         lvbdata.data.render_statistics();
         lvbdata.init_filter_dialog();
         lvbdata.create_historical_chart(lvbdata.data.events);
-        lvbdata.create_heatmap(lvbdata.data.accumulate_by_weekday_hour(lvbdata.data.events));
+        lvbdata.create_heatmap(lvbdata.data.events);
       };
 
       lvbdata.init(start);
 
-      $(".toggleall").click(function(){
-        $(this).parent().find('input[type=checkbox]').each(function(){
+      $(".toggleall").click(function(event){
+        event.preventDefault();
+        var cbs = $(this).parent().find('input[type=checkbox]');
+        cbs.each(function(){
           $(this).prop("checked", !$(this).prop("checked"));
         });
+        $(cbs.get(0)).change();
       });
     });
     </script>
@@ -73,7 +76,6 @@
                 <li>vom <span class="tweetsfrom"></span></li>
                 <li>bis <span class="tweetsto"></span></li>
               </ul>
-              <button class="btn btn-primary btn-lg" data-toggle="modal" data-target="#filterModal">Filter</button>
             </div>
             <div class="col-md-4">
               <a class="twitter-timeline" data-dnt="true" href="https://twitter.com/LVB_direkt" data-widget-id="485486084965412865">Tweets von @LVB_direkt</a>
@@ -91,6 +93,8 @@
 
       </div>
     </div>
+
+<button class="btn btn-primary btn-lg" data-toggle="modal" data-target="#filterModal" style="position: fixed; bottom: 10px; right: 10px;">Filter</button>
 
 
     <!-- Filter -->

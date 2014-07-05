@@ -1,6 +1,7 @@
 $.extend(lvbdata,{
   create_heatmap: function(data) {
-    console.log(data);
+    data = this.data.accumulate_by_weekday_hour(data);
+
     var margin = { top: 50, right: 0, bottom: 100, left: 30 },
       width = 960 - margin.left - margin.right,
       height = 430 - margin.top - margin.bottom,
@@ -18,11 +19,14 @@ $.extend(lvbdata,{
               .domain([0, buckets - 1, d3.max(data, function (d) { return d.acc; })])
               .range(colors);
 
-      var svg = d3.select("#heatmap").append("svg")
+      var svg = d3.select('#heatmap').select('svg').select('g');
+      if (!svg[0][0]) {
+        svg = d3.select("#heatmap").append("svg")
           .attr("width", width + margin.left + margin.right)
           .attr("height", height + margin.top + margin.bottom)
           .append("g")
           .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+      }
 
       var dayLabels = svg.selectAll(".dayLabel")
           .data(days)
@@ -45,8 +49,11 @@ $.extend(lvbdata,{
             .attr("class", function(d, i) { return ((i >= 7 && i <= 16) ? "timeLabel mono axis axis-worktime" : "timeLabel mono axis"); });
 
       var heatMap = svg.selectAll(".hour")
-          .data(data)
-          .enter().append("rect")
+          .data(data);
+
+      heatMap.transition().duration(1000).style("fill", function(d) { return colorScale(d.acc); });
+
+      heatMap.enter().append("rect")
           .attr("x", function(d) { return (d.hour) * gridSize; })
           .attr("y", function(d) { return (d.day) * gridSize; })
           .attr("rx", 4)
@@ -56,10 +63,16 @@ $.extend(lvbdata,{
           .attr("height", gridSize)
           .style("fill", colors[0]);
 
+      console.log(heatMap);
+      heatMap.exit().remove();
+
       heatMap.transition().duration(1000)
           .style("fill", function(d) { return colorScale(d.acc); });
 
+      heatMap.selectAll("title").remove();
       heatMap.append("title").text(function(d) { return d.acc.toString() + ' Ereignisse'; });
+
+      svg.selectAll(".legend").remove();
 
       var legend = svg.selectAll(".legend")
           .data([0].concat(colorScale.quantiles()), function(d) { return d; })
@@ -78,5 +91,7 @@ $.extend(lvbdata,{
         .text(function(d) { return "≥ " + Math.round(d); })
         .attr("x", function(d, i) { return legendElementWidth * i; })
         .attr("y", height + gridSize);
-  }
+
+
+  },
 });
