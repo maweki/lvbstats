@@ -30,7 +30,7 @@ lvbdata = {
       _.forOwn(raw_data, function(tweetobj, tweetid){
         _(tweetobj.lines).forEach(function(thisline){
           var newevent = {
-            lines: thisline,
+            line: thisline.toString(),
             tweetid: tweetid,
             date: tweetobj.date,
             words: tweetobj.longest_words
