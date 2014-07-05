@@ -33,3 +33,8 @@ text.axis-workweek {
 text.axis-worktime {
   fill: #000;
 }
+
+ul.nav-sidebar {
+  position: fixed;
+  top: 20px;
+}
