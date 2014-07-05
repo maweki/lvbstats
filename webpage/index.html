@@ -7,10 +7,12 @@
     <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
     <script src="http://cdnjs.cloudflare.com/ajax/libs/lodash.js/2.4.1/lodash.min.js"></script>
     <script src="main.js"></script>
+    <script src="stats.js"></script>
     <script src="heatmap.js"></script>
     <script>
     $().ready( function() {
       var start_graphs = function(){
+        lvbdata.data.render_statistics();
         lvbdata.create_heatmap(lvbdata.data.accumulate_by_weekday_hour(lvbdata.data.events));
       };
 
