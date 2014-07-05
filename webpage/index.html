@@ -42,6 +42,15 @@
         $(cbs.get(0)).change();
       });
 
+      $(".resetselect").click(function(event){
+        event.preventDefault();
+        var cbs = $(this).parent().find('input[type=checkbox]');
+        cbs.each(function(){
+          $(this).prop("checked", true);
+        });
+        $(cbs.get(0)).change();
+      });
+
       $(window).resize(lvbdata.update_charts.bind(lvbdata));
     });
     </script>
@@ -111,7 +120,7 @@
             <fieldset class="linesFilter row">
 
             </fieldset>
-            <a href="#" class="toggleall">Auswahl invertieren</a>
+            <a href="#" class="toggleall">Auswahl invertieren</a> | <a href="#" class="resetselect">Selektion zurücksetzen</a>
           </div>
           <div class="modal-footer">
             <button type="button" class="btn btn-default" data-dismiss="modal">Schließen</button>
