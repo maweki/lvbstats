@@ -12,7 +12,7 @@ $.extend(lvbdata,{
       days = ["Mo", "Di", "Mi", "Do", "Fr", "Sa", "So"],
       times = [];
       for (var h = 0; h <= 23; h++) {
-        times.push(h.toString() + '-' + ((h + 1)%24).toString());
+        times.push(h.toString());
       }
 
       var colorScale = d3.scale.quantile()
