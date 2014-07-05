@@ -19,8 +19,8 @@ $.extend(lvbdata.data, {
     $(main).find('.tweetnum').text(this.get_tweets_count(this.raw_data));
     $(main).find('.eventnum').text(this.get_events_count(this.events));
     var daterange = this.get_tweets_date_range(this.events);
-    $(main).find('.tweetsfrom').text(daterange.min);
-    $(main).find('.tweetsto').text(daterange.max);
+    $(main).find('.tweetsfrom').text(daterange.min.toLocaleDateString());
+    $(main).find('.tweetsto').text(daterange.max.toLocaleDateString());
   }
 }
 );
