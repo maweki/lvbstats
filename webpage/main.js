@@ -74,11 +74,32 @@ lvbdata = {
       };
 
       _(events).forEach(function(ev){
-        var item = get_acc_obj(ev.date.getDay(), ev.date.getHours());
+        var item = get_acc_obj((ev.date.getDay()+6)%7, ev.date.getHours());
         item.acc += 1;
       });
 
+      // Fill remaining
+      for(var h = 0; h <= 23; h++) {
+        for (var d = 0; d <= 6; d++) {
+          get_acc_obj(d, h);
+        }
+      }
+
       return accu_list;
+    },
+
+    accumulate_by_weekday: function(events) {
+      res = [];
+      for (var day = 0; day <= 6; day++) {
+        res.push({day: day, acc: 0});
+      }
+
+      var accu_wdh = this.accumulate_by_weekday_hour(events);
+      _(accu_wdh).forEach(function(field){
+        res[field.day].acc += field.acc;
+      });
+
+      return res;
     },
 
     accumulate_by_date: function(events) {
@@ -98,7 +119,7 @@ lvbdata = {
     accumulate_by_week: function(events) {
       var lookup = {};
       _(events).forEach(function(event){
-        var newdate = new Date(event.date - event.date.getDay()*24*60*60*1000);
+        var newdate = new Date(event.date - ((event.date.getDay()+6)%7)*24*60*60*1000);
         var date = newdate.toDateString();
         if (lookup[date]) {
           lookup[date].acc += 1;
