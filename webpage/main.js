@@ -65,6 +65,20 @@ lvbdata = {
     }
   },
 
+  accumulate_by_day: function(events) {
+    var lookup = {};
+    _(events).forEach(function(event){
+      var date = event.date.toDateString();
+      if (lookup[date]) {
+        lookup[date].acc += 1;
+      }
+      else {
+        lookup[date] = {date: date, acc: 1};
+      }
+    });
+    return _.values(lookup);
+  },
+
   init: function(callback) {
     this.data.load('test.json', callback);
   }
