@@ -75,7 +75,7 @@ lvbdata = {
           lookup[date] = {date: new Date(date), acc: 1};
         }
       });
-      return _.values(lookup);
+      return _.sortBy(_.values(lookup), 'date');
     },
 
     accumulate_by_week: function(events) {
@@ -90,7 +90,7 @@ lvbdata = {
           lookup[date] = {date: new Date(date), acc: 1};
         }
       });
-      return _.values(lookup);
+      return _.sortBy(_.values(lookup), 'date');
     }
 
   },
