@@ -59,7 +59,7 @@ $.extend(lvbdata,{
             .attr("class", function(d, i) { return ((i >= 7 && i <= 16) ? "timeLabel mono axis axis-worktime" : "timeLabel mono axis"); });
 
       var heatMap = svg.selectAll(".hour")
-          .data(data);
+          .data(data, function(d){ return d.day.toString()+':'+d.hour.toString();});
 
       heatMap
         .attr("x", function(d) { return (d.hour) * gridSize; })
