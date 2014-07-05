@@ -62,21 +62,37 @@ lvbdata = {
       });
 
       return accu_list;
-    }
-  },
+    },
 
-  accumulate_by_day: function(events) {
-    var lookup = {};
-    _(events).forEach(function(event){
-      var date = event.date.toDateString();
-      if (lookup[date]) {
-        lookup[date].acc += 1;
-      }
-      else {
-        lookup[date] = {date: date, acc: 1};
-      }
-    });
-    return _.values(lookup);
+    accumulate_by_date: function(events) {
+      var lookup = {};
+      _(events).forEach(function(event){
+        var date = event.date.toDateString();
+        if (lookup[date]) {
+          lookup[date].acc += 1;
+        }
+        else {
+          lookup[date] = {date: new Date(date), acc: 1};
+        }
+      });
+      return _.values(lookup);
+    },
+
+    accumulate_by_week: function(events) {
+      var lookup = {};
+      _(events).forEach(function(event){
+        var newdate = new Date(event.date - event.date.getDay()*24*60*60*1000);
+        var date = newdate.toDateString();
+        if (lookup[date]) {
+          lookup[date].acc += 1;
+        }
+        else {
+          lookup[date] = {date: new Date(date), acc: 1};
+        }
+      });
+      return _.values(lookup);
+    }
+
   },
 
   init: function(callback) {

@@ -11,13 +11,35 @@
     <link rel="stylesheet" href="http://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap-theme.min.css">
     <script src="http://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/js/bootstrap.min.js"></script>
 
+    <style>
+      .axis path,
+      .axis line {
+        fill: none;
+        stroke: #000;
+        shape-rendering: crispEdges;
+      }
+
+      .x.axis path {
+        display: none;
+      }
+
+      .line {
+        fill: none;
+        stroke: steelblue;
+        stroke-width: 1.5px;
+      }
+    </style>
+
     <script src="main.js"></script>
     <script src="stats.js"></script>
+    <script src="line_charts.js"></script>
     <script src="heatmap.js"></script>
     <script>
     $().ready( function() {
       var start_graphs = function(){
         lvbdata.data.render_statistics();
+        console.log();
+        lvbdata.create_historical_chart(lvbdata.data.accumulate_by_week(lvbdata.data.events));
         lvbdata.create_heatmap(lvbdata.data.accumulate_by_weekday_hour(lvbdata.data.events));
       };
 
@@ -38,6 +60,9 @@
       <li>von <span class="tweetsfrom"></span></li>
       <li>bis <span class="tweetsto"></span></li>
     </ul>
+
+    <h2>Ereignisse pro Woche (historisch)</h2>
+    <div id="eventshist"></div>
 
     <h2>Ereignisse nach Wochentag und Uhrzeit</h2>
     <div id="heatmap"></div>
