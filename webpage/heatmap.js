@@ -59,7 +59,7 @@ $.extend(lvbdata,{
       heatMap.transition().duration(1000)
           .style("fill", function(d) { return colorScale(d.acc); });
 
-      heatMap.append("title").text(function(d) { return d.acc; });
+      heatMap.append("title").text(function(d) { return d.acc.toString() + ' Ereignisse'; });
 
       var legend = svg.selectAll(".legend")
           .data([0].concat(colorScale.quantiles()), function(d) { return d; })
