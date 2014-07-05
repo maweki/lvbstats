@@ -77,7 +77,6 @@ $.extend(lvbdata,{
           .attr("height", gridSize)
           .style("fill", colors[0]);
 
-      console.log(heatMap);
       heatMap.exit().remove();
 
       heatMap.transition().duration(1000)

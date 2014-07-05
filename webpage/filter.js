@@ -6,7 +6,6 @@ $.extend(lvbdata, {
   init_filter_dialog_lines: function() {
     var filter_field = $("#filterModal fieldset.linesFilter");
     var lines = this.data.unique_lines(this.data.events);
-    console.log(lines);
     _(lines).forEach(function(line) {
       var html = '<div class="checkbox col-md-1"><label><input checked="checked" name="' + line + '" type="checkbox">' + line + '</label></div>';
       $(html).appendTo(filter_field);

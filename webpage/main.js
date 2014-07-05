@@ -5,7 +5,6 @@ lvbdata = {
     load: function(url, callback) {
       data = this;
       d3.json(url, function(downloaded) {
-        console.log(downloaded);
         // convert dates
         data.convert_dates(downloaded);
 
