@@ -1,4 +1,7 @@
 $.extend(lvbdata, {
+  line_function: undefined,
+  chart_data: {},
+
   create_historical_chart: function(data) {
     console.log(data);
 
@@ -8,23 +11,19 @@ $.extend(lvbdata, {
     width = 960 - margin.left - margin.right,
     height = 500 - margin.top - margin.bottom;
 
-    var x = d3.time.scale()
+    this.chart_data.x = d3.time.scale()
         .range([0, width]);
 
-    var y = d3.scale.linear()
+    this.chart_data.y = d3.scale.linear()
         .range([height, 0]);
 
-    var xAxis = d3.svg.axis()
-        .scale(x)
+    this.chart_data.xAxis = d3.svg.axis()
+        .scale(this.chart_data.x)
         .orient("bottom");
 
-    var yAxis = d3.svg.axis()
-        .scale(y)
+    this.chart_data.yAxis = d3.svg.axis()
+        .scale(this.chart_data.y)
         .orient("left");
-
-    var line = d3.svg.line()
-        .x(function(d) { return x(d.date); })
-        .y(function(d) { return y(d.acc); });
 
     var svg = d3.select("#eventshist").append("svg")
         .attr("width", width + margin.left + margin.right)
@@ -32,17 +31,12 @@ $.extend(lvbdata, {
         .append("g")
         .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
 
-    x.domain(d3.extent(data, function(d) { return d.date; }));
-    y.domain(d3.extent(data, function(d) { return d.acc; }));
-
     svg.append("g")
         .attr("class", "x axis")
-        .attr("transform", "translate(0," + height + ")")
-        .call(xAxis);
+        .attr("transform", "translate(0," + height + ")");
 
     svg.append("g")
         .attr("class", "y axis")
-        .call(yAxis)
       .append("text")
         .attr("transform", "rotate(-90)")
         .attr("y", 6)
@@ -50,9 +44,26 @@ $.extend(lvbdata, {
         .style("text-anchor", "end")
         .text("Ereignisse");
 
-    svg.append("path")
-        .datum(data)
-        .attr("class", "line")
-        .attr("d", line);
+    var thispath = svg.append("path").attr("class", "line");
+
+    this.refresh_historical_chart(data);
+
+  },
+
+  refresh_historical_chart: function(data) {
+    var duration_amnt = 1000;
+    var chart_data = this.chart_data;
+
+    this.chart_data.line_function = d3.svg.line()
+        .x(function(d) { return chart_data.x(d.date); })
+        .y(function(d) { return chart_data.y(d.acc); });
+
+    this.chart_data.x.domain(d3.extent(data, function(d) { return d.date; }));
+    this.chart_data.y.domain(d3.extent(data, function(d) { return d.acc; }));
+
+    var svg = d3.select("#eventshist").select("svg")
+    svg.select("g.x.axis").transition().duration(duration_amnt).call(this.chart_data.xAxis);
+    svg.select("g.y.axis").transition().duration(duration_amnt).call(this.chart_data.yAxis);
+    svg.select("path.line").datum(data).transition().duration(duration_amnt).attr("d", this.chart_data.line_function);
   }
 })
