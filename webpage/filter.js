@@ -15,8 +15,11 @@ $.extend(lvbdata, {
 
   update_charts: function() {
     console.log('Update Charts');
-    this.refresh_historical_chart(this.filter_events_by_line(this.data.events));
-    this.create_heatmap(this.filter_events_by_line(this.data.events));
+
+    var events_filtered_by_line = this.filter_events_by_line(this.data.events);
+
+    this.refresh_historical_chart(events_filtered_by_line);
+    this.create_heatmap(events_filtered_by_line);
   },
 
   read_filters_lines: function() {
