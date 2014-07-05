@@ -13,14 +13,8 @@ Umwandeln der Tweets in Events
 ** Alle Events nach Stunde im Tag
 ** Alle Events nach Linie
 
-* Line Graphs
-** Alle Events historisch (nach Tag)
-
 * Scatterplot
 ** Alle Events nach Wochentag und Stunde
-
-* 2D-Heatmap (http://bl.ocks.org/tjdecke/5558084)
-** Alle Events nach Wochentag und Stunde in Blöcken
 
 * Streamgraph
 ** Alle Events nach Stunden in der Woche stacked nach Linie
@@ -33,6 +27,13 @@ Umwandeln der Tweets in Events
 
 * Wordcloud
 ** Alle Wörter nach Events (nach Filter)
+
+Done:
+* 2D-Heatmap (http://bl.ocks.org/tjdecke/5558084)
+** Alle Events nach Wochentag und Stunde in Blöcken
+
+* Line Graphs
+** Alle Events historisch (nach Tag)
 
 # Urls
 
