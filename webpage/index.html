@@ -12,6 +12,7 @@
     <script src="http://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/js/bootstrap.min.js"></script>
 
     <link rel="stylesheet" type="text/css" href="style.css">
+    <link rel="stylesheet" type="text/css" href="dashboard.css">
     <style>
 
     </style>
@@ -34,24 +35,73 @@
     </script>
   </head>
   <body>
-    <h1>LVB Stats</h1>
-    <p>Eine graphische Darstellung der Meldungen der LVB. (by maweki)<br />
-    Alle Daten sind öffentlich zugänglich auf
-    <a href="http://twitter.de/lvb_direkt">twitter.de/lvb_direkt</a></p>
+    <div class="navbar navbar-inverse navbar-fixed-top" role="navigation">
+      <div class="container-fluid">
+        <div class="navbar-header">
+          <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+            <span class="sr-only">Toggle navigation</span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </button>
+          <a class="navbar-brand" href="#">Project name</a>
+        </div>
+        <div class="navbar-collapse collapse">
+          <ul class="nav navbar-nav navbar-right">
+            <li><a href="#">Dashboard</a></li>
+            <li><a href="#">Settings</a></li>
+            <li><a href="#">Profile</a></li>
+            <li><a href="#">Help</a></li>
+          </ul>
+          <form class="navbar-form navbar-right">
+            <input type="text" class="form-control" placeholder="Search...">
+          </form>
+        </div>
+      </div>
+    </div>
 
-    <h2>Erhebungszeitrum und Datenmenge</h2>
-    <ul id="general_stats">
-      <li><span class="tweetnum"></span> Tweets</li>
-      <li><span class="eventnum"></span> Ereignisse</li>
-      <li>vom <span class="tweetsfrom"></span></li>
-      <li>bis <span class="tweetsto"></span></li>
-    </ul>
+    <div class="container-fluid">
+      <div class="row">
+        <div class="col-sm-3 col-md-2 sidebar">
+          <ul class="nav nav-sidebar">
+            <li><a href="#">Foobar</a></li>
+          </ul>
+        </div>
 
-    <h2>Ereignisse pro Woche (historisch)</h2>
-    <div id="eventshist"></div>
+        <div class="col-sm-9 col-sm-offset-3 col-md-10 col-md-offset-2 main">
+          <div class="page-header">
+            <h1>Lvb Stats <small>durch Daten über Leipzig lernen</small></h1>
+          </div>
 
-    <h2>Ereignisse nach Wochentag und Uhrzeit</h2>
-    <div id="heatmap"></div>
+          <div class="row">
+            <div class="col-md-8">
+              <p>Eine graphische Darstellung der Meldungen der LVB. (by maweki)<br />
+              Alle Daten sind öffentlich zugänglich auf
+              <a href="http://twitter.de/lvb_direkt">twitter.de/lvb_direkt</a></p>
 
+              <h2>Erhebungszeitrum und Datenmenge</h2>
+              <ul id="general_stats">
+                <li><span class="tweetnum"></span> Tweets</li>
+                <li><span class="eventnum"></span> Ereignisse</li>
+                <li>vom <span class="tweetsfrom"></span></li>
+                <li>bis <span class="tweetsto"></span></li>
+              </ul>
+            </div>
+            <div class="col-md-4">
+              <a class="twitter-timeline" data-dnt="true" href="https://twitter.com/LVB_direkt" data-widget-id="485486084965412865">Tweets von @LVB_direkt</a>
+              <script>!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0],p=/^http:/.test(d.location)?'http':'https';if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src=p+"://platform.twitter.com/widgets.js";fjs.parentNode.insertBefore(js,fjs);}}(document,"script","twitter-wjs");
+              </script>
+            </div>
+          </div>
+
+          <h2>Ereignisse pro Woche (historisch)</h2>
+          <div id="eventshist"></div>
+
+          <h2>Ereignisse nach Wochentag und Uhrzeit</h2>
+          <div id="heatmap"></div>
+        </div>
+
+      </div>
+    </div>
   </body>
 </html>
