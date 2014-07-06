@@ -28,6 +28,7 @@
       var start = function(){
         lvbdata.data.render_statistics();
         lvbdata.init_filter_dialog();
+        lvbdata.init_filter_dialog_keywords();
         lvbdata.create_historical_chart(lvbdata.data.events);
         lvbdata.create_heatmap(lvbdata.data.events);
         lvbdata.update_keyword_table(lvbdata.data.events);
@@ -174,10 +175,14 @@
             <h4 class="modal-title" id="filterModalLabel">Filter bearbeiten</h4>
           </div>
           <div class="modal-body container-fluid">
+            <h5>Nach Linien <small>oder-verbunden</small></h5>
             <fieldset class="linesFilter row">
 
             </fieldset>
             <a href="#" class="toggleall">Auswahl invertieren</a> | <a href="#" class="resetselect">Selektion zurücksetzen</a>
+            <h5>Nach Schlüsselwort <small>oder-verbunden, mit Leerzeichen trennen</small></h5>
+            <input type="text" class="form-control keywordfilter" placeholder="Schlüsselwort" />
+            <p><small>Schlüsselwörter: <span class="keywordcheck"></span></small></p>
           </div>
           <div class="modal-footer">
             <button type="button" class="btn btn-default" data-dismiss="modal">Schließen</button>
