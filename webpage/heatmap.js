@@ -18,7 +18,7 @@ $.extend(lvbdata,{
       var max_acc = Math.max(1, d3.max(data, function (d) { return d.acc; }));
       var colorScale = d3.scale.quantile()
               .domain([0, max_acc])
-              .range(colors.slice(0, max_acc));
+              .range(colors.slice(0, max_acc+1));
 
       var svg = d3.select('#heatmap').select('svg').select('g');
       if (!svg[0][0]) {
@@ -102,7 +102,7 @@ $.extend(lvbdata,{
 
       legend.append("text")
         .attr("class", "mono")
-        .text(function(d) { return "≥ " + Math.round(d); })
+        .text(function(d) { return "≥ " + Math.ceil(d); })
         .attr("x", function(d, i) { return legendElementWidth * i; })
         .attr("y", height + gridSize);
 
