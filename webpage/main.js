@@ -117,8 +117,12 @@ lvbdata = {
 
     accumulate_by_week: function(events) {
       var lookup = {};
+      var first_date = new Date();
       _(events).forEach(function(event){
         var newdate = new Date(event.date - ((event.date.getDay()+6)%7)*24*60*60*1000);
+        if (newdate < first_date) {
+          first_date = newdate;
+        }
         var date = newdate.toDateString();
         if (lookup[date]) {
           lookup[date].acc += 1;
@@ -127,6 +131,17 @@ lvbdata = {
           lookup[date] = {date: new Date(date), acc: 1};
         }
       });
+
+      // fill up
+      while (first_date < new Date()) {
+        var newdate = new Date(first_date - ((first_date.getDay()+6)%7)*24*60*60*1000);
+        var date = newdate.toDateString();
+        if (!lookup[date]) {
+          lookup[date] = {date: new Date(date), acc: 0};
+        }
+        first_date.setDate(first_date.getDate() + 7);
+      }
+
       return _.sortBy(_.values(lookup), 'date');
     }
 
