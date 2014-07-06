@@ -101,20 +101,6 @@ lvbdata = {
       return res;
     },
 
-    accumulate_by_date: function(events) {
-      var lookup = {};
-      _(events).forEach(function(event){
-        var date = event.date.toDateString();
-        if (lookup[date]) {
-          lookup[date].acc += 1;
-        }
-        else {
-          lookup[date] = {date: new Date(date), acc: 1};
-        }
-      });
-      return _.sortBy(_.values(lookup), 'date');
-    },
-
     accumulate_by_week: function(events) {
       var lookup = {};
       var first_date = new Date();
