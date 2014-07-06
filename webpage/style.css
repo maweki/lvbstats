@@ -35,6 +35,18 @@ ul.nav-sidebar {
   top: 20px;
 }
 
+path.slice{
+  stroke: #E6E6E6;
+	stroke-width:1px;
+}
+
+polyline{
+	opacity: .3;
+	stroke: black;
+	stroke-width: 2px;
+	fill: none;
+}
+
 .table-condensed>thead>tr>th, .table-condensed>tbody>tr>th, .table-condensed>tfoot>tr>th, .table-condensed>thead>tr>td, .table-condensed>tbody>tr>td, .table-condensed>tfoot>tr>td {
 padding: 3px;
 }
