@@ -68,12 +68,11 @@ $.extend(lvbdata, {
     else {
       var filtered_events = [];
       _.forEach(events, function(event){
-        var event_words = _.map(event.words, function(val){ return val.toString().toLowerCase();})
+        var event_words = _.map(event.words, function(val){ return val.toString().toLowerCase();});
         if (_.intersection(event_words, filter_values).length > 0) {
           filtered_events.push(event);
         }
       });
-      console.log(filtered_events.length);
       return filtered_events;
     }
   }

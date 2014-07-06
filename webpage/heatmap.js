@@ -17,7 +17,7 @@ $.extend(lvbdata,{
 
       var max_acc = Math.max(1, d3.max(data, function (d) { return d.acc; }));
       var colorScale = d3.scale.quantile()
-              .domain([0, d3.max(data, function (d) { return d.acc; })])
+              .domain([0, max_acc])
               .range(colors.slice(0, max_acc));
 
       var svg = d3.select('#heatmap').select('svg').select('g');
