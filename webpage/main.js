@@ -149,6 +149,17 @@ lvbdata = {
       }
 
       return _.sortBy(_.values(lookup), 'date');
+    },
+
+    accumulate_by_line: function(events) {
+      lookup = {};
+      _(events).forEach(function(event){
+        if (!lookup[event.line]) {
+          lookup[event.line] = {line: event.line, acc: 0};
+        }
+        lookup[event.line].acc += 1;
+      });
+      return _.sortBy(_.values(lookup), 'acc').reverse();
     }
 
   },
