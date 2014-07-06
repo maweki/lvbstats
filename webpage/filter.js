@@ -20,6 +20,7 @@ $.extend(lvbdata, {
 
     this.refresh_historical_chart(events_filtered_by_line);
     this.create_heatmap(events_filtered_by_line);
+    this.update_keyword_table(events_filtered_by_line);
   },
 
   read_filters_lines: function() {

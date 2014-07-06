@@ -22,6 +22,7 @@
     <script src="filter.js"></script>
     <script src="line_charts.js"></script>
     <script src="heatmap.js"></script>
+    <script src="keyword_table.js"></script>
     <script>
     $().ready( function() {
       var start = function(){
@@ -29,6 +30,7 @@
         lvbdata.init_filter_dialog();
         lvbdata.create_historical_chart(lvbdata.data.events);
         lvbdata.create_heatmap(lvbdata.data.events);
+        lvbdata.update_keyword_table(lvbdata.data.events);
       };
 
       lvbdata.init(start);
@@ -65,6 +67,7 @@
             <li><a href="#erhebungszeitraum">Erhebungszeitrum und Datenmenge</a></li>
             <li><a href="#histEventsPerWeek">Ereignisse pro Woche (historisch)</a></li>
             <li><a href="#eventsHeatmap">Ereignisse nach Wochentag und Uhrzeit</a></li>
+            <li><a href="#top50keywords">Top 50 Schlüsselwörter</a></li>
             <li><a href="#licence">Info und Lizenz</a></li>
           </ul>
         </div>
@@ -100,6 +103,20 @@
 
           <h2 id="eventsHeatmap">Ereignisse nach Wochentag und Uhrzeit</h2>
           <div id="heatmap"></div>
+
+          <h2 id="top50keywords">Top 50 Schlüsselwörter</h2>
+          <table id="top50keywordTable" class="table table-hover table-condensed table-striped">
+            <thead>
+              <tr>
+                <th>#</th>
+                <th>Schlüsselwort</th>
+                <th>Anzahl</th>
+              </tr>
+            </thead>
+            <tbody>
+
+            </tbody>
+          </table>
         </div>
 
       </div>

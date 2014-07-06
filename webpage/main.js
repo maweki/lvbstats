@@ -101,6 +101,26 @@ lvbdata = {
       return res;
     },
 
+    accumulate_words: function(events) {
+      var lookup = {};
+
+      var add_word = function(word) {
+        var lc = word.toLowerCase();
+        if (!lookup[lc]) {
+          lookup[lc] = {word: word, acc: 0};
+        }
+        lookup[lc].acc += 1;
+      };
+
+      _(events).forEach(function(event){
+        _(event.words).forEach(function(word){
+          add_word(word);
+        });
+      });
+
+      return _.sortBy(_.values(lookup), 'acc').reverse();
+    },
+
     accumulate_by_week: function(events) {
       var lookup = {};
       var first_date = new Date();
