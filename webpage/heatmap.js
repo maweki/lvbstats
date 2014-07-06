@@ -1,7 +1,5 @@
 $.extend(lvbdata,{
   create_heatmap: function(data) {
-    if (_.isEmpty(data)) { return ; }
-
     data = this.data.accumulate_by_weekday_hour(data);
 
     var margin = this.margins,

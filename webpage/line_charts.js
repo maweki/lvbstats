@@ -48,8 +48,6 @@ $.extend(lvbdata, {
   },
 
   refresh_historical_chart: function(data) {
-    if (_.isEmpty(data)) { return ; }
-
     data = this.data.accumulate_by_week(data);
 
     var duration_amnt = 1000;

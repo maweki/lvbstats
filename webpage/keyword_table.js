@@ -1,7 +1,6 @@
 $.extend(lvbdata, {
   update_keyword_table: function(events) {
     var words = this.data.accumulate_words(events).slice(0, 50);
-    if (_.isEmpty(words)) { return ; }
 
     var selector = d3.select('table#top50keywordTable').select('tbody').selectAll('tr').data(words);
 
