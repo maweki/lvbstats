@@ -223,6 +223,6 @@ lvbdata = {
   },
 
   init: function(callback) {
-    this.data.load('test.json', callback);
+    this.data.load('lvb.json', callback);
   }
 };
