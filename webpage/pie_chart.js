@@ -73,6 +73,14 @@ $.extend(lvbdata, {
 
       slice.on("mouseout", function(){ infotext.text(''); });
       slice.on("mousemove", function(d){ infotext.text('Linie ' + d.data.line + ' / ' + d.data.acc.toString() + ' Ereignisse'); });
+      slice.on("contextmenu", function(d){
+        d3.event.preventDefault();
+        lvbdata.filter_exclude_line(d.data.line);
+      });
+      slice.on("click", function(d){
+        d3.event.preventDefault();
+        lvbdata.filter_drilldown_line(d.data.line);
+      });
 
     	slice.exit()
     		.remove();

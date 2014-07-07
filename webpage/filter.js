@@ -43,6 +43,20 @@ $.extend(lvbdata, {
     return active_filters;
   },
 
+  filter_exclude_line: function(line) {
+    var checkbox = $("#filterModal fieldset.linesFilter input[type=checkbox][name=\""+line+"\"]");
+    checkbox.prop('checked', false);
+    this.update_charts();
+  },
+
+  filter_drilldown_line: function(line) {
+    var checkbox = $("#filterModal fieldset.linesFilter input[type=checkbox][name=\""+line+"\"]");
+    var checkboxes = $("#filterModal fieldset.linesFilter input[type=checkbox][name!=\""+line+"\"]");
+    checkbox.prop('checked', true);
+    checkboxes.prop('checked', false);
+    this.update_charts();
+  },
+
   read_filters_keywords: function() {
     var filter_values = $("#filterModal input.keywordfilter").val().trim().split(" ");
     filter_values = _.map(filter_values, function(val){ return val.toString().toLowerCase();});
