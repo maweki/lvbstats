@@ -8,32 +8,26 @@ Umwandeln der Tweets in Events
 * Events mit bestimmten Linien
 
 ## Sichten
-* Bar Graphs
-** Alle Events nach Wochentag
-** Alle Events nach Stunde im Tag
-** Alle Events nach Linie
-
-* Scatterplot
-** Alle Events nach Wochentag und Stunde
 
 * Streamgraph
-** Alle Events nach Stunden in der Woche stacked nach Linie
-
-* Donut
-** Alle Events nach Linien
+** Alle Events nach Stunden in der Woche stacked nach Linie (zu viel?)
 
 * Sunburst
-** Alle Events nach Linie -> Wörter
-
-* Wordcloud
-** Alle Wörter nach Events (nach Filter)
+** Alle Events nach Linie -> Wörter (doof?)
 
 Done:
 * 2D-Heatmap (http://bl.ocks.org/tjdecke/5558084)
 ** Alle Events nach Wochentag und Stunde in Blöcken
 
+* Donut
+** Alle Events nach Linien
+
 * Line Graphs
 ** Alle Events historisch (nach Tag)
+
+* Bar Graphs
+** Alle Events nach Wochentag
+** Alle Events nach Stunde im Tag
 
 # Urls
 
