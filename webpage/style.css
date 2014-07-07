@@ -1,0 +1,64 @@
+.bar {
+  fill: steelblue;
+}
+
+.bar:hover {
+  fill: rgb(65, 182, 196);
+}
+
+.axis {
+  font: 10px sans-serif;
+}
+
+.axis path,
+.axis line {
+  fill: none;
+  stroke: #000;
+  shape-rendering: crispEdges;
+}
+
+.line {
+  fill: none;
+  stroke: steelblue;
+  stroke-width: 1.5px;
+}
+
+rect.bordered {
+  stroke: #E6E6E6;
+  stroke-width:2px;
+}
+
+text.mono {
+  font-size: 9pt;
+  font-family: Consolas, courier;
+  fill: #aaa;
+}
+
+text.axis-workweek {
+  fill: #000;
+}
+
+text.axis-worktime {
+  fill: #000;
+}
+
+ul.nav-sidebar {
+  position: fixed;
+  top: 20px;
+}
+
+path.slice{
+  stroke: #E6E6E6;
+	stroke-width:1px;
+}
+
+polyline{
+	opacity: .3;
+	stroke: black;
+	stroke-width: 2px;
+	fill: none;
+}
+
+.table-condensed>thead>tr>th, .table-condensed>tbody>tr>th, .table-condensed>tfoot>tr>th, .table-condensed>thead>tr>td, .table-condensed>tbody>tr>td, .table-condensed>tfoot>tr>td {
+padding: 3px;
+}
