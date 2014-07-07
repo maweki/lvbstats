@@ -72,6 +72,8 @@
             <li><a href="#intro">Intro</a></li>
             <li><a href="#erhebungszeitraum">Erhebungszeitrum und Datenmenge</a></li>
             <li><a href="#histEventsPerWeek">Ereignisse pro Woche (historisch)</a></li>
+            <li><a href="#eventsbyday">Ereignisse nach Wochentag</a></li>
+            <li><a href="#eventsbyhour">Ereignisse nach Uhrzeit</a></li>
             <li><a href="#eventsHeatmap">Ereignisse nach Wochentag und Uhrzeit</a></li>
             <li><a href="#eventsbyline">Anteil d. Ereignisse nach Linie</a></li>
             <li><a href="#top50keywords">Top 50 Schlüsselwörter</a></li>
@@ -128,12 +130,17 @@
           <h2 id="histEventsPerWeek">Ereignisse pro Woche (historisch)</h2>
           <div id="eventshist"></div>
 
-          <h2 id="eventsbyday">Ereignisse nach Wochentag</h2>
-          <div id="eventsbydaybar"></div>
+          <div class="container-fluid"><div class="row">
+            <div class="col-md-6 halfchart">
+              <h2 id="eventsbyday">Ereignisse nach Wochentag</h2>
+              <div id="eventsbydaybar"></div>
+            </div>
 
-          <h2 id="eventsbyhour">Ereignisse nach Uhrzeit</h2>
-          <div id="eventsbyhourbar"></div>
-
+            <div class="col-md-6">
+              <h2 id="eventsbyhour">Ereignisse nach Uhrzeit</h2>
+              <div id="eventsbyhourbar"></div>
+            </div>
+          </div></div>
 
           <h2 id="eventsHeatmap">Ereignisse nach Wochentag und Uhrzeit</h2>
           <div id="heatmap"></div>

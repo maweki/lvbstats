@@ -18,7 +18,7 @@ $.extend(lvbdata, {
         .attr("class", "y axis")
         .append("text")
           .attr("transform", "rotate(-90)")
-          .attr("y", 6)
+          .attr("y", 4)
           .attr("dy", ".71em")
           .style("text-anchor", "end")
           .text("Ereignisse");
@@ -40,11 +40,9 @@ $.extend(lvbdata, {
       idname = '#eventsbyhourbar';
     }
 
-    console.log(data);
-
-    var width = this.get_chart_width(),
-    height = 300,
-    margin = this.margins;
+    var margin = this.margins,
+    width = this.get_half_chart_width(),
+    height = 300;
 
     var svg = d3.select(idname).select("svg")
         .attr("width", width + margin.left + margin.right)
@@ -74,8 +72,6 @@ $.extend(lvbdata, {
       .attr("transform", "translate(0," + height + ")")
       .call(xAxis);
 
-  svg.select("g.y.axis").transition().duration(1000)
-      .call(yAxis);
 
   var bars = svg.selectAll(".bar")
       .data(data);
@@ -86,5 +82,8 @@ $.extend(lvbdata, {
       .attr("width", x.rangeBand())
       .attr("y", function(d) { return y(d.acc); })
       .attr("height", function(d) { return height - y(d.acc); });
+      
+  svg.select("g.y.axis").transition().duration(1000)
+      .call(yAxis);
   }
 });

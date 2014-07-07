@@ -3,7 +3,7 @@
 }
 
 .bar:hover {
-  fill: brown;
+  fill: rgb(65, 182, 196);
 }
 
 .axis {

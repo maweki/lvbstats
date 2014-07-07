@@ -218,6 +218,10 @@ lvbdata = {
     return this.get_main_div_width() - this.margins.left - this.margins.right;
   },
 
+  get_half_chart_width: function() {
+    return $('.halfchart').width() - this.margins.left - this.margins.right;
+  },
+
   init: function(callback) {
     this.data.load('test.json', callback);
   }
