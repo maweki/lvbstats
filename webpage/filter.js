@@ -28,6 +28,8 @@ $.extend(lvbdata, {
 
     this.refresh_historical_chart(events_filtered);
     this.create_heatmap(events_filtered);
+    this.update_bar_chart(events_filtered, 'day');
+    this.update_bar_chart(events_filtered, 'hour');
     this.update_pie(events_filtered);
     this.update_keyword_table(events_filtered);
   },

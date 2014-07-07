@@ -101,6 +101,20 @@ lvbdata = {
       return res;
     },
 
+    accumulate_by_hour: function(events) {
+      res = [];
+      for (var hour = 0; hour <= 23; hour++) {
+        res.push({hour: hour, acc: 0});
+      }
+
+      var accu_wdh = this.accumulate_by_weekday_hour(events);
+      _(accu_wdh).forEach(function(field){
+        res[field.hour].acc += field.acc;
+      });
+
+      return res;
+    },
+
     accumulate_words: function(events) {
       var lookup = {};
 

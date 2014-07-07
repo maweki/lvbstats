@@ -21,6 +21,7 @@
     <script src="stats.js"></script>
     <script src="filter.js"></script>
     <script src="line_charts.js"></script>
+    <script src="bar_charts.js"></script>
     <script src="pie_chart.js"></script>
     <script src="heatmap.js"></script>
     <script src="keyword_table.js"></script>
@@ -31,6 +32,8 @@
         lvbdata.init_filter_dialog();
         lvbdata.init_filter_dialog_keywords();
         lvbdata.create_historical_chart(lvbdata.data.events);
+        lvbdata.create_bar_chart(lvbdata.data.events, 'day');
+        lvbdata.create_bar_chart(lvbdata.data.events, 'hour');
         lvbdata.create_heatmap(lvbdata.data.events);
         lvbdata.create_pie(lvbdata.data.events);
         lvbdata.update_keyword_table(lvbdata.data.events);
@@ -124,6 +127,13 @@
 
           <h2 id="histEventsPerWeek">Ereignisse pro Woche (historisch)</h2>
           <div id="eventshist"></div>
+
+          <h2 id="eventsbyday">Ereignisse nach Wochentag</h2>
+          <div id="eventsbydaybar"></div>
+
+          <h2 id="eventsbyhour">Ereignisse nach Uhrzeit</h2>
+          <div id="eventsbyhourbar"></div>
+
 
           <h2 id="eventsHeatmap">Ereignisse nach Wochentag und Uhrzeit</h2>
           <div id="heatmap"></div>
