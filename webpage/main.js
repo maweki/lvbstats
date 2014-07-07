@@ -151,6 +151,36 @@ lvbdata = {
       return _.sortBy(_.values(lookup), 'date');
     },
 
+    accumulate_by_day: function(events) {
+      var lookup = {};
+      var first_date = new Date();
+      _(events).forEach(function(event){
+        var newdate = new Date(event.date);
+        if (newdate < first_date) {
+          first_date = newdate;
+        }
+        var date = newdate.toDateString();
+        if (lookup[date]) {
+          lookup[date].acc += 1;
+        }
+        else {
+          lookup[date] = {date: new Date(date), acc: 1};
+        }
+      });
+
+      // fill up
+      while (first_date < new Date()) {
+        var newdate = new Date(first_date);
+        var date = newdate.toDateString();
+        if (!lookup[date]) {
+          lookup[date] = {date: new Date(date), acc: 0};
+        }
+        first_date.setDate(first_date.getDate() + 1);
+      }
+
+      return _.sortBy(_.values(lookup), 'date');
+    },
+
     accumulate_by_line: function(events) {
       lookup = {};
       _(events).forEach(function(event){
