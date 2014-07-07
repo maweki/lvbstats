@@ -64,18 +64,72 @@ $.extend(lvbdata, {
     });
   },
 
+  split_filter_words: function(filter_values) {
+    var vals = {positive: [], negative: []};
+    for (var idx = 0; idx < filter_values.length; idx++) {
+      var needle = filter_values[idx];
+      if (needle[0] == '-') {
+        if (needle.substring(1).length) {
+          vals.negative.push(needle.substring(1));
+        }
+      }
+      else {
+        vals.positive.push(needle);
+      }
+    }
+    return vals;
+  },
+
   filter_events_by_keywords: function(events, filter_values) {
     if (!filter_values.length) {
       return events;
     }
     else {
-      var filtered_events = [];
-      _.forEach(events, function(event){
-        var event_words = _.map(event.words, function(val){ return val.toString().toLowerCase();});
-        if (_.intersection(event_words, filter_values).length > 0) {
-          filtered_events.push(event);
-        }
-      });
+      filter_values = filter_values.sort();
+      var filters = this.split_filter_words(filter_values);
+
+      var keep = [];
+      if (filters.positive.length) {
+        _.forEach(events, function(event){
+            var event_words = _.map(event.words, function(val){ return val.toString().toLowerCase();});
+            for (var idx_a = 0; idx_a < filters.positive.length; idx_a++) {
+              for (var idx_b = 0; idx_b < event_words.length; idx_b++) {
+                var haystack = event_words[idx_b];
+                var needle = filters.positive[idx_a];
+                var find = haystack.search(needle);
+                if (find > -1) {
+                  keep.push(event);
+                  return;
+                }
+              }
+            }
+        });
+      }
+      else {
+        keep = events;
+      }
+
+      filtered_events = [];
+      if (filters.negative.length) {
+        _.forEach(keep, function(event){
+            var event_words = _.map(event.words, function(val){ return val.toString().toLowerCase();});
+            for (var idx_a = 0; idx_a < filters.negative.length; idx_a++) {
+              for (var idx_b = 0; idx_b < event_words.length; idx_b++) {
+                var haystack = event_words[idx_b];
+                var needle = filters.negative[idx_a];
+                var find = haystack.search(needle);
+                if (find > -1) {
+                  return;
+                }
+              }
+            }
+            filtered_events.push(event);
+        });
+      }
+      else {
+        filtered_events = keep;
+      }
+
       return filtered_events;
     }
   }
