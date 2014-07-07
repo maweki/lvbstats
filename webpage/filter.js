@@ -32,6 +32,7 @@ $.extend(lvbdata, {
     this.update_bar_chart(events_filtered, 'hour');
     this.update_pie(events_filtered);
     this.update_keyword_table(events_filtered);
+    this.update_sample_tweets(events_filtered);
   },
 
   read_filters_lines: function() {

@@ -24,6 +24,7 @@
     <script src="bar_charts.js"></script>
     <script src="pie_chart.js"></script>
     <script src="heatmap.js"></script>
+    <script src="sampletweets.js"></script>
     <script src="keyword_table.js"></script>
     <script>
     $().ready( function() {
@@ -37,6 +38,7 @@
         lvbdata.create_heatmap(lvbdata.data.events);
         lvbdata.create_pie(lvbdata.data.events);
         lvbdata.update_keyword_table(lvbdata.data.events);
+        lvbdata.update_sample_tweets(lvbdata.data.events);
       };
 
       lvbdata.init(start);
@@ -80,6 +82,7 @@
             <li><a href="#eventsHeatmap">Ereignisse nach Wochentag und Uhrzeit</a></li>
             <li><a href="#eventsbyline">Anteil d. Ereignisse nach Linie</a></li>
             <li><a href="#top50keywords">Top 50 Schlüsselwörter</a></li>
+            <li><a href="#sampletweets">Beispieltweets</a></li>
             <li><a href="#licence">Info und Lizenz</a></li>
           </ul>
         </div>
@@ -172,6 +175,12 @@
 
             </tbody>
           </table>
+
+          <h2 id="sampletweets">Beispieltweets <button class="minifilter"></button></h2>
+          <p>In der Filterung sind noch <span class="filteredcount"></span> Ereignisse übrig.
+            Hier ist eine Auswahl der dazugehörigen tweets. Klicke einen beliebigen Tweet an um ihn anzusehen.</p>
+          <div class="list-group" id="sampletweetsdiv">
+          </div>
 
           <h2 id="licence">Info und Lizenz</h2>
           <h3>Daten und Quellen</h3>
