@@ -72,6 +72,8 @@ $.extend(lvbdata, {
       .attr("transform", "translate(0," + height + ")")
       .call(xAxis);
 
+  svg.select("g.y.axis").transition().duration(1000)
+      .call(yAxis);
 
   var bars = svg.selectAll(".bar")
       .data(data);
@@ -82,8 +84,5 @@ $.extend(lvbdata, {
       .attr("width", x.rangeBand())
       .attr("y", function(d) { return y(d.acc); })
       .attr("height", function(d) { return height - y(d.acc); });
-      
-  svg.select("g.y.axis").transition().duration(1000)
-      .call(yAxis);
   }
 });
