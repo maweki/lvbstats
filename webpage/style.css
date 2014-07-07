@@ -66,3 +66,7 @@ padding: 3px;
 table tr td.filterplus, table tr td.filterminus {
   cursor: pointer;
 }
+
+h2 button.minifilter {
+  margin-left: 2em;
+}

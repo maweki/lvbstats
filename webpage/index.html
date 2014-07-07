@@ -59,6 +59,9 @@
         $(cbs.get(0)).change();
       });
 
+      $("button.minifilter").addClass("btn btn-primary btn-xs")
+        .attr("data-toggle","modal").attr("data-target","#filterModal").text('Filter');
+
       $(window).resize(lvbdata.update_charts.bind(lvbdata));
     });
     </script>
@@ -95,6 +98,9 @@
               Unterstützung der LVB via Zusenden ihres <a href="https://blog.twitter.com/de/2012/das-twitter-archiv">Twitter-Archivs</a>
               würde ich mich sehr freuen.</p>
 
+              <p>Nutze den <button class="minifilter"></button>-Knopf
+                oder die Interaktionen mit den Charts um die Suche zu verfeinern.</p>
+
               <h2 id="erhebungszeitraum">Erhebungszeitrum und Datenmenge</h2>
               <ul id="general_stats" class="list-group">
                 <li class="list-group-item">
@@ -130,7 +136,7 @@
             </div>
           </div>
 
-          <h2 id="histEventsPerWeek">Ereignisse pro Woche (historisch)</h2>
+          <h2 id="histEventsPerWeek">Ereignisse pro Woche (historisch) <button class="minifilter"></button></h2>
           <div id="eventshist"></div>
 
           <div class="container-fluid"><div class="row">
@@ -145,21 +151,21 @@
             </div>
           </div></div>
 
-          <h2 id="eventsHeatmap">Ereignisse nach Wochentag und Uhrzeit</h2>
+          <h2 id="eventsHeatmap">Ereignisse nach Wochentag und Uhrzeit <button class="minifilter"></button></h2>
           <div id="heatmap"></div>
 
-          <h2 id="eventsbyline">Anteil d. Ereignisse nach Linie</h2>
-          <p>Linie ausschließen mit Rechtsklick. Drilldown mit Linkklick</p>
+          <h2 id="eventsbyline">Anteil d. Ereignisse nach Linie <button class="minifilter"></button></h2>
+          <p>Linie ausschließen mit Rechtsklick. Drilldown mit Linksklick</p>
           <div id="piechartline"></div>
 
-          <h2 id="top50keywords">Top 50 Schlüsselwörter</h2>
+          <h2 id="top50keywords">Top 50 Schlüsselwörter <button class="minifilter"></button></h2>
           <table id="top50keywordTable" class="table table-hover table-condensed table-striped">
             <thead>
               <tr>
                 <th>#</th>
                 <th>Schlüsselwort</th>
                 <th>Anzahl</th>
-                <th colspan="2">Filter <small style="font-weight: normal;">Schlüsselwort anklicken zum Filter bearbeiten</small></th>
+                <th colspan="2">Filter <small style="font-weight: normal;">Schlüsselwort anklicken zum Filter bearbeiten (Drilldown oder Ausschluss)</small></th>
               </tr>
             </thead>
             <tbody>
