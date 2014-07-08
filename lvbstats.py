@@ -54,7 +54,7 @@ class LvbText(object):
             words = sorted((item.strip('.,:!?/ \n()') for item in info_text.split(' ') if not (item.startswith('http://') or len(item) <= 3)),
                            key=len, reverse=True)
             unique_words = unique_justseen(words)
-            return list(unique_words)[:5]
+            return list(unique_words)[:6]
 
 
 def date_from_created_at(cr):
