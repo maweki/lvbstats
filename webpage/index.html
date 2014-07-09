@@ -65,6 +65,16 @@
         .attr("data-toggle","modal").attr("data-target","#filterModal").text('Filter');
 
       $(window).resize(lvbdata.update_charts.bind(lvbdata));
+
+      var resize_twitter = function(){
+        var height = $('div.introtext').height();
+        $('#twitter-widget-0').attr('height', height - 20);
+      };
+
+      $(window).resize(resize_twitter);
+      for (var i = 1; i <= 5; i++) {
+        setTimeout(resize_twitter, i*1000);
+      }
     });
     </script>
   </head>
@@ -93,7 +103,7 @@
           </div>
 
           <div class="row">
-            <div class="col-md-8">
+            <div class="col-md-8 introtext">
               <p>Eine graphische Darstellung der Meldungen der LVB. (by <a href="http://twitter.de/maweki1">maweki</a>)<br />
               Alle Daten sind öffentlich zugänglich auf
               <a href="http://twitter.de/lvb_direkt">twitter.de/lvb_direkt</a>.
