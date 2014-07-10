@@ -67,14 +67,18 @@
       $(window).resize(lvbdata.update_charts.bind(lvbdata));
 
       var resize_twitter = function(){
-        var height = $('div.introtext').height();
-        $('#twitter-widget-0').attr('height', height - 20);
+        var twitter_widget = $('#twitter-widget-0');
+        if (twitter_widget.length) {
+          var height = $('div.introtext').height();
+          twitter_widget.attr('height', height - 20);
+        }
+        else {
+          setTimeout(resize_twitter, 1500);
+        }
       };
 
       $(window).resize(resize_twitter);
-      for (var i = 1; i <= 5; i++) {
-        setTimeout(resize_twitter, i*1000);
-      }
+      resize_twitter();
     });
     </script>
   </head>
