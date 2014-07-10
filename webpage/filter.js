@@ -15,6 +15,7 @@ $.extend(lvbdata, {
 
   init_filter_dialog_keywords: function() {
     $("#filterModal input.keywordfilter").on('input', this.update_charts.bind(this));
+    $('#filterModal span.input-group-addon.clear').click(function(){ $("#filterModal input.keywordfilter").val('').trigger('input');  });
   },
 
   update_charts: function() {

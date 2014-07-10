@@ -67,6 +67,10 @@ table tr td.filterplus, table tr td.filterminus {
   cursor: pointer;
 }
 
+span.input-group-addon.clear {
+  cursor: pointer;
+}
+
 h2 button.minifilter {
   margin-left: 2em;
 }
