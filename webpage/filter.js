@@ -18,7 +18,7 @@ $.extend(lvbdata, {
     $('#filterModal span.input-group-addon.clear').click(function(){ $("#filterModal input.keywordfilter").val('').trigger('input');  });
   },
 
-  update_charts: function() {
+  update_charts: _.throttle(function() {
     console.log('Update Charts');
 
     var filter_values = this.read_filters_keywords();
@@ -34,7 +34,7 @@ $.extend(lvbdata, {
     this.update_pie(events_filtered);
     this.update_keyword_table(events_filtered);
     this.update_sample_tweets(events_filtered);
-  },
+  }, 1000),
 
   read_filters_lines: function() {
     var lines_filter_checkboxes = $("#filterModal fieldset.linesFilter input[type=checkbox]:checked");
