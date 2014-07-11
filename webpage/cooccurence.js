@@ -1,4 +1,7 @@
 $.extend(lvbdata, {
+  cooccurence_matrix_order: 0,
+  cooccurence_matrix_order_modes: ['name', 'count', 'group'],
+
   get_cooccurence_matrix: function(data, limit) {
     if (!limit) {
       limit = 50;
@@ -96,18 +99,51 @@ $.extend(lvbdata, {
       });
 
       // Convert links to matrix; count character occurrences.
+      var values = [];
       data.links.forEach(function(link) {
         matrix[link.source][link.target].z = link.value;
         matrix[link.target][link.source].z = link.value;
         nodes[link.source].count += link.value;
         nodes[link.target].count += link.value;
+        values.push(link.value);
       });
+      values.sort();
+
+      var groupqueue = [];
+      var seen = [];
+      for (var i = 0; i < nodes.length; i++) {
+        if (!groupqueue.length){
+          var min_node = _.min(_.difference(nodes, seen), 'count');
+          groupqueue.push(min_node);
+          seen.push(min_node);
+          i--;
+        }
+        else {
+          var thisnode = groupqueue.shift();
+          thisnode.group = i;
+          var thisidx = _.indexOf(nodes, thisnode);
+          var childnodes = [];
+          for (var l = 0; l < matrix.length; l++) {
+            //console.log(matrix[thisidx][l], values[values.length/2]);
+            if (matrix[thisidx][l].z > values[values.length/2]) {
+              childnodes.push(nodes[l]);
+            }
+          }
+          childnodes = _.difference(childnodes, seen);
+          // add them to seen
+          seen = seen.concat(childnodes);
+          // order them by count
+          childnodes = _.sortBy(childnodes, 'count').reverse();
+          // add ordered to groupque
+          groupqueue = groupqueue.concat(childnodes);
+        }
+      }
 
       // Precompute the orders.
       var orders = {
         name: d3.range(n).sort(function(a, b) { return d3.ascending(nodes[a].name, nodes[b].name); }),
         count: d3.range(n).sort(function(a, b) { return nodes[b].count - nodes[a].count; }),
-        group: d3.range(n).sort(function(a, b) { return nodes[b].order - nodes[a].order; })
+        group: d3.range(n).sort(function(a, b) { return nodes[a].group - nodes[b].group; })
       };
 
       // The default sort order.
@@ -183,10 +219,13 @@ $.extend(lvbdata, {
 
 
 
-      var order = function(value) {
+      var order = function(value, duration) {
+        if (duration === undefined) {
+          duration = 1000;
+        }
         x.domain(orders[value]);
 
-        var t = svg.transition().duration(1000);
+        var t = svg.transition().duration(duration);
 
         t.selectAll(".row")
             .attr("transform", function(d, i) { return "translate(0," + x(i) + ")"; })
@@ -196,17 +235,11 @@ $.extend(lvbdata, {
             .attr("transform", function(d, i) { return "translate(" + x(i) + ")rotate(-90)"; });
       };
 
-      var thisorder = 'name';
-      order(thisorder);
-      svg.on("click", function() {
-        if (thisorder == 'name') {
-          thisorder = 'count';
-        }
-        else {
-          thisorder = 'name';
-        }
-        order(thisorder);
-      });
+      order(this.cooccurence_matrix_order_modes[this.cooccurence_matrix_order % this.cooccurence_matrix_order_modes.length], 0);
+      svg.on("click", _.bind(function() {
+        this.cooccurence_matrix_order++;
+        order(this.cooccurence_matrix_order_modes[this.cooccurence_matrix_order % this.cooccurence_matrix_order_modes.length]);
+      }, this));
 
 
   }
