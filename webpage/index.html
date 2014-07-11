@@ -26,6 +26,7 @@
     <script src="heatmap.js"></script>
     <script src="sampletweets.js"></script>
     <script src="keyword_table.js"></script>
+    <script src="cooccurence.js"></script>
     <script>
     $().ready( function() {
       var start = function(){
@@ -39,6 +40,7 @@
         lvbdata.create_pie(lvbdata.data.events);
         lvbdata.update_keyword_table(lvbdata.data.events);
         lvbdata.update_sample_tweets(lvbdata.data.events);
+        lvbdata.init_cooccurence_matrix(lvbdata.data.events);
       };
 
       lvbdata.init(start);
@@ -85,7 +87,7 @@
   </head>
   <body>
 
-    <div class="container-fluid">
+    <div class="container-fluid" style="overflow:hidden">
       <div class="row">
         <div class="col-md-2 sidebar hidden-xs hidden-sm">
           <ul class="nav nav-sidebar">
@@ -194,6 +196,9 @@
 
             </tbody>
           </table>
+
+          <h2>Top 50 Schlüsselwörter Kookkurenzmatrix</h2>
+          <div id="keywordcooccurence"></div>
 
           <h2 id="sampletweets">Beispieltweets <button class="minifilter"></button></h2>
           <p>In der Filterung sind noch <span class="filteredcount"></span> Ereignisse übrig.

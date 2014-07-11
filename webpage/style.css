@@ -74,3 +74,15 @@ span.input-group-addon.clear {
 h2 button.minifilter {
   margin-left: 2em;
 }
+
+#keywordcooccurence .background {
+  fill: #eee;
+}
+
+#keywordcooccurence line {
+  stroke: #fff;
+}
+
+#keywordcooccurence text.active {
+  fill: red;
+}
