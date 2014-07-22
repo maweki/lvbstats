@@ -34,6 +34,7 @@ $.extend(lvbdata, {
     this.update_pie(events_filtered);
     this.update_keyword_table(events_filtered);
     this.update_sample_tweets(events_filtered);
+    this.update_cooccurence_matrix(events_filtered);
   }, 1000),
 
   read_filters_lines: function() {
