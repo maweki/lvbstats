@@ -220,14 +220,18 @@ lvbdata = {
   progress_bar: {
     init: function() {
       console.log('init');
+      this.selector = $('#progressModal');
+      this.selector.modal({'show': true});
     },
 
     set: function(progress) {
       console.log('set', progress);
+      $(this.selector).find('.progress-bar').attr('style', 'width: '+progress.toString()+'%;');
     },
 
     remove: function() {
       console.log('remove');
+      this.selector.modal('toggle');
     }
   },
 
