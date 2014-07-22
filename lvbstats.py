@@ -117,7 +117,7 @@ def download_history(api, db, debug, tweet_count=200, download_delay=90):
 def do_persist(tweet, db, debug):
     tweet_id, data = entry_to_tuple(tweet)
     date, lines, longest_words = data
-    if lines:
+    if lines and longest_words:
         if debug:
             from datetime import datetime
             print(tweet_id, data, str(datetime.fromtimestamp(date)))
