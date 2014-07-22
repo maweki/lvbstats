@@ -3,8 +3,16 @@ lvbdata = {
     raw_data: {},
     events: {},
     load: function(url, callback) {
+      lvbdata.progress_bar.init();
       data = this;
-      d3.json(url, function(downloaded) {
+      d3.json(url)
+      .on("progress", function() {
+        var total = d3.event.total,
+          progress = d3.event.loaded,
+          prog_rel = Math.round(progress/total * 100);
+          lvbdata.progress_bar.set(prog_rel);
+      })
+      .on('load', function(downloaded) {
         // convert dates
         data.convert_dates(downloaded);
 
@@ -14,8 +22,9 @@ lvbdata = {
         // convert raw data to events
         data.events = data.to_events(downloaded);
 
+        lvbdata.progress_bar.remove();
         if (callback) { callback(); }
-      });
+      }).get();
     },
 
     convert_dates: function(raw_data) {
@@ -206,6 +215,21 @@ lvbdata = {
       return _.sortBy(_.values(lookup), 'acc').reverse();
     }
 
+  },
+
+  progress_bar: {
+    init: function() {
+      this.selector = $('#progressModal');
+      this.selector.modal({'show': true});
+    },
+
+    set: function(progress) {
+      $(this.selector).find('.progress-bar').attr('style', 'width: '+progress.toString()+'%;');
+    },
+
+    remove: function() {
+      this.selector.modal('toggle');
+    }
   },
 
   margins: {top: 20, right: 30, bottom: 70, left: 50},
