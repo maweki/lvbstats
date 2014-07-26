@@ -10,6 +10,8 @@ target = 'lvb_direkt'
 shelve_filename = os.path.join(base_path, 'data', 'lvb_direkt.db')
 last_id_filename = os.path.join(base_path, 'data', 'lastid')
 
+options = None
+
 
 def twitter_login():
     CONSUMER_KEY = 'i795JDFmQlZzlfJpIrQQxZ2RP'
@@ -81,6 +83,7 @@ def parse_args():
     parser.add_argument('--json', help='Return the database as a JSON', action="store_true")
     parser.add_argument('--jsonstyle', type=str, default='indent', help='Style of JSON (plain or indent)')
     parser.add_argument('--debug', help='Enable debug mode', action="store_true")
+    parser.add_argument('--nopersist', help='Do not persist data', action="store_true")
     parser.add_argument('--version', help='Print version information', action='store_true')
 
     return parser.parse_args()
@@ -121,7 +124,8 @@ def do_persist(tweet, db, debug):
         if debug:
             from datetime import datetime
             print(tweet_id, data, str(datetime.fromtimestamp(date)))
-        db[str(tweet_id)] = {'date': date, 'lines': lines, 'longest_words': longest_words}
+        if not options.nopersist:
+            db[str(tweet_id)] = {'date': date, 'lines': lines, 'longest_words': longest_words}
         return tweet_id
     return None
 
@@ -138,7 +142,7 @@ def return_json(db, jsonstyle):
     return json.dumps(result, indent=2)
 
 if __name__ == "__main__":
-    args = parse_args()
+    options = args = parse_args()
     import shelve
     db = shelve.open(shelve_filename)
 
@@ -196,7 +200,8 @@ if __name__ == "__main__":
     if last_id:
         if args.debug:
             print('Lastid:', last_id)
-        with open(last_id_filename, 'w') as last_id_file:
-            last_id_file.write(str(last_id))
+        if not options.nopersist:
+            with open(last_id_filename, 'w') as last_id_file:
+                last_id_file.write(str(last_id))
     db.sync()
     db.close()
