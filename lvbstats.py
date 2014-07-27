@@ -1,7 +1,7 @@
 #!/usr/bin/python3
 import os
 
-VERSION = '0.2.0'
+VERSION = '0.3.0'
 from twitter import *
 
 base_path = os.path.dirname(os.path.realpath(__file__))
@@ -49,10 +49,12 @@ class LvbText(object):
         if not ': ' in text:
             return None
         else:
+            from more_itertools import unique_justseen
             _, _, info_text = text.partition(':')
-            words = sorted((item.strip('.,:!?/ ') for item in info_text.split(' ') if not item.startswith('http://')),
+            words = sorted((item.strip('".,:!?/ \n()') for item in info_text.split(' ') if not (item.startswith('http://'))),
                            key=len, reverse=True)
-            return list(words)[:3]
+            unique_words = unique_justseen(words)
+            return list(word for word in unique_words if len(word) > 3)
 
 
 def date_from_created_at(cr):
@@ -73,8 +75,11 @@ def parse_args():
     parser = argparse.ArgumentParser(description='Reads @lvb_direkt\'s Twitter feed and saves statistics on it',
                                      epilog=('Version: ' + VERSION))
     parser.add_argument('--tweetcount', default=200, type=int, help='Default number of tweets to load')
+    parser.add_argument('--history', help='Download full history', action='store_true')
+    parser.add_argument('--history_delay', default=90, type=int, help='Delay between history requests in seconds')
     parser.add_argument('--fromid', type=int, help="Set a tweetid to start from.")
     parser.add_argument('--json', help='Return the database as a JSON', action="store_true")
+    parser.add_argument('--jsonstyle', type=str, default='indent', help='Style of JSON (plain or indent)')
     parser.add_argument('--debug', help='Enable debug mode', action="store_true")
     parser.add_argument('--version', help='Print version information', action='store_true')
 
@@ -85,11 +90,51 @@ def print_version():
     print(VERSION)
 
 
-def return_json(db):
+def download_history(api, db, debug, tweet_count=200, download_delay=90):
+    max_id = None
+    while True:
+        twitter_args = {'screen_name': target, 'count': tweet_count, 'exclude_replies': 'true'}
+        if max_id:
+            twitter_args['max_id'] = max_id
+        statuses = api.statuses.user_timeline(**twitter_args)
+        for s in statuses:
+            persisted_tweet = do_persist(s, db, debug)
+            if max_id is None:
+                max_id = persisted_tweet
+            if persisted_tweet and max_id and (int(max_id) > int(persisted_tweet)):
+                max_id = int(persisted_tweet)
+        db.sync()
+        if statuses:
+            del statuses # free memory
+            from time import sleep
+            sleep(download_delay)
+            continue
+        else:
+            break
+
+
+
+def do_persist(tweet, db, debug):
+    tweet_id, data = entry_to_tuple(tweet)
+    date, lines, longest_words = data
+    if lines and longest_words:
+        if debug:
+            from datetime import datetime
+            print(tweet_id, data, str(datetime.fromtimestamp(date)))
+        db[str(tweet_id)] = {'date': date, 'lines': lines, 'longest_words': longest_words}
+        return tweet_id
+    return None
+
+
+def return_json(db, jsonstyle):
     import json
     result = {}
     for key in db.keys():
         result[key] = db[key]
+    if jsonstyle == 'plain':
+        return json.dumps(result)
+    elif jsonstyle == 'indent':
+        return json.dumps(result, indent=2)
     return json.dumps(result, indent=2)
 
 if __name__ == "__main__":
@@ -103,13 +148,19 @@ if __name__ == "__main__":
         exit(0)
 
     if args.json:
-        print(return_json(db))
+        print(return_json(db, args.jsonstyle))
         db.close()
         from sys import exit
         exit(0)
 
     api = twitter_login()
     last_id = None
+
+    if args.history:
+        download_history(api, db, args.debug, args.tweetcount, args.history_delay)
+        db.close()
+        from sys import exit
+        exit(0)
 
     if os.path.exists(last_id_filename):
         with open(last_id_filename) as last_id_file:
@@ -138,16 +189,9 @@ if __name__ == "__main__":
     statuses = api.statuses.user_timeline(**twitter_args)
 
     for s in statuses:
-        tweet_id, data = entry_to_tuple(s)
-        date, lines, longest_words = data
-        if lines:
-            if args.debug:
-                from datetime import datetime
-                print(tweet_id, data, str(datetime.fromtimestamp(date)))
-            db[str(tweet_id)] = {'date': date, 'lines': lines, 'longest_words': longest_words}
-
-        if not last_id or int(last_id) < int(tweet_id):
-            last_id = int(tweet_id)
+        persisted_tweet = do_persist(s, db, args.debug)
+        if persisted_tweet and (not last_id or int(last_id) < int(persisted_tweet)):
+            last_id = int(persisted_tweet)
 
     if last_id:
         if args.debug:
