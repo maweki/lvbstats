@@ -148,13 +148,11 @@ if __name__ == "__main__":
 
     if args.version:
         print_version()
-        from sys import exit
         exit(0)
 
     if args.json:
         print(return_json(db, args.jsonstyle))
         db.close()
-        from sys import exit
         exit(0)
 
     api = twitter_login()
@@ -163,7 +161,6 @@ if __name__ == "__main__":
     if args.history:
         download_history(api, db, args.debug, args.tweetcount, args.history_delay)
         db.close()
-        from sys import exit
         exit(0)
 
     if os.path.exists(last_id_filename):
