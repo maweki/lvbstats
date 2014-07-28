@@ -141,7 +141,7 @@ def return_json(db, jsonstyle):
 
 if __name__ == "__main__":
     options = args = parse_args()
-    import shelve
+    from lvbstats import lvbshelve as shelve
     db = shelve.open(shelve_filename)
 
     if args.version:
@@ -161,7 +161,7 @@ if __name__ == "__main__":
         db.close()
         exit(0)
 
-    last_id = max(int(tweetid) for tweetid in db.keys())
+    last_id = db.get_last_tweetid()
 
     tweet_count = args.tweetcount
     from_id = None
