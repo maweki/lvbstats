@@ -5,6 +5,10 @@ VERSION = '0.3.0'
 from twitter import *
 import lvbstats.paths
 
+import logging
+logging.basicConfig(level=logging.INFO)
+log = logging.getLogger('lvbstats')
+
 target = 'lvb_direkt'
 shelve_filename = lvbstats.paths.get_shelve_filename()
 
@@ -80,7 +84,7 @@ def parse_args():
     parser.add_argument('--fromid', type=int, help="Set a tweetid to start from.")
     parser.add_argument('--json', help='Return the database as a JSON', action="store_true")
     parser.add_argument('--jsonstyle', type=str, default='indent', help='Style of JSON (plain or indent)')
-    parser.add_argument('--debug', help='Enable debug mode', action="store_true")
+    parser.add_argument('--verbose', help='Enable verbose mode', action="store_true")
     parser.add_argument('--nopersist', help='Do not persist data', action="store_true")
     parser.add_argument('--version', help='Print version information', action='store_true')
 
@@ -91,7 +95,7 @@ def print_version():
     print(VERSION)
 
 
-def download_history(api, db, debug, tweet_count=200, download_delay=90):
+def download_history(api, db, tweet_count=200, download_delay=90):
     max_id = None
     while True:
         twitter_args = {'screen_name': target, 'count': tweet_count, 'exclude_replies': 'true'}
@@ -99,7 +103,7 @@ def download_history(api, db, debug, tweet_count=200, download_delay=90):
             twitter_args['max_id'] = max_id
         statuses = api.statuses.user_timeline(**twitter_args)
         for s in statuses:
-            persisted_tweet = do_persist(s, db, debug)
+            persisted_tweet = do_persist(s, db)
             if max_id is None:
                 max_id = persisted_tweet
             if persisted_tweet and max_id and (int(max_id) > int(persisted_tweet)):
@@ -115,13 +119,12 @@ def download_history(api, db, debug, tweet_count=200, download_delay=90):
 
 
 
-def do_persist(tweet, db, debug):
+def do_persist(tweet, db):
     tweet_id, data = entry_to_tuple(tweet)
     date, lines, longest_words = data
     if lines and longest_words:
-        if debug:
-            from datetime import datetime
-            print(tweet_id, data, str(datetime.fromtimestamp(date)))
+        from datetime import datetime
+        log.info('\t%d,\t%s - %s', tweet_id, data, str(datetime.fromtimestamp(date)))
         if not options.nopersist:
             db[str(tweet_id)] = {'date': date, 'lines': lines, 'longest_words': longest_words}
         return tweet_id
@@ -140,6 +143,9 @@ def return_json(db, jsonstyle):
     return json.dumps(result, indent=2)
 
 def main(options):
+    if not options.verbose:
+        log.setLevel(logging.WARNING)
+
     args = options
     from lvbstats import lvbshelve as shelve
     db = shelve.open(shelve_filename)
@@ -157,7 +163,7 @@ def main(options):
     last_id = None
 
     if args.history:
-        download_history(api, db, args.debug, args.tweetcount, args.history_delay)
+        download_history(api, db, args.tweetcount, args.history_delay)
         db.close()
         exit(0)
 
@@ -171,8 +177,7 @@ def main(options):
         from_id = args.fromid
 
 
-    if args.debug:
-        print('Requesting', tweet_count, 'from', last_id)
+    log.info('Requesting %d from %d', tweet_count, last_id)
     twitter_args = {'screen_name': target, 'count': tweet_count, 'exclude_replies': 'true'}
 
     if from_id:
@@ -183,12 +188,12 @@ def main(options):
     statuses = api.statuses.user_timeline(**twitter_args)
 
     for s in statuses:
-        persisted_tweet = do_persist(s, db, args.debug)
+        persisted_tweet = do_persist(s, db)
         if persisted_tweet and (not last_id or int(last_id) < int(persisted_tweet)):
             last_id = int(persisted_tweet)
 
-    if last_id and args.debug:
-        print('Lastid:', last_id)
+    if last_id:
+        log.info('Lastid: %d', last_id)
 
     db.sync()
     db.close()
