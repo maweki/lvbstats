@@ -139,7 +139,8 @@ def return_json(db, jsonstyle):
         return json.dumps(result, indent=2)
     return json.dumps(result, indent=2)
 
-if __name__ == "__main__":
+def main():
+    global options
     options = args = parse_args()
     from lvbstats import lvbshelve as shelve
     db = shelve.open(shelve_filename)
@@ -192,3 +193,6 @@ if __name__ == "__main__":
 
     db.sync()
     db.close()
+
+if __name__ == "__main__":
+    main()
