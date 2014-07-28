@@ -131,7 +131,8 @@ def do_persist(tweet, db):
     return None
 
 
-def return_json(db, jsonstyle):
+def return_json(db):
+    jsonstyle = options.jsonstyle
     import json
     result = {}
     for key in db.keys():
@@ -155,7 +156,7 @@ def main(options):
         exit(0)
 
     if args.json:
-        print(return_json(db, args.jsonstyle))
+        print(return_json(db))
         db.close()
         exit(0)
 
