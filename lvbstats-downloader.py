@@ -3,12 +3,11 @@ import os
 
 VERSION = '0.3.0'
 from twitter import *
-
-base_path = os.path.dirname(os.path.realpath(__file__))
+import lvbstats.paths
 
 target = 'lvb_direkt'
-shelve_filename = os.path.join(base_path, 'data', 'lvb_direkt.db')
-last_id_filename = os.path.join(base_path, 'data', 'lastid')
+shelve_filename = lvbstats.paths.get_shelve_filename()
+last_id_filename = lvbstats.paths.get_last_id_filename()
 
 options = None
 
