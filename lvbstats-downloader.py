@@ -78,15 +78,21 @@ def parse_args():
     import argparse
     parser = argparse.ArgumentParser(description='Reads @lvb_direkt\'s Twitter feed and saves statistics on it',
                                      epilog=('Version: ' + VERSION))
+    mutex_group = parser.add_mutually_exclusive_group()
+
     parser.add_argument('--tweetcount', default=200, type=int, help='Default number of tweets to load')
-    parser.add_argument('--history', help='Download full history', action='store_true')
-    parser.add_argument('--history_delay', default=90, type=int, help='Delay between history requests in seconds')
     parser.add_argument('--fromid', type=int, help="Set a tweetid to start from.")
-    parser.add_argument('--json', help='Return the database as a JSON', action="store_true")
+
+    mutex_group.add_argument('--history', help='Download full history', action='store_true')
+    parser.add_argument('--history_delay', default=90, type=int, help='Delay between history requests in seconds')
+
+    mutex_group.add_argument('--json', help='Return the database as a JSON', action="store_true")
     parser.add_argument('--jsonstyle', type=str, default='indent', help='Style of JSON (plain or indent)')
+
     parser.add_argument('--verbose', help='Enable verbose mode', action="store_true")
     parser.add_argument('--nopersist', help='Do not persist data', action="store_true")
-    parser.add_argument('--version', help='Print version information', action='store_true')
+
+    mutex_group.add_argument('--version', help='Print version information', action='store_true')
 
     return parser.parse_args()
 
