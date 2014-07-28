@@ -5,8 +5,3 @@ def get_shelve_filename(base_path=None):
     if not base_path:
         base_path = BASE_PATH
     return os.path.join(base_path, 'data', 'lvb_direkt.db')
-
-def get_last_id_filename(base_path=None):
-    if not base_path:
-        base_path = BASE_PATH
-    return os.path.join(base_path, 'data', 'lastid')

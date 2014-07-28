@@ -7,7 +7,6 @@ import lvbstats.paths
 
 target = 'lvb_direkt'
 shelve_filename = lvbstats.paths.get_shelve_filename()
-last_id_filename = lvbstats.paths.get_last_id_filename()
 
 options = None
 
@@ -162,12 +161,7 @@ if __name__ == "__main__":
         db.close()
         exit(0)
 
-    if os.path.exists(last_id_filename):
-        with open(last_id_filename) as last_id_file:
-            try:
-                last_id = int(last_id_file.read())
-            except:
-                pass
+    last_id = max(int(tweetid) for tweetid in db.keys())
 
     tweet_count = args.tweetcount
     from_id = None
@@ -193,11 +187,8 @@ if __name__ == "__main__":
         if persisted_tweet and (not last_id or int(last_id) < int(persisted_tweet)):
             last_id = int(persisted_tweet)
 
-    if last_id:
-        if args.debug:
-            print('Lastid:', last_id)
-        if not options.nopersist:
-            with open(last_id_filename, 'w') as last_id_file:
-                last_id_file.write(str(last_id))
+    if last_id and args.debug:
+        print('Lastid:', last_id)
+
     db.sync()
     db.close()
