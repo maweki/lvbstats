@@ -139,9 +139,8 @@ def return_json(db, jsonstyle):
         return json.dumps(result, indent=2)
     return json.dumps(result, indent=2)
 
-def main():
-    global options
-    options = args = parse_args()
+def main(options):
+    args = options
     from lvbstats import lvbshelve as shelve
     db = shelve.open(shelve_filename)
 
@@ -195,4 +194,5 @@ def main():
     db.close()
 
 if __name__ == "__main__":
-    main()
+    options = parse_args()
+    main(options)
