@@ -175,6 +175,7 @@ $.extend(lvbdata, {
             .style("fill", "rgb(34, 94, 168)" )
             .on("mouseover", mouseover)
             .on("mouseout", mouseout);
+          cell.exit().remove();
       };
 
       var rows = svg.selectAll(".row")
