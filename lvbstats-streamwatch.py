@@ -19,6 +19,8 @@ def parse_args():
                                      epilog=('Version: ' + VERSION))
     mutex_group = parser.add_mutually_exclusive_group()
 
+    mutex_group.add_argument('--kill', help='Kill existing watcher', action="store_true")
+
     parser.add_argument('--verbose', help='Enable verbose mode', action="store_true")
     parser.add_argument('--nopersist', help='Do not persist data', action="store_true")
 
@@ -29,6 +31,23 @@ def parse_args():
 
 def print_version():
     print(VERSION)
+
+def kill_existing():
+    import os, os.path
+    pidfile_path = lvbstats.paths.get_pid_filename()
+
+    otherpid = -0
+    try:
+        with open(pidfile_path) as pidfile:
+            otherpid = int(pidfile.read())
+    except:
+        pass
+
+    if not os.path.exists('/proc/'+str(otherpid)):
+        log.info('Process not active active')
+    else:
+        os.kill(int(otherpid), 15)
+    exit(0)
 
 def deploy_mutex():
     import os, os.path
@@ -83,5 +102,7 @@ def main(options):
 if __name__ == "__main__":
     import lvbstats.lvbshelve
     lvbstats.lvbshelve.options = options = parse_args()
+    if options.kill:
+        kill_existing()
     deploy_mutex()
     main(options)
