@@ -62,10 +62,14 @@
         $(cbs.get(0)).change();
       });
 
+      var update = lvbdata.update_charts.bind(lvbdata);
+
+      $("button.refresh-samples").click(update);
+
       $("button.minifilter").addClass("btn btn-primary btn-xs")
         .attr("data-toggle","modal").attr("data-target","#filterModal").text('Filter');
 
-      $(window).resize(lvbdata.update_charts.bind(lvbdata));
+      $(window).resize(update);
 
       var resize_twitter = function(){
         var twitter_widget = $('#twitter-widget-0');
@@ -213,7 +217,8 @@
           <h2 id="sampletweets">Beispieltweets <button class="minifilter"></button></h2>
           <p>In der Filterung sind noch <span class="filteredcount"></span> Ereignisse übrig.
             Hier ist eine Auswahl der dazugehörigen tweets. Klicke einen beliebigen
-            Tweet an um ihn anzusehen (möglicherweise sind nicht mehr alle Tweets verfügbar).</p>
+            Tweet an um ihn anzusehen (möglicherweise sind nicht mehr alle Tweets verfügbar).
+            <button class="btn btn-primary btn-xs refresh-samples">Auswahl erneuern</button></p>
           <div class="list-group" id="sampletweetsdiv">
           </div>
 
