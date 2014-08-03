@@ -1,6 +1,7 @@
 $.extend(lvbdata, {
   cooccurence_matrix_order: 0,
   cooccurence_matrix_order_modes: ['name', 'count', 'group'],
+  cooccurence_matrix_order_mode_names: {name: 'Name', count: 'Anzahl', group: 'Gruppe'},
 
   get_cooccurence_matrix: function(data, limit) {
     if (!limit) {
@@ -220,7 +221,7 @@ $.extend(lvbdata, {
 
 
 
-      var order = function(value, duration) {
+      var order = function(value, duration, name) {
         if (duration === undefined) {
           duration = 1000;
         }
@@ -234,12 +235,19 @@ $.extend(lvbdata, {
             .attr("x", function(d) { return x(d.x); });
         t.selectAll(".column")
             .attr("transform", function(d, i) { return "translate(" + x(i) + ")rotate(-90)"; });
+        svg.select("text.ordermode").remove();
+        svg.append("text").attr("x", width/2).attr("y", height/2)
+            .attr("text-anchor", "middle").attr("class", "ordermode")
+            .text(name).transition().delay(3000)
+            .style("opacity", 1).duration(1500).style("opacity", 0)
+            .remove();
       };
 
-      order(this.cooccurence_matrix_order_modes[this.cooccurence_matrix_order % this.cooccurence_matrix_order_modes.length], 0);
+      order(this.cooccurence_matrix_order_modes[this.cooccurence_matrix_order % this.cooccurence_matrix_order_modes.length], 0, "");
       svg.on("click", _.bind(function() {
         this.cooccurence_matrix_order++;
-        order(this.cooccurence_matrix_order_modes[this.cooccurence_matrix_order % this.cooccurence_matrix_order_modes.length]);
+        var m = this.cooccurence_matrix_order_modes[this.cooccurence_matrix_order % this.cooccurence_matrix_order_modes.length];
+        order(m, undefined, this.cooccurence_matrix_order_mode_names[m]);
       }, this));
 
 
