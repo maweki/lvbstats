@@ -13,49 +13,6 @@ shelve_filename = lvbstats.paths.get_shelve_filename()
 
 options = None
 
-class LvbText(object):
-    @staticmethod
-    def lines_from_text(text):
-        if not ': ' in text:
-            return []
-        else:
-
-            def to_int_optional(num):
-                if str(num).isdigit():
-                    return int(num)
-                else:
-                    return str(num)
-
-            lines_str, _, _ = text.partition(':')
-            lines = list(to_int_optional(l) for l in lines_str.split(', ') if len(l) <= 3)
-            return lines
-
-    @staticmethod
-    def longest_words(text):
-        if not ': ' in text:
-            return None
-        else:
-            from more_itertools import unique_justseen
-            _, _, info_text = text.partition(':')
-            words = sorted((item.strip('".,:!?/ \n()') for item in info_text.split(' ') if not (item.startswith('http://'))),
-                           key=len, reverse=True)
-            unique_words = unique_justseen(words)
-            return list(word for word in unique_words if len(word) > 3)
-
-
-def date_from_created_at(cr):
-    from datetime import datetime
-
-    created_at = datetime.strptime(cr, '%a %b %d %X %z %Y').timestamp()
-    return created_at
-
-
-def entry_to_tuple(entry):
-    entry_id = entry['id']
-    return entry_id, (date_from_created_at(entry['created_at']), LvbText.lines_from_text(entry['text']),
-                      LvbText.longest_words(entry['text']))
-
-
 def parse_args():
     import argparse
     parser = argparse.ArgumentParser(description='Reads @lvb_direkt\'s Twitter feed and saves statistics on it',
@@ -91,7 +48,7 @@ def download_history(api, db, tweet_count=200, download_delay=90):
             twitter_args['max_id'] = max_id
         statuses = api.statuses.user_timeline(**twitter_args)
         for s in statuses:
-            persisted_tweet = do_persist(s, db)
+            persisted_tweet = db.do_persist(s)
             if max_id is None:
                 max_id = persisted_tweet
             if persisted_tweet and max_id and (int(max_id) > int(persisted_tweet)):
@@ -104,20 +61,6 @@ def download_history(api, db, tweet_count=200, download_delay=90):
             continue
         else:
             break
-
-
-
-def do_persist(tweet, db):
-    tweet_id, data = entry_to_tuple(tweet)
-    date, lines, longest_words = data
-    if lines and longest_words:
-        from datetime import datetime
-        log.info('\t%d,\t%s - %s', tweet_id, data, str(datetime.fromtimestamp(date)))
-        if not options.nopersist:
-            db[str(tweet_id)] = {'date': date, 'lines': lines, 'longest_words': longest_words}
-        return tweet_id
-    return None
-
 
 def return_json(db):
     jsonstyle = options.jsonstyle
@@ -177,7 +120,7 @@ def main(options):
     statuses = api.statuses.user_timeline(**twitter_args)
 
     for s in statuses:
-        persisted_tweet = do_persist(s, db)
+        persisted_tweet = db.do_persist(s)
         if persisted_tweet and (not last_id or int(last_id) < int(persisted_tweet)):
             last_id = int(persisted_tweet)
 
@@ -188,5 +131,6 @@ def main(options):
     db.close()
 
 if __name__ == "__main__":
-    options = parse_args()
+    import lvbstats.lvbshelve
+    lvbstats.lvbshelve.options = options = parse_args()
     main(options)
