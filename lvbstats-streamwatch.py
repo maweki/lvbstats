@@ -31,7 +31,24 @@ def print_version():
     print(VERSION)
 
 def deploy_mutex():
-    pass
+    import os, os.path
+    pid = os.getpid()
+    pidfile_path = lvbstats.paths.get_pid_filename()
+
+    otherpid = -0
+    try:
+        with open(pidfile_path) as pidfile:
+            otherpid = int(pidfile.read())
+    except:
+        pass
+
+    if os.path.exists('/proc/'+str(otherpid)):
+        log.info('Process allready active')
+        exit(0)
+    else:
+        with open(pidfile_path, 'w') as pidfile:
+            pidfile.write(str(pid))
+
 
 def main(options):
     if not options.verbose:
@@ -66,4 +83,5 @@ def main(options):
 if __name__ == "__main__":
     import lvbstats.lvbshelve
     lvbstats.lvbshelve.options = options = parse_args()
+    deploy_mutex()
     main(options)
