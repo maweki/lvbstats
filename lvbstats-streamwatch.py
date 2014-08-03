@@ -65,7 +65,7 @@ def main(options):
 
     stream_api = twitter_login_stream()
     stream = stream_api.statuses.filter(follow=target)
-    from twitter.stream import TwitterStream, Timeout, HeartbeatTimeout, Hangup
+    from twitter.stream import Timeout, HeartbeatTimeout, Hangup
     for tweet in stream:
         if tweet is None:
             pass
