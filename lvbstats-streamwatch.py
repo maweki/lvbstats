@@ -32,8 +32,7 @@ def parse_args():
 def print_version():
     print(VERSION)
 
-def kill_existing():
-    import os, os.path
+def get_existing_pid():
     pidfile_path = lvbstats.paths.get_pid_filename()
 
     otherpid = -0
@@ -42,6 +41,11 @@ def kill_existing():
             otherpid = int(pidfile.read())
     except:
         pass
+    return otherpid
+
+def kill_existing():
+    import os, os.path
+    otherpid = get_existing_pid()
 
     if not os.path.exists('/proc/'+str(otherpid)):
         log.info('Process not active active')
@@ -54,12 +58,7 @@ def deploy_mutex():
     pid = os.getpid()
     pidfile_path = lvbstats.paths.get_pid_filename()
 
-    otherpid = -0
-    try:
-        with open(pidfile_path) as pidfile:
-            otherpid = int(pidfile.read())
-    except:
-        pass
+    otherpid = get_existing_pid()
 
     if os.path.exists('/proc/'+str(otherpid)):
         log.info('Process allready active')
