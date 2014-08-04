@@ -25,9 +25,6 @@ def parse_args():
     mutex_group.add_argument('--history', help='Download full history', action='store_true')
     parser.add_argument('--history_delay', default=90, type=int, help='Delay between history requests in seconds')
 
-    mutex_group.add_argument('--json', help='Return the database as a JSON', action="store_true")
-    parser.add_argument('--jsonstyle', type=str, default='indent', help='Style of JSON (plain or indent)')
-
     parser.add_argument('--verbose', help='Enable verbose mode', action="store_true")
     parser.add_argument('--nopersist', help='Do not persist data', action="store_true")
 
@@ -62,18 +59,6 @@ def download_history(api, db, tweet_count=200, download_delay=90):
         else:
             break
 
-def return_json(db):
-    jsonstyle = options.jsonstyle
-    import json
-    result = {}
-    for key in db.keys():
-        result[key] = db[key]
-    if jsonstyle == 'plain':
-        return json.dumps(result)
-    elif jsonstyle == 'indent':
-        return json.dumps(result, indent=2)
-    return json.dumps(result, indent=2)
-
 def main(options):
     if not options.verbose:
         log.setLevel(logging.WARNING)
@@ -84,11 +69,6 @@ def main(options):
 
     if args.version:
         print_version()
-        exit(0)
-
-    if args.json:
-        print(return_json(db))
-        db.close()
         exit(0)
 
     api = twitter_login()
