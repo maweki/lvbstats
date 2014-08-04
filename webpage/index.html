@@ -62,10 +62,14 @@
         $(cbs.get(0)).change();
       });
 
+      var update = lvbdata.update_charts.bind(lvbdata);
+
+      $("button.refresh-samples").click(update);
+
       $("button.minifilter").addClass("btn btn-primary btn-xs")
         .attr("data-toggle","modal").attr("data-target","#filterModal").text('Filter');
 
-      $(window).resize(lvbdata.update_charts.bind(lvbdata));
+      $(window).resize(update);
 
       var resize_twitter = function(){
         var twitter_widget = $('#twitter-widget-0');
@@ -100,12 +104,23 @@
             <li><a href="#top50keywordcooc">Top 50 Schlüsselwörter Kookkurenzmatrix</a></li>
             <li><a href="#sampletweets">Beispieltweets</a></li>
             <li><a href="#licence">Info und Lizenz</a></li>
+            <li>
+              <script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+              <!-- lvbstats side -->
+              <ins class="adsbygoogle"
+                   style="display:inline-block;width:300px;height:250px"
+                   data-ad-client="ca-pub-4692352488562454"
+                   data-ad-slot="4936599799"></ins>
+              <script>
+              (adsbygoogle = window.adsbygoogle || []).push({});
+              </script>
+            </li>
           </ul>
         </div>
 
         <div class="col-md-8 col-md-offset-1 main">
           <div class="page-header">
-            <h1 id="intro">Lvb Stats <small>durch Daten über Leipzig lernen</small></h1>
+            <h1 id="intro">LVB Stats <small>durch Daten über Leipzig lernen</small></h1>
           </div>
 
           <div class="row">
@@ -201,7 +216,9 @@
 
           <h2 id="sampletweets">Beispieltweets <button class="minifilter"></button></h2>
           <p>In der Filterung sind noch <span class="filteredcount"></span> Ereignisse übrig.
-            Hier ist eine Auswahl der dazugehörigen tweets. Klicke einen beliebigen Tweet an um ihn anzusehen.</p>
+            Hier ist eine Auswahl der dazugehörigen tweets. Klicke einen beliebigen
+            Tweet an um ihn anzusehen (möglicherweise sind nicht mehr alle Tweets verfügbar).
+            <button class="btn btn-primary btn-xs refresh-samples">Auswahl erneuern</button></p>
           <div class="list-group" id="sampletweetsdiv">
           </div>
 
@@ -278,5 +295,11 @@
         </div><!-- /.modal-content -->
       </div><!-- /.modal-dialog -->
     </div><!-- /.modal -->
+
+    <script>
+      (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)})(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+      ga('create', 'UA-37069628-2', 'auto');
+      ga('send', 'pageview');
+    </script>
   </body>
 </html>

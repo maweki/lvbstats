@@ -42,6 +42,12 @@ text.axis-worktime {
   fill: #000;
 }
 
+text.ordermode {
+  font-size: x-large;
+  font-weight: bold;
+  fill: #000;
+}
+
 ul.nav-sidebar {
   position: fixed;
   top: 20px;
