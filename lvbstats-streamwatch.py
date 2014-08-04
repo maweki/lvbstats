@@ -74,8 +74,6 @@ def main(options):
 
     args = options
     from lvbstats import lvbshelve as shelve
-    db = shelve.open(shelve_filename)
-
     if args.version:
         print_version()
         exit(0)
@@ -90,13 +88,13 @@ def main(options):
         elif tweet is Timeout or tweet is HeartbeatTimeout or tweet is Hangup:
             pass
         elif tweet.get('text'):
+            db = shelve.open(shelve_filename)
             db.do_persist(tweet)
+            db.sync()
+            db.close()
         else:
             # some data
             pass
-        db.sync()
-
-    db.close()
 
 if __name__ == "__main__":
     import lvbstats.lvbshelve
