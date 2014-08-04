@@ -9,7 +9,7 @@ logging.basicConfig(level=logging.INFO)
 log = logging.getLogger('lvbstats')
 
 target = 221056350
-shelve_filename = lvbstats.paths.get_shelve_filename()
+shelve_filename = lvbstats.paths.get_shelve_filename(infix='live')
 
 options = None
 
