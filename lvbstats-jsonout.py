@@ -1,6 +1,6 @@
 #!/usr/bin/python3
 
-VERSION = '0.4.0'
+VERSION = '0.4.2'
 import lvbstats.paths
 
 shelve_filename = lvbstats.paths.get_shelve_filename()
