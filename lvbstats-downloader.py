@@ -1,6 +1,6 @@
 #!/usr/bin/python3
 
-VERSION = '0.4.0'
+VERSION = '0.4.2'
 import lvbstats.paths
 from lvbstats.twit import twitter_login
 
