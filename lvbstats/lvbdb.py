@@ -43,7 +43,7 @@ class LvbDB(TinyDB):
     def __setitem__(self, key, value):
         value['id'] = key
         if self.contains(where('id') == key):
-            self.update(value, where(where('id') == key))
+            self.update(value, where('id') == key)
         else:
             self.insert(value)
 
