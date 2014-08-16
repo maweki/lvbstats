@@ -13,7 +13,7 @@ def parse_args():
     parser = argparse.ArgumentParser(description='Reads @lvb_direkt\'s Twitter feed and saves statistics on it',
                                      epilog=('Version: ' + VERSION))
 
-    parser.add_argument('--deleted', help='Show only deleted tweets', action="store_true")
+    parser.add_argument('--markdeleted', help='Mark deleted tweets', action="store_true")
     parser.add_argument('--nostatic', help='Don\'t print data from static database', action="store_true")
     parser.add_argument('--nolive', help='Don\'t print data from live/stream database', action='store_true')
     parser.add_argument('--jsonstyle', type=str, default='indent', help='Style of JSON (plain or indent)')
@@ -21,12 +21,14 @@ def parse_args():
     return parser.parse_args()
 
 
-def return_json(db):
+def return_json(db, deleted=frozenset()):
     jsonstyle = options.jsonstyle
     import json
     result = {}
     for key in db.keys():
         result[key] = db[key]
+        if key in deleted:
+            result[key]['deleted'] = True
     if jsonstyle == 'plain':
         return json.dumps(result)
     elif jsonstyle == 'indent':
@@ -38,25 +40,22 @@ def main():
     db = shelve.open(shelve_filename)
     live_db = shelve.open(shelve_live_filename)
 
-    if options.deleted:
-        deleted_db = {}
-        deleted_keys = set(live_db.keys()) - set(db.keys())
-        for key in deleted_keys:
-            if int(key) < int(db.get_last_tweetid()):
-                deleted_db[key] = live_db[key]
-        print(return_json(deleted_db))
-    else:
-        if not options.nostatic and not options.nolive:
-            uniondict = {}
-            uniondict.update(db)
-            uniondict.update(live_db)
-            print(return_json(uniondict))
+    deleted = frozenset()
+    if options.markdeleted:
+        last_tweet_id = int(db.get_last_tweetid())
+        deleted = set(key for key in (set(live_db.keys()) - set(db.keys())) if int(key) < last_tweet_id)
 
-        if not options.nostatic and options.nolive:
-            print(return_json(db))
+    if not options.nostatic and not options.nolive:
+        uniondict = {}
+        uniondict.update(db)
+        uniondict.update(live_db)
+        print(return_json(uniondict, deleted))
 
-        if options.nostatic and not options.nolive:
-            print(return_json(live_db))
+    if not options.nostatic and options.nolive:
+        print(return_json(db, deleted))
+
+    if options.nostatic and not options.nolive:
+        print(return_json(live_db, deleted))
 
     db.close()
     live_db.close()
