@@ -23,25 +23,31 @@ class LvbDB(TinyDB):
         return None
 
     def keys(self):
-        return frozenset(item.id for item in self.all())
+        return frozenset(item['id'] for item in self.all())
+
+    def sync(self):
+        pass
+
+    def close(self):
+        pass
 
     def __getitem__(self, key):
-        item = self.get(where({'id':key}))
+        item = self.get(where('id') == key)
         if item:
             return item
-        else
+        else:
             raise KeyError()
 
     def __setitem__(self, key, value):
         value['id'] = key
-        if self.contains(where({'id':key})):
-            self.update(value, where({'id':key}))
+        if self.contains(where('id') == key):
+            self.update(value, where(where('id') == key))
         else:
             self.insert(value)
 
     def __delitem__(self, key):
         _ = self[key]
-        self.remove(where({'id':key}))
+        self.remove(where('id') == key)
 
 class LvbText(object):
     @staticmethod
