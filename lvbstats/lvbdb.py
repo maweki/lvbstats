@@ -1,11 +1,13 @@
 from tinydb import TinyDB, where
+from tinydb.storages import JSONStorage
+from tinydb.middlewares import ConcurrencyMiddleware
 import logging
 
 log = logging.getLogger('lvbstats')
 options = None
 
 def open(filename):
-    return LvbDB(filename)
+    return LvbDB(filename, storage=ConcurrencyMiddleware(JSONStorage))
 
 class LvbDB(TinyDB):
     def get_last_tweetid(self):
