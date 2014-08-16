@@ -79,7 +79,10 @@ def main(options):
         db.close()
         exit(0)
 
-    last_id = db.get_last_tweetid()
+    try:
+        last_id = db.get_last_tweetid()
+    except ValueError:
+        last_id = None
 
     tweet_count = args.tweetcount
     from_id = None
