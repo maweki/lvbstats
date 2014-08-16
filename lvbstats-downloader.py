@@ -9,7 +9,7 @@ logging.basicConfig(level=logging.INFO)
 log = logging.getLogger('lvbstats')
 
 target = 'lvb_direkt'
-shelve_filename = lvbstats.paths.get_shelve_filename()
+db_filename = lvbstats.paths.get_db_filename()
 
 options = None
 
@@ -64,8 +64,8 @@ def main(options):
         log.setLevel(logging.WARNING)
 
     args = options
-    from lvbstats import lvbshelve as shelve
-    db = shelve.open(shelve_filename)
+    from lvbstats import lvbdb
+    db = lvbdb.open(db_filename)
 
     if args.version:
         print_version()
@@ -114,6 +114,6 @@ def main(options):
     db.close()
 
 if __name__ == "__main__":
-    import lvbstats.lvbshelve
-    lvbstats.lvbshelve.options = options = parse_args()
+    import lvbstats.lvbdb
+    lvbstats.lvbdb.options = options = parse_args()
     main(options)

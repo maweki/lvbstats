@@ -3,8 +3,8 @@
 VERSION = '0.4.2'
 import lvbstats.paths
 
-shelve_filename = lvbstats.paths.get_shelve_filename()
-shelve_live_filename = lvbstats.paths.get_shelve_filename(infix='live')
+db_filename = lvbstats.paths.get_db_filename()
+db_live_filename = lvbstats.paths.get_db_filename(infix='live')
 
 options = None
 
@@ -27,6 +27,8 @@ def return_json(db, deleted=frozenset()):
     result = {}
     for key in db.keys():
         result[key] = db[key]
+        del result[key]['id']
+        del result[key]['_id']
         if key in deleted:
             result[key]['deleted'] = True
     if jsonstyle == 'plain':
@@ -36,9 +38,9 @@ def return_json(db, deleted=frozenset()):
     return json.dumps(result, indent=2)
 
 def main():
-    from lvbstats import lvbshelve as shelve
-    db = shelve.open(shelve_filename)
-    live_db = shelve.open(shelve_live_filename)
+    from lvbstats import lvbdb
+    db = lvbdb.open(db_filename)
+    live_db = lvbdb.open(db_live_filename)
 
     deleted = frozenset()
     if options.markdeleted:
@@ -57,8 +59,6 @@ def main():
     if options.nostatic and not options.nolive:
         print(return_json(live_db, deleted))
 
-    db.close()
-    live_db.close()
     exit(0)
 
 
