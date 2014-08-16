@@ -4,8 +4,8 @@ import logging
 log = logging.getLogger('lvbstats')
 options = None
 
-def open(filename, flag='c', protocol=None, writeback=False):
-    return Shelf(filename, flag, protocol, writeback)
+def open(filename):
+    return LvbDB(filename)
 
 class LvbDB(TinyDB):
     def get_last_tweetid(self):
