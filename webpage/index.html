@@ -31,7 +31,6 @@
       var start = function(){
         lvbdata.data.render_statistics();
         lvbdata.init_filter_dialog();
-        lvbdata.init_filter_dialog_keywords();
         lvbdata.create_historical_chart(lvbdata.data.events);
         lvbdata.create_bar_chart(lvbdata.data.events, 'day');
         lvbdata.create_bar_chart(lvbdata.data.events, 'hour');
@@ -269,6 +268,16 @@
               <span class="input-group-addon clear">&#10005;</span>
             </div>
             <p><small>Schlüsselwörter: <span class="keywordcheck"></span></small></p>
+            <h5>Gelöschte Events</h5>
+            <label class="radio-inline">
+              <input type="radio" name="showtweetmode" value="all" checked="checked"> Alle anzeigen
+            </label>
+            <label class="radio-inline">
+              <input type="radio" name="showtweetmode" value="undeleted"> Nur ungelöschte
+            </label>
+            <label class="radio-inline">
+              <input type="radio" name="showtweetmode" value="deleted"> Nur gelöschte
+            </label>
           </div>
           <div class="modal-footer">
             <button type="button" class="btn btn-default" data-dismiss="modal">Schließen</button>

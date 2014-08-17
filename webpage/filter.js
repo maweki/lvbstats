@@ -1,6 +1,8 @@
 $.extend(lvbdata, {
   init_filter_dialog: function() {
     this.init_filter_dialog_lines();
+    this.init_filter_dialog_keywords();
+    this.init_filter_dialog_deleted();
   },
 
   init_filter_dialog_lines: function() {
@@ -18,13 +20,19 @@ $.extend(lvbdata, {
     $('#filterModal span.input-group-addon.clear').click(function(){ $("#filterModal input.keywordfilter").val('').trigger('input');  });
   },
 
+  init_filter_dialog_deleted: function() {
+    $("#filterModal input[name='showtweetmode']").on('click', this.update_charts.bind(this));
+  },
+
   update_charts: _.throttle(function() {
     console.log('Update Charts');
 
     var filter_values = this.read_filters_keywords();
+    var delete_mode = this.read_delete_mode();
     this.print_filter_keywords(filter_values);
 
     var events_filtered = this.filter_events_by_line(this.data.events);
+    events_filtered = this.filter_events_deleted(events_filtered, delete_mode);
     events_filtered = this.filter_events_by_keywords(events_filtered, filter_values);
 
     this.refresh_historical_chart(events_filtered);
@@ -95,6 +103,17 @@ $.extend(lvbdata, {
       }
     }
     return vals;
+  },
+
+  read_delete_mode: function() {
+      return $("#filterModal input[name='showtweetmode']:checked").val();
+  },
+
+  filter_events_deleted: function(events, mode) {
+      if (mode == 'all') { return events; }
+
+      var del = (mode == 'deleted');
+      return _.filter(events, function(d) { return (d.deleted == del); } );
   },
 
   filter_events_by_keywords: function(events, filter_values) {
