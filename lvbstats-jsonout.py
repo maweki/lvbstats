@@ -1,6 +1,6 @@
 #!/usr/bin/python3
 
-VERSION = '0.4.2'
+from lvbstats import VERSION
 import lvbstats.paths
 
 db_filename = lvbstats.paths.get_db_filename()
