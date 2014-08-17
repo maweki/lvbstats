@@ -1,6 +1,5 @@
 #!/usr/bin/python3
 
-from lvbstats import VERSION
 import lvbstats.paths
 
 shelve_filename = lvbstats.paths.get_shelve_filename()
