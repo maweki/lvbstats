@@ -1,6 +1,7 @@
 $.extend(lvbdata, {
   update_sample_tweets: function(events) {
     $('#sampletweets + p > span.filteredcount').text(events.length);
+    $('#sampletweets + p > span.filtereddeletedcount').text(_.filter(events, function(d){ return d.deleted; }).length);
 
     var tweetsdiv = $('#sampletweetsdiv');
     var to_remove = tweetsdiv.children();
