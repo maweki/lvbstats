@@ -9,7 +9,7 @@ $.extend(lvbdata, {
       var thisid = sampletweetids.pop();
       var thistweet = this.data.raw_data[thisid];
       var html = '<a href="https://twitter.com/LVB_direkt/status/'+ thisid +'" class="list-group-item" target="_blank">';
-      html += '<h4 class="list-group-item-heading">Tweet ' + thisid + '</h4>';
+      html += '<h4 class="list-group-item-heading">Tweet ' + thisid + (thistweet.deleted ? ' (gelöscht)' : '') + '</h4>';
       html += '<p class="list-group-item-text">Linien: ' + thistweet.lines.join(', ') + '</p>';
       html += '<p class="list-group-item-text">Schlüsselwörter: ' + thistweet.longest_words.join(', ')  + '</p>';
       html += '<p class="list-group-item-text">Datum und Uhrzeit: '+ thistweet.date.toLocaleString() +'</p>';
