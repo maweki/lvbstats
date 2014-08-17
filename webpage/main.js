@@ -58,7 +58,8 @@ lvbdata = {
             line: thisline.toString(),
             tweetid: tweetid,
             date: tweetobj.date,
-            words: tweetobj.longest_words
+            words: tweetobj.longest_words,
+            deleted: (tweetobj.deleted == true)
           };
           result.push(newevent);
         });
