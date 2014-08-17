@@ -1,2 +1,4 @@
 twitter
 more_itertools
+tinydb
+ujson

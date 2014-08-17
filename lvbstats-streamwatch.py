@@ -1,6 +1,6 @@
 #!/usr/bin/python3
 
-VERSION = '0.4.2'
+from lvbstats import VERSION
 import lvbstats.paths
 from lvbstats.twit import twitter_login_stream
 
@@ -9,7 +9,7 @@ logging.basicConfig(level=logging.INFO)
 log = logging.getLogger('lvbstats')
 
 target = 221056350
-shelve_filename = lvbstats.paths.get_shelve_filename(infix='live')
+db_filename = lvbstats.paths.get_db_filename(infix='live')
 
 options = None
 
@@ -73,7 +73,7 @@ def main(options):
         log.setLevel(logging.WARNING)
 
     args = options
-    from lvbstats import lvbshelve as shelve
+    from lvbstats import lvbdb
     if args.version:
         print_version()
         exit(0)
@@ -88,17 +88,15 @@ def main(options):
         elif tweet is Timeout or tweet is HeartbeatTimeout or tweet is Hangup:
             pass
         elif tweet.get('text'):
-            db = shelve.open(shelve_filename)
+            db = lvbdb.open(db_filename)
             db.do_persist(tweet)
-            db.sync()
-            db.close()
         else:
             # some data
             pass
 
 if __name__ == "__main__":
-    import lvbstats.lvbshelve
-    lvbstats.lvbshelve.options = options = parse_args()
+    import lvbstats.lvbdb
+    lvbstats.lvbdb.options = options = parse_args()
     if options.kill:
         kill_existing()
     deploy_mutex()
