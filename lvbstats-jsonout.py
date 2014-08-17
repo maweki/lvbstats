@@ -49,8 +49,10 @@ def main():
 
     if not options.nostatic and not options.nolive:
         uniondict = {}
-        uniondict.update(db)
-        uniondict.update(live_db)
+        for key in db.keys():
+            uniondict[key] = db[key]
+        for key in live_db.keys():
+            uniondict[key] = live_db[key]
         print(return_json(uniondict, deleted))
 
     if not options.nostatic and options.nolive:
