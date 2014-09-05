@@ -46,17 +46,16 @@ def main(options):
         exit(0)
 
     import csv
-    #with open(args.infile) as csvfile:
-    reader = csv.reader(args.infile, delimiter='"",""')
-    for row in reader:
-        print(len(row))
-        print(row)
-        tweetid, _, _, tweetdate, _, tweettext, _, _, _, _ = row
-        print(tweetid, tweetdate, tweettext)
-
-
-    #for s in statuses:
-    #    db.do_persist(s)
+    reader = csv.reader(args.infile)
+    for cnt, row in enumerate(reader):
+        if cnt == 0:
+            continue
+        from datetime import datetime
+        t = datetime.strptime(row[3], '%Y-%m-%d %X %z').strftime('%a %b %d %X %z %Y')
+        tweet = {'id': int(row[0]),
+                 'created_at': t,
+                 'text': row[5]}
+        db.do_persist(tweet)
 
 if __name__ == "__main__":
     import lvbstats.lvbdb
