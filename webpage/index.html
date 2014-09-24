@@ -69,6 +69,8 @@
       $("button.minifilter").addClass("btn btn-primary btn-xs")
         .attr("data-toggle","modal").attr("data-target","#filterModal").text('Filter');
 
+      $('[data-toggle=popover]').popover();
+
       $(window).resize(update);
 
       var resize_twitter = function(){
@@ -156,6 +158,7 @@
                 <li class="list-group-item">
                   <span class="badge eventnum"></span>
                   Anzahl Ereignisse
+                  <button type="button" class="btn btn-info btn-xs" data-toggle="popover" title="Ereignisse" data-content="Wenn ein Tweet mehrere Linien betrifft, wird für jede Linie ein eigenes Ereignis generiert.">?</button>
                 </li>
                 <li class="list-group-item">
                   <span class="badge uniqlines"></span>
