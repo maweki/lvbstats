@@ -22,3 +22,10 @@ class Shelf(shelve.DbfilenameShelf):
                 self[str(tweet_id)] = {'date': date, 'lines': lines, 'longest_words': longest_words}
             return tweet_id
         return None
+
+class DudShelf(object):
+    def sync(self):
+        pass
+
+    def close(self):
+        pass

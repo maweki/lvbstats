@@ -2,6 +2,7 @@ from tinydb import TinyDB, where
 from tinydb.storages import JSONStorage
 from tinydb.middlewares import ConcurrencyMiddleware
 from tweets import date_from_created_at, entry_to_tuple
+from lvbshelve import DudShelf
 import logging
 
 log = logging.getLogger('lvbstats')
@@ -10,7 +11,7 @@ options = None
 def open(filename):
     return LvbDB(filename, storage=ConcurrencyMiddleware(JSONStorage))
 
-class LvbDB(TinyDB):
+class LvbDB(TinyDB, DudShelf):
     def get_last_tweetid(self):
         return max(int(tweetid) for tweetid in self.keys())
 
@@ -27,12 +28,6 @@ class LvbDB(TinyDB):
 
     def keys(self):
         return frozenset(item['id'] for item in self.all())
-
-    def sync(self):
-        pass
-
-    def close(self):
-        pass
 
     def __getitem__(self, key):
         item = self.get(where('id') == key)
