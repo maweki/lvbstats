@@ -17,5 +17,6 @@ $.extend(lvbdata, {
       tweetsdiv.append(html);
     }
     to_remove.remove();
+    $('#sampletweets + p > span.filteredtweetscount').text(_.uniq(_.pluck(events, 'tweetid')).length);
   }
 });
