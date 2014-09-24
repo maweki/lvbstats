@@ -21,6 +21,8 @@ def parse_args():
 
     mutex_group.add_argument('--kill', help='Kill existing watcher', action="store_true")
 
+    mutex_group.add_argument('--web', help='Retrieve full text from web', action="store_true", default=True)
+
     parser.add_argument('--verbose', help='Enable verbose mode', action="store_true")
     parser.add_argument('--nopersist', help='Do not persist data', action="store_true")
 
