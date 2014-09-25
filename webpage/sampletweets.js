@@ -13,6 +13,9 @@ $.extend(lvbdata, {
       html += '<p class="list-group-item-text">Linien: ' + thistweet.lines.join(', ') + '</p>';
       html += '<p class="list-group-item-text">Schlüsselwörter: ' + thistweet.longest_words.join(', ')  + '</p>';
       html += '<p class="list-group-item-text">Datum und Uhrzeit: '+ thistweet.date.toLocaleString() +'</p>';
+      if (thistweet.text) {
+        html += '<p class="list-group-item-text">Volltext: '+ thistweet.text +'</p>';
+      }
       html += '</a>';
       tweetsdiv.append(html);
     }
