@@ -1,6 +1,6 @@
 import shelve
 import logging
-from tweets import date_from_created_at, entry_to_tuple
+from lvbstats.tweets import entry_to_tuple
 
 log = logging.getLogger('lvbstats')
 options = None

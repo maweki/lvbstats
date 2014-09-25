@@ -1,8 +1,8 @@
 from tinydb import TinyDB, where
 from tinydb.storages import JSONStorage
 from tinydb.middlewares import ConcurrencyMiddleware
-from tweets import date_from_created_at, entry_to_tuple
-from lvbshelve import DudShelf
+from lvbstats.lvbshelve import DudShelf
+from lvbstats.tweets import entry_to_tuple
 import logging
 
 log = logging.getLogger('lvbstats')
