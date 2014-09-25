@@ -1,0 +1,4 @@
+AddEncoding gzip .gz
+<filesmatch "\.json\.gz$">
+AddType "application/json" .gz
+</filesmatch>

@@ -2,7 +2,7 @@ lvbdata = {
   data: {
     raw_data: {},
     events: {},
-    load: function(url, callback) {
+    load: function(url, callback, error) {
       lvbdata.progress_bar.init();
       data = this;
       d3.json(url)
@@ -12,6 +12,7 @@ lvbdata = {
           prog_rel = Math.round(progress/total * 100);
           lvbdata.progress_bar.set(prog_rel);
       })
+      .on('error', error)
       .on('load', function(downloaded) {
         // convert dates
         data.convert_dates(downloaded);
@@ -248,6 +249,6 @@ lvbdata = {
   },
 
   init: function(callback) {
-    this.data.load('lvb.json', callback);
+    this.data.load('lvb.json.gz', callback, function(){ this.data.load('lvb.json', callback);}.bind(this));
   }
 };
