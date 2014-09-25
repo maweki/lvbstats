@@ -76,10 +76,13 @@ def query_web(text):
 def entry_to_tuple(entry, _query_web=False):
     entry_id = entry['id']
     lines = LvbText.lines_from_text(entry['text'])
-    _, text = split_text(entry['text'])
     if lines and _query_web and '...' in entry['text']:
+        _, text = split_text(entry['text'])
         text = query_web(text[0:-26])
         entry['text'] = text
+    else:
+        _, text = split_text(entry['text'])
+        text = text[:-22]
 
     return entry_id, (date_from_created_at(entry['created_at']),
         lines, LvbText.longest_words(entry['text']), text)
