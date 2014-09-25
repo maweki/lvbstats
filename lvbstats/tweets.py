@@ -1,3 +1,6 @@
+import logging
+log = logging.getLogger('lvbstats')
+
 class LvbText(object):
     @staticmethod
     def lines_from_text(text):
@@ -33,7 +36,50 @@ def date_from_created_at(cr):
     created_at = datetime.strptime(cr, '%a %b %d %X %z %Y').timestamp()
     return created_at
 
-def entry_to_tuple(entry):
+def split_text(text):
+    if not ': ' in text:
+        return '', text
+    lines, _, info_text = text.partition(':')
+    info_text = info_text.strip()
+    return lines, info_text
+
+def find_full_text(partial, page):
+    lines = page.decode('utf-8').split('\n')
+    for line in lines:
+        if partial in line:
+            line = line.strip()
+            if line.startswith('<strong>'):
+                line = line[8:]
+            if line.endswith('</td>'):
+                line = line[:-5]
+            line = line.strip()
+            if line.endswith('</strong>'):
+                line = line[:-9]
+            line = line.strip(' *.')
+            if line:
+                log.info(('Found on web', line))
+                return line
+    log.info('No Webfind')
+    return partial
+
+def query_web(text):
+    log.info(('Querying web', text))
+    from http.client import HTTPConnection
+    v = HTTPConnection("v.lvb.de")
+    v.request("GET", "/")
+    page = v.getresponse()
+    if not page.status == 200:
+        return text
+    else:
+        return find_full_text(text, page.read())
+
+def entry_to_tuple(entry, _query_web=False):
     entry_id = entry['id']
+    lines = LvbText.lines_from_text(entry['text'])
+    if lines and _query_web and '...' in entry['text']:
+        _, text = split_text(entry['text'])
+        text = query_web(text[0:-26])
+        entry['text'] = text
+
     return entry_id, (date_from_created_at(entry['created_at']),
-        LvbText.lines_from_text(entry['text']), LvbText.longest_words(entry['text']))
+        lines, LvbText.longest_words(entry['text']), entry['text'])
