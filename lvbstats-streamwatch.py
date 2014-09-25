@@ -91,7 +91,7 @@ def main(options):
             pass
         elif tweet.get('text'):
             db = lvbdb.open(db_filename)
-            db.do_persist(tweet, web=True)
+            db.do_persist(tweet, web=options.web)
         else:
             # some data
             pass
