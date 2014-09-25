@@ -42,7 +42,7 @@ def split_text(text):
 def find_full_text(partial, page):
     lines = page.decode('utf-8').split('\n')
     for line in lines:
-        if partial in line:
+        if partial in line and partial.strip():
             line = line.strip()
             if line.startswith('<strong>'):
                 line = line[8:]
