@@ -7,7 +7,6 @@ class LvbText(object):
         if not ': ' in text:
             return []
         else:
-
             def to_int_optional(num):
                 if str(num).isdigit():
                     return int(num)
