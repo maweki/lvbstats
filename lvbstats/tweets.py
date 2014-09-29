@@ -81,8 +81,9 @@ def entry_to_tuple(entry, _query_web=False):
         while retries:
             try:
                 text = query_web(text[0:-26])
-            except UnicodeDecodeError:
+            except Exception as e:
                 retries -= 1
+                log.error((e, type(e)))
                 from time import sleep
                 sleep(5)
                 continue
