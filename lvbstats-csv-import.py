@@ -1,6 +1,7 @@
 #!/usr/bin/python3
 
 from lvbstats import VERSION
+import lvbstats
 import lvbstats.paths
 from lvbstats.twit import twitter_login
 

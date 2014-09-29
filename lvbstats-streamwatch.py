@@ -75,7 +75,6 @@ def main(options):
         log.setLevel(logging.WARNING)
 
     args = options
-    from lvbstats import lvbdb
     if args.version:
         print_version()
         exit(0)
@@ -90,7 +89,9 @@ def main(options):
         elif tweet is Timeout or tweet is HeartbeatTimeout or tweet is Hangup:
             pass
         elif tweet.get('text'):
-            db = lvbdb.open(db_filename)
+            from lvbstats.lvbdb import LvbDB
+            from lvbstats.twitdb import TwitDB
+            db = TwitDB(LvbDB, db_filename)
             db.do_persist(tweet, web=options.web)
         else:
             # some data

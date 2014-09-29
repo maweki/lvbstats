@@ -63,8 +63,9 @@ def main(options):
         log.setLevel(logging.WARNING)
 
     args = options
-    from lvbstats import lvbdb
-    db = lvbdb.open(db_filename)
+    from lvbstats.lvbdb import LvbDB
+    from lvbstats.twitdb import TwitDB
+    db = TwitDB(LvbDB, db_filename)
 
     if args.version:
         print_version()
