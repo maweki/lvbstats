@@ -67,6 +67,9 @@ def query_web(text):
     if not page.status == 200:
         return text
     else:
+        if ('Content-Encoding', 'gzip') in page.getheaders():
+            from gzip import decompress
+            return find_full_text(text, decompress(page.read()))
         return find_full_text(text, page.read())
 
 def entry_to_tuple(entry, _query_web=False):
