@@ -98,7 +98,7 @@ def main(options):
 
 if __name__ == "__main__":
     import lvbstats.lvbdb
-    lvbstats.lvbdb.options = options = parse_args()
+    lvbstats.options = options = parse_args()
     if options.kill:
         kill_existing()
     deploy_mutex()

@@ -59,5 +59,5 @@ def main(options):
 
 if __name__ == "__main__":
     import lvbstats.lvbdb
-    lvbstats.lvbdb.options = options = parse_args()
+    lvbstats.options = options = parse_args()
     main(options)

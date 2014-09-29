@@ -1,6 +1,7 @@
 #!/usr/bin/python3
 
 from lvbstats import VERSION
+import lvbstats
 import lvbstats.paths
 from lvbstats.twit import twitter_login
 
@@ -10,8 +11,6 @@ log = logging.getLogger('lvbstats')
 
 target = 'lvb_direkt'
 db_filename = lvbstats.paths.get_db_filename()
-
-options = None
 
 def parse_args():
     import argparse
@@ -110,10 +109,9 @@ def main(options):
     if last_id:
         log.info('Lastid: %d', last_id)
 
-    db.sync()
     db.close()
 
 if __name__ == "__main__":
     import lvbstats.lvbdb
-    lvbstats.lvbdb.options = options = parse_args()
+    lvbstats.options = options = parse_args()
     main(options)
