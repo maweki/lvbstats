@@ -74,8 +74,18 @@ def entry_to_tuple(entry, _query_web=False):
     lines = LvbText.lines_from_text(entry['text'])
     if lines and _query_web and '...' in entry['text']:
         _, text = split_text(entry['text'])
-        text = query_web(text[0:-26])
-        entry['text'] = text
+        retries = 3
+        while retries:
+            try:
+                text = query_web(text[0:-26])
+            except UnicodeDecodeError:
+                retries -= 1
+                from time import sleep
+                sleep(5)
+                continue
+            break
+        else:
+            log.error('Couldn\'t retrieve page')
     else:
         _, text = split_text(entry['text'])
         text = text[:-22]
