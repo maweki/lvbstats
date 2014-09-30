@@ -40,8 +40,7 @@ def split_text(text):
     return lines, info_text
 
 def find_full_text(partial, page):
-    lines = page.decode('utf-8').split('\n')
-    for line in lines:
+    for line in page.decode('utf-8').splitlines():
         if partial in line and partial.strip():
             start_index = line.find(partial)
             line = line[start_index:]
