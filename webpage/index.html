@@ -9,9 +9,28 @@
 
     <link rel="stylesheet" href="node_modules/bootstrap/dist/css/bootstrap.min.css">
     <link rel="stylesheet" href="node_modules/bootstrap/dist/css/bootstrap-theme.min.css">
+    <link rel="stylesheet" href="submodules/bootstrap-datepicker/css/datepicker3.css">
+
     <script src="node_modules/bootstrap/dist/js/bootstrap.min.js"></script>
+    <script src="submodules/bootstrap-datepicker/js/bootstrap-datepicker.js"></script>
+    <script src="submodules/bootstrap-datepicker/js/locales/bootstrap-datepicker.de.js" charset="UTF-8"></script>
 
     <link rel="stylesheet" type="text/css" href="style.css">
+
+    <style>
+    .datepicker-dropdown{
+      z-index: 10000 !important;
+    }
+    .input-daterange .input-group-addon, .input-daterange .form-control {
+      border-width: 1px 1px;
+    }
+    .input-daterange .input-group-addon + .form-control {
+      border-left-width: 0;
+    }
+    .input-group .form-control + .input-group-addon {
+      border-left-width: 0;
+    }
+    </style>
 
     <script src="main.js"></script>
     <script src="stats.js"></script>
@@ -260,6 +279,14 @@
             <h4 class="modal-title" id="filterModalLabel">Filter bearbeiten</h4>
           </div>
           <div class="modal-body container-fluid">
+            <h5>Nach Datum</h5>
+            <div class="input-daterange input-group" id="daterangepicker">
+                <span class="input-group-addon"><span class="glyphicon glyphicon-calendar"></span></span>
+                <input type="text" class="input-sm form-control" name="start" />
+                <span class="input-group-addon">bis</span>
+                <input type="text" class="input-sm form-control" name="end" />
+                <span class="input-group-addon date-clear clear">✕</span>
+            </div>
             <h5>Nach Linien <small>oder-verbunden</small></h5>
             <fieldset class="linesFilter row">
 
@@ -268,7 +295,7 @@
             <h5>Nach Schlüsselwort <small>oder-verbunden, mit Leerzeichen trennen, -Schlüsselwort zum Ausschluss</small></h5>
             <div class="input-group">
               <input type="text" class="form-control keywordfilter" placeholder="Schlüsselwort" />
-              <span class="input-group-addon clear">&#10005;</span>
+              <span class="input-group-addon keyword-clear clear">&#10005;</span>
             </div>
             <p><small>Schlüsselwörter: <span class="keywordcheck"></span></small></p>
           </div>
