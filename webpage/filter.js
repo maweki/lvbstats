@@ -22,7 +22,7 @@ $.extend(lvbdata, {
   init_filter_dialog_daterange: function() {
     var daterange = this.data.get_tweets_date_range(this.data.events);
     this.daterange_el = $('#filterModal .input-daterange').datepicker({
-      format: "dd.mm.yyyy",
+      format: "d.m.yyyy",
       startDate: daterange.min.toLocaleDateString(),
       endDate: daterange.max.toLocaleDateString(),
       language: "de",
@@ -42,13 +42,12 @@ $.extend(lvbdata, {
     endInput.val(daterange.max.toLocaleDateString());
     $(endInput).datepicker("update");
     $(startInput).datepicker("update");
-    console.log(this.read_filter_daterange());
   },
 
   read_filter_daterange: function() {
     var endInput = this.daterange_el.children('[name="end"]'),
       startInput = this.daterange_el.children('[name="start"]');
-    var endDate = $(endInput).datepicker("getDate");
+    var endDate = new Date($(endInput).datepicker("getDate"));
     endDate.setDate($(endInput).datepicker("getDate").getDate() + 1);
     return {
       start: $(startInput).datepicker("getDate"),
@@ -70,7 +69,7 @@ $.extend(lvbdata, {
     this.print_filter_keywords(filter_values);
 
     var events_filtered = this.filter_events_by_line(this.data.events);
-    events_filtered = this.filter_events_by_date_range(this.data.events, daterange);
+    events_filtered = this.filter_events_by_date_range(events_filtered, daterange);
     events_filtered = this.filter_events_by_keywords(events_filtered, filter_values);
 
     this.refresh_historical_chart(events_filtered);

@@ -148,7 +148,7 @@ lvbdata = {
 
     accumulate_by_week: function(events) {
       var lookup = {};
-      var first_date = new Date();
+      var first_date = this.get_tweets_date_range(this.events).min;
       _(events).forEach(function(event){
         var newdate = new Date(event.date - ((event.date.getDay()+6)%7)*24*60*60*1000);
         if (newdate < first_date) {

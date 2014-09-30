@@ -1,8 +1,8 @@
 $.extend(lvbdata.data, {
   get_tweets_date_range: function(events) {
     var range = {};
-    range.max = _.max(events, 'date').date;
-    range.min = _.min(events, 'date').date;
+    range.max = new Date(_.max(events, 'date').date);
+    range.min = new Date(_.min(events, 'date').date);
     return range;
   },
 
