@@ -31,6 +31,7 @@ $.extend(lvbdata, {
     });
     this.reset_filter_dialog_daterange();
     this.daterange_el.children('.date-clear').click(this.reset_filter_dialog_daterange.bind(this));
+    this.daterange_el.children('input').datepicker().on("changeDate", this.update_charts.bind(this));
   },
 
   reset_filter_dialog_daterange: function() {
@@ -47,19 +48,29 @@ $.extend(lvbdata, {
   read_filter_daterange: function() {
     var endInput = this.daterange_el.children('[name="end"]'),
       startInput = this.daterange_el.children('[name="start"]');
+    var endDate = $(endInput).datepicker("getDate");
+    endDate.setDate($(endInput).datepicker("getDate").getDate() + 1);
     return {
       start: $(startInput).datepicker("getDate"),
-      end: $(endInput).datepicker("getDate")
+      end: endDate
     };
+  },
+
+  filter_events_by_date_range: function(events, daterange) {
+    var start = daterange.start,
+      end = daterange.end;
+    return _.filter(events, function(ev){ return (ev.date > start && ev.date < end); });
   },
 
   update_charts: _.throttle(function() {
     console.log('Update Charts');
 
     var filter_values = this.read_filters_keywords();
+    var daterange = this.read_filter_daterange();
     this.print_filter_keywords(filter_values);
 
     var events_filtered = this.filter_events_by_line(this.data.events);
+    events_filtered = this.filter_events_by_date_range(this.data.events, daterange);
     events_filtered = this.filter_events_by_keywords(events_filtered, filter_values);
 
     this.refresh_historical_chart(events_filtered);
