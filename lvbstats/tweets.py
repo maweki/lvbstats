@@ -43,14 +43,15 @@ def find_full_text(partial, page):
     lines = page.decode('utf-8').split('\n')
     for line in lines:
         if partial in line and partial.strip():
-            line = line.strip()
-            if line.startswith('<strong>'):
-                line = line[8:]
-            if line.endswith('</td>'):
-                line = line[:-5]
-            line = line.strip()
-            if line.endswith('</strong>'):
-                line = line[:-9]
+            start_index = line.find(partial)
+            line = line[start_index:]
+            next_message_index = line.find('+++')
+            if next_message_index > -1:
+                line = line[:next_message_index]
+            next_tag_index = line.find('<')
+            if next_tag_index > -1:
+                line = line[:next_tag_index]
+            line = line.strip(' .\t\n<>*')
             line = line.strip(' *.')
             if line:
                 log.info(('Found on web', line))
