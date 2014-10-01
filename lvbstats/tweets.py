@@ -59,6 +59,9 @@ def find_full_text(partial, page):
     return None
 
 def query_web(text):
+    text = text.strip()
+    if not text:
+        raise ValueError('No text to search web for')
     log.info(('Querying web', text))
     from http.client import HTTPConnection
     v = HTTPConnection("v.lvb.de")
