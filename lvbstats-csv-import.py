@@ -39,8 +39,9 @@ def main(options):
         log.setLevel(logging.WARNING)
 
     args = options
-    from lvbstats import lvbdb
-    db = lvbdb.open(db_filename)
+    from lvbstats.lvbdb import LvbDB
+    from lvbstats.twitdb import TwitDB
+    db = TwitDB(LvbDB, db_filename)
 
     if args.version:
         print_version()
@@ -59,6 +60,5 @@ def main(options):
         db.do_persist(tweet)
 
 if __name__ == "__main__":
-    import lvbstats.lvbdb
     lvbstats.options = options = parse_args()
     main(options)
