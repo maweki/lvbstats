@@ -103,4 +103,4 @@ def entry_to_tuple(entry, _query_web=False):
     text = text.strip()
 
     return entry_id, (date_from_created_at(entry['created_at']),
-        lines, LvbText.longest_words(entry['text']), text)
+        lines, LvbText.longest_words(text), text)
