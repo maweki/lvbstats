@@ -56,7 +56,7 @@ def find_full_text(partial, page):
                 log.info(('Found on web', line))
                 return line
     log.info('No Webfind')
-    return partial
+    return None
 
 def query_web(text):
     log.info(('Querying web', text))
@@ -81,19 +81,22 @@ def entry_to_tuple(entry, _query_web=False):
     lines = LvbText.lines_from_text(entry['text'])
     if lines and _query_web and '...' in entry['text']:
         _, text = split_text(entry['text'])
-        retries = 3
+        retries = 4
         while retries:
+            from time import sleep
+            sleep(10)
+            retries -= 1
             try:
-                text = query_web(text[0:-26])
-            except Exception as e:
-                retries -= 1
-                log.error((e, type(e)))
-                from time import sleep
-                sleep(5)
+                webresult = query_web(text[0:-26])
+                if webresult:
+                    text = webresult
+                    break
                 continue
-            break
+            except Exception as e:
+                log.error((e, type(e)))
+                continue
         else:
-            log.error('Couldn\'t retrieve page')
+            log.info('Couldn\'t retrieve page')
     else:
         _, text = split_text(entry['text'])
         text = text[:-22]
