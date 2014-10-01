@@ -40,7 +40,7 @@ def split_text(text):
     return lines, info_text
 
 def find_full_text(partial, page):
-    for line in page.decode('utf-8').splitlines():
+    for line in page.splitlines():
         if partial in line and partial.strip():
             start_index = line.find(partial)
             line = line[start_index:]
@@ -67,10 +67,14 @@ def query_web(text):
     if not page.status == 200:
         return text
     else:
-        if ('Content-Encoding', 'gzip') in page.getheaders():
-            from gzip import decompress
-            return find_full_text(text, decompress(page.read()))
-        return find_full_text(text, page.read())
+        try:
+            if ('Content-Encoding', 'gzip') in page.getheaders():
+                from gzip import decompress
+                return find_full_text(text, decompress(page.read().decode('utf-8')))
+            return find_full_text(text, page.read().decode('utf-8'))
+        except UnicodeDecodeError as e:
+            log.error((UnicodeDecodeError, e, 'page headers', page.getheaders()))
+            return text
 
 def entry_to_tuple(entry, _query_web=False):
     entry_id = entry['id']
