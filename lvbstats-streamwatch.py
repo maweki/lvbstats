@@ -84,6 +84,7 @@ def main(options):
     stream = stream_api.statuses.filter(follow=target)
     from twitter.stream import Timeout, HeartbeatTimeout, Hangup
     for tweet in stream:
+        log.debug(tweet)
         if tweet is None:
             pass
         elif tweet is Timeout or tweet is HeartbeatTimeout or tweet is Hangup:
