@@ -20,7 +20,7 @@ class LvbText(object):
     @staticmethod
     def longest_words(text):
         from more_itertools import unique_justseen
-        _, _, info_text = text.partition(':')
+        info_text = text
         words = sorted((item.strip('".,:!?/ \n()') for item in info_text.split(' ') if not (item.startswith('http://'))),
                        key=len, reverse=True)
         unique_words = unique_justseen(words)
