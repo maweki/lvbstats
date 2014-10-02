@@ -92,7 +92,7 @@ def query_web(text):
         try:
             if ('Content-Encoding', 'gzip') in page.getheaders():
                 from gzip import decompress
-                return find_full_text(text, decompress(page.read().decode('utf-8')))
+                return find_full_text(text, decompress(page.read()).decode('utf-8'))
             return find_full_text(text, page.read().decode('utf-8'))
         except UnicodeDecodeError as e:
             log.error((UnicodeDecodeError, e, 'page headers', page.getheaders()))
