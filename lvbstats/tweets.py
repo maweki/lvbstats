@@ -39,10 +39,29 @@ def split_text(text):
     info_text = info_text.strip()
     return lines, info_text
 
+def get_match(haystack, needle):
+    if len(haystack.strip()) < len(needle):
+        return None
+    from difflib import SequenceMatcher
+    matcher = SequenceMatcher(a=needle, b=haystack)
+    matching_acc = 0
+    for block in matcher.get_matching_blocks():
+        _, _, match_count = block
+        matching_acc += match_count
+
+    if matching_acc > 0.9 * len(needle):
+        for block in matcher.get_matching_blocks():
+            needle_idx, _, match_count = block
+            if needle_idx == 0 and match_count > 0:
+                return needle[:match_count]
+    return None
+
 def find_full_text(partial, page):
     for line in page.splitlines():
-        if partial in line and partial.strip():
-            start_index = line.find(partial)
+        log.debug(line)
+        match = get_match(line, partial)
+        if match and partial.strip():
+            start_index = line.find(match)
             line = line[start_index:]
             next_message_index = line.find('+++')
             if next_message_index > -1:
