@@ -90,6 +90,8 @@ def main(options):
         elif tweet is Timeout or tweet is HeartbeatTimeout or tweet is Hangup:
             pass
         elif tweet.get('text'):
+            if tweet['user']['id'] != 221056350:
+                continue
             from lvbstats.lvbdb import LvbDB
             from lvbstats.twitdb import TwitDB
             db = TwitDB(LvbDB, db_filename)
