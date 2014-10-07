@@ -5,7 +5,7 @@ import lvbstats
 import lvbstats.paths
 
 import logging
-logging.basicConfig(level=logging.DEBUG)
+logging.basicConfig(level=logging.INFO)
 log = logging.getLogger('lvbstats')
 
 db_filename = lvbstats.paths.get_db_filename()
