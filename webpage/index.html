@@ -1,19 +1,35 @@
 <!DOCTYPE html>
-<meta charset="utf-8">
-<html>
+<html lang="de">
   <head>
+    <meta charset="utf-8">
     <title>Visualizing LVB</title>
-    <script src="http://d3js.org/d3.v3.js"></script>
-    <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
-    <script src="http://cdnjs.cloudflare.com/ajax/libs/lodash.js/2.4.1/lodash.min.js"></script>
+    <script src="node_modules/d3/d3.min.js"></script>
+    <script src="node_modules/jquery/dist/jquery.min.js"></script>
+    <script src="node_modules/lodash/dist/lodash.min.js"></script>
 
-    <link rel="stylesheet" href="http://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css">
-    <link rel="stylesheet" href="http://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap-theme.min.css">
-    <script src="http://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/js/bootstrap.min.js"></script>
+    <link rel="stylesheet" href="node_modules/bootstrap/dist/css/bootstrap.min.css">
+    <link rel="stylesheet" href="node_modules/bootstrap/dist/css/bootstrap-theme.min.css">
+    <link rel="stylesheet" href="submodules/bootstrap-datepicker/css/datepicker3.css">
+
+    <script src="node_modules/bootstrap/dist/js/bootstrap.min.js"></script>
+    <script src="submodules/bootstrap-datepicker/js/bootstrap-datepicker.js"></script>
+    <script src="submodules/bootstrap-datepicker/js/locales/bootstrap-datepicker.de.js" charset="UTF-8"></script>
 
     <link rel="stylesheet" type="text/css" href="style.css">
-    <style>
 
+    <style>
+    .datepicker-dropdown{
+      z-index: 10000 !important;
+    }
+    .input-daterange .input-group-addon, .input-daterange .form-control {
+      border-width: 1px 1px;
+    }
+    .input-daterange .input-group-addon + .form-control {
+      border-left-width: 0;
+    }
+    .input-group .form-control + .input-group-addon {
+      border-left-width: 0;
+    }
     </style>
 
     <script src="main.js"></script>
@@ -68,6 +84,8 @@
 
       $("button.minifilter").addClass("btn btn-primary btn-xs")
         .attr("data-toggle","modal").attr("data-target","#filterModal").text('Filter');
+
+      $('[data-toggle=popover]').popover();
 
       $(window).resize(update);
 
@@ -129,15 +147,15 @@
               Alle Daten sind öffentlich zugänglich auf
               <a href="http://twitter.de/lvb_direkt">twitter.de/lvb_direkt</a>.
               Leider sind die Daten nur ab April 2014 vollständig (vollständige Streamdaten incl. gelöschter Tweets ab Anfang August 2014). Über offizielle
-              Unterstützung der LVB via Zusenden ihres <a href="https://blog.twitter.com/de/2012/das-twitter-archiv">Twitter-Archivs</a>
-              würde ich mich sehr freuen.</p>
+              Unterstützung der LVB hätte ich mich gefreut, aber leider haben wir
+              keine Vertrauensbasis für eine Zusammenarbeit gefunden.</p>
 
               <p>Nutze den <button class="minifilter"></button>-Knopf
-                oder die Interaktionen mit den Charts um die Suche zu verfeinern. Datenupdates gibt es täglich 6, 12 und 18 Uhr.</p>
+                oder die Interaktionen mit den Charts um die Suche zu verfeinern. Datenupdates gibt es täglich kurz nach 6, 12 und 18 Uhr.</p>
 
               <p>Wenn du mich oder dieses Projekt unterstützen möchtest, kannst du mich gern beflattrn: <script id='fbst8kq'>(function(i){var f,s=document.getElementById(i);f=document.createElement('iframe');f.src='//api.flattr.com/button/view/?uid=maweki&button=compact&url=http%3A%2F%2Fmaweki.de%2Flvbstats';f.title='Flattr';f.height=20;f.width=110;f.style.borderWidth=0;s.parentNode.insertBefore(f,s);})('fbst8kq');</script></p>
 
-              <p>Für Ideen für weitere Views und Interaktionen, Anregungen, Kritik, kannst du mich antweeten oder mailen an maweki bei gmail.com</p>
+              <p>Für Ideen für weitere Views, Filter und Interaktionen, Anregungen, Kritik, kannst du mich antweeten oder mailen an maweki bei gmail.com</p>
 
               <h2 id="erhebungszeitraum">Erhebungszeitrum und Datenmenge</h2>
               <ul id="general_stats" class="list-group">
@@ -152,10 +170,12 @@
                 <li class="list-group-item">
                   <span class="badge tweetnum"></span>
                   Anzahl Tweets
+                  <button type="button" class="btn btn-info btn-xs" data-toggle="popover" title="Tweets" data-content="Tweets nach dem üblichen Muster (siehe LVB-Feed). Nicht-automatisch generierte Tweets wurden bei der Verarbeitung ignoriert.">?</button>
                 </li>
                 <li class="list-group-item">
                   <span class="badge eventnum"></span>
                   Anzahl Ereignisse
+                  <button type="button" class="btn btn-info btn-xs" data-toggle="popover" title="Ereignisse" data-content="Wenn ein Tweet mehrere Linien betrifft, wird für jede Linie ein eigenes Ereignis generiert.">?</button>
                 </li>
                 <li class="list-group-item">
                   <span class="badge uniqlines"></span>
@@ -212,10 +232,12 @@
           </table>
 
           <h2 id="top50keywordcooc">Top 50 Schlüsselwörter Kookkurenzmatrix <button class="minifilter"></button></h2>
+          <p>Mit Linksklick Sortierungsmodus ändern</p>
           <div id="keywordcooccurence"></div>
 
           <h2 id="sampletweets">Beispieltweets <button class="minifilter"></button></h2>
-          <p>In der Filterung sind noch <span class="filteredcount"></span> Ereignisse übrig.
+          <p>In der Filterung sind noch <span class="filteredcount"></span> Ereignisse
+            in <span class="filteredtweetscount"></span> Tweets übrig.
             Hier ist eine Auswahl der dazugehörigen tweets. Klicke einen beliebigen
             Tweet an um ihn anzusehen (möglicherweise sind nicht mehr alle Tweets verfügbar).
             <button class="btn btn-primary btn-xs refresh-samples">Auswahl erneuern</button></p>
@@ -258,6 +280,14 @@
             <h4 class="modal-title" id="filterModalLabel">Filter bearbeiten</h4>
           </div>
           <div class="modal-body container-fluid">
+            <h5>Nach Datum</h5>
+            <div class="input-daterange input-group" id="daterangepicker">
+                <span class="input-group-addon"><span class="glyphicon glyphicon-calendar"></span></span>
+                <input type="text" class="input-sm form-control" name="start" />
+                <span class="input-group-addon">bis</span>
+                <input type="text" class="input-sm form-control" name="end" />
+                <span class="input-group-addon date-clear clear">✕</span>
+            </div>
             <h5>Nach Linien <small>oder-verbunden</small></h5>
             <fieldset class="linesFilter row">
 
@@ -266,7 +296,7 @@
             <h5>Nach Schlüsselwort <small>oder-verbunden, mit Leerzeichen trennen, -Schlüsselwort zum Ausschluss</small></h5>
             <div class="input-group">
               <input type="text" class="form-control keywordfilter" placeholder="Schlüsselwort" />
-              <span class="input-group-addon clear">&#10005;</span>
+              <span class="input-group-addon keyword-clear clear">&#10005;</span>
             </div>
             <p><small>Schlüsselwörter: <span class="keywordcheck"></span></small></p>
           </div>

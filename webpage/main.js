@@ -2,7 +2,7 @@ lvbdata = {
   data: {
     raw_data: {},
     events: {},
-    load: function(url, callback) {
+    load: function(url, callback, error) {
       lvbdata.progress_bar.init();
       data = this;
       d3.json(url)
@@ -12,6 +12,7 @@ lvbdata = {
           prog_rel = Math.round(progress/total * 100);
           lvbdata.progress_bar.set(prog_rel);
       })
+      .on('error', error)
       .on('load', function(downloaded) {
         // convert dates
         data.convert_dates(downloaded);
@@ -58,7 +59,8 @@ lvbdata = {
             line: thisline.toString(),
             tweetid: tweetid,
             date: tweetobj.date,
-            words: tweetobj.longest_words
+            words: tweetobj.longest_words,
+            deleted: (tweetobj.deleted == true)
           };
           result.push(newevent);
         });
@@ -146,7 +148,7 @@ lvbdata = {
 
     accumulate_by_week: function(events) {
       var lookup = {};
-      var first_date = new Date();
+      var first_date = this.get_tweets_date_range(this.events).min;
       _(events).forEach(function(event){
         var newdate = new Date(event.date - ((event.date.getDay()+6)%7)*24*60*60*1000);
         if (newdate < first_date) {
@@ -247,6 +249,6 @@ lvbdata = {
   },
 
   init: function(callback) {
-    this.data.load('lvb.json', callback);
+    this.data.load('lvb.json.gz', callback, function(){ this.data.load('lvb.json', callback);}.bind(this));
   }
 };

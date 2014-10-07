@@ -21,6 +21,8 @@ def parse_args():
 
     mutex_group.add_argument('--kill', help='Kill existing watcher', action="store_true")
 
+    mutex_group.add_argument('--web', help='Retrieve full text from web', action="store_true", default=True)
+
     parser.add_argument('--verbose', help='Enable verbose mode', action="store_true")
     parser.add_argument('--nopersist', help='Do not persist data', action="store_true")
 
@@ -73,7 +75,6 @@ def main(options):
         log.setLevel(logging.WARNING)
 
     args = options
-    from lvbstats import lvbdb
     if args.version:
         print_version()
         exit(0)
@@ -83,20 +84,25 @@ def main(options):
     stream = stream_api.statuses.filter(follow=target)
     from twitter.stream import Timeout, HeartbeatTimeout, Hangup
     for tweet in stream:
+        log.debug(tweet)
         if tweet is None:
             pass
         elif tweet is Timeout or tweet is HeartbeatTimeout or tweet is Hangup:
             pass
         elif tweet.get('text'):
-            db = lvbdb.open(db_filename)
-            db.do_persist(tweet)
+            if tweet['user']['id'] != 221056350:
+                continue
+            from lvbstats.lvbdb import LvbDB
+            from lvbstats.twitdb import TwitDB
+            db = TwitDB(LvbDB, db_filename)
+            db.do_persist(tweet, web=options.web)
         else:
             # some data
             pass
 
 if __name__ == "__main__":
     import lvbstats.lvbdb
-    lvbstats.lvbdb.options = options = parse_args()
+    lvbstats.options = options = parse_args()
     if options.kill:
         kill_existing()
     deploy_mutex()

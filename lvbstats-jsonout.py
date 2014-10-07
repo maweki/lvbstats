@@ -38,9 +38,10 @@ def return_json(db, deleted=frozenset()):
     return json.dumps(result, indent=2)
 
 def main():
-    from lvbstats import lvbdb
-    db = lvbdb.open(db_filename)
-    live_db = lvbdb.open(db_live_filename)
+    from lvbstats.lvbdb import LvbDB
+    from lvbstats.twitdb import TwitDB
+    db = TwitDB(LvbDB, db_filename)
+    live_db =  TwitDB(LvbDB, db_live_filename)
 
     deleted = frozenset()
     if options.markdeleted:

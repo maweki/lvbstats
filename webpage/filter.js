@@ -1,6 +1,7 @@
 $.extend(lvbdata, {
   init_filter_dialog: function() {
     this.init_filter_dialog_lines();
+    this.init_filter_dialog_daterange();
   },
 
   init_filter_dialog_lines: function() {
@@ -15,16 +16,60 @@ $.extend(lvbdata, {
 
   init_filter_dialog_keywords: function() {
     $("#filterModal input.keywordfilter").on('input', this.update_charts.bind(this));
-    $('#filterModal span.input-group-addon.clear').click(function(){ $("#filterModal input.keywordfilter").val('').trigger('input');  });
+    $('#filterModal span.input-group-addon.keyword-clear').click(function(){ $("#filterModal input.keywordfilter").val('').trigger('input');  });
+  },
+
+  init_filter_dialog_daterange: function() {
+    var daterange = this.data.get_tweets_date_range(this.data.events);
+    this.daterange_el = $('#filterModal .input-daterange').datepicker({
+      format: "d.m.yyyy",
+      startDate: daterange.min.toLocaleDateString(),
+      endDate: daterange.max.toLocaleDateString(),
+      language: "de",
+      calendarWeeks: true,
+      autoclose: true
+    });
+    this.reset_filter_dialog_daterange();
+    this.daterange_el.children('.date-clear').click(this.reset_filter_dialog_daterange.bind(this));
+    this.daterange_el.children('input').datepicker().on("changeDate", this.update_charts.bind(this));
+  },
+
+  reset_filter_dialog_daterange: function() {
+    var daterange = this.data.get_tweets_date_range(this.data.events);
+    var endInput = this.daterange_el.children('[name="end"]'),
+      startInput = this.daterange_el.children('[name="start"]');
+    startInput.val(daterange.min.toLocaleDateString());
+    endInput.val(daterange.max.toLocaleDateString());
+    $(endInput).datepicker("update");
+    $(startInput).datepicker("update");
+  },
+
+  read_filter_daterange: function() {
+    var endInput = this.daterange_el.children('[name="end"]'),
+      startInput = this.daterange_el.children('[name="start"]');
+    var endDate = new Date($(endInput).datepicker("getDate"));
+    endDate.setDate($(endInput).datepicker("getDate").getDate() + 1);
+    return {
+      start: $(startInput).datepicker("getDate"),
+      end: endDate
+    };
+  },
+
+  filter_events_by_date_range: function(events, daterange) {
+    var start = daterange.start,
+      end = daterange.end;
+    return _.filter(events, function(ev){ return (ev.date > start && ev.date < end); });
   },
 
   update_charts: _.throttle(function() {
     console.log('Update Charts');
 
     var filter_values = this.read_filters_keywords();
+    var daterange = this.read_filter_daterange();
     this.print_filter_keywords(filter_values);
 
     var events_filtered = this.filter_events_by_line(this.data.events);
+    events_filtered = this.filter_events_by_date_range(events_filtered, daterange);
     events_filtered = this.filter_events_by_keywords(events_filtered, filter_values);
 
     this.refresh_historical_chart(events_filtered);
