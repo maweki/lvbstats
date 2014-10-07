@@ -76,6 +76,8 @@ def check_db(db, delay, check_count, recheck_count, persist):
                 continue
             if persist and copy != entry:
                 db.backend[tweetid] = entry
+            else:
+                log.debug('Not persisting:')
             log.info((tweetid, entry['deleted']))
         except Exception as e:
             log.error(e)
