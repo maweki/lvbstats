@@ -28,6 +28,7 @@ $.extend(lvbdata, {
       html += '</a>';
       tweetsdiv.append(html);
     }
+    tweetsdiv.find('*[data-toggle="tooltip"]').tooltip();
     to_remove.remove();
     $('#sampletweets + p > span.filteredtweetscount').text(_.uniq(_.pluck(events, 'tweetid')).length);
   }
