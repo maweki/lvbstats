@@ -61,7 +61,7 @@ $.extend(lvbdata, {
 
     this.chart_data.x.range([0, this.get_chart_width()]);
     this.chart_data.x.domain(d3.extent(data, function(d) { return d.date; }));
-    this.chart_data.y.domain(d3.extent(data, function(d) { return d.acc; }));
+    this.chart_data.y.domain([0, d3.max(data, function(d) { return d.acc; })]);
 
     var svg = d3.select("#eventshist").select("svg");
     svg.select("g.x.axis").transition().duration(duration_amnt).call(this.chart_data.xAxis);
