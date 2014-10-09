@@ -41,13 +41,15 @@ $.extend(lvbdata, {
         .style("text-anchor", "end")
         .text("Ereignisse");
 
-    var thispath = svg.append("path").attr("class", "line");
+    svg.append("path").attr("class", "line all");
+    svg.append("path").attr("class", "line deleted");
 
     this.refresh_historical_chart(data);
 
   },
 
   refresh_historical_chart: function(data) {
+    var deleted_data = this.data.accumulate_by_week(_.filter(data, function(d){ return d.deleted; }));
     data = this.data.accumulate_by_week(data);
 
     var duration_amnt = 1000;
@@ -64,6 +66,7 @@ $.extend(lvbdata, {
     var svg = d3.select("#eventshist").select("svg");
     svg.select("g.x.axis").transition().duration(duration_amnt).call(this.chart_data.xAxis);
     svg.select("g.y.axis").transition().duration(duration_amnt).call(this.chart_data.yAxis);
-    svg.select("path.line").datum(data).transition().duration(duration_amnt).attr("d", this.chart_data.line_function);
+    svg.select("path.line.all").datum(data).transition().duration(duration_amnt).attr("d", this.chart_data.line_function);
+    svg.select("path.line.deleted").datum(deleted_data).transition().duration(duration_amnt).attr("d", this.chart_data.line_function);
   }
 });
