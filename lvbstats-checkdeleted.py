@@ -38,6 +38,10 @@ def check_db(db, delay, check_count, recheck_count, persist):
     log.debug('Scanning entries')
     for key in allkeys:
         entry = db[key]
+        from datetime import datetime
+        timediff = datetime.now() - datetime.fromtimestamp(entry['date'])
+        if (timediff.days < 14):
+            continue
         if not 'deleted' in entry:
             to_check.add(key)
         else:
