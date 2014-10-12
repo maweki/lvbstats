@@ -5,7 +5,7 @@ import lvbstats
 import lvbstats.paths
 
 import logging
-logging.basicConfig(level=logging.DEBUG)
+logging.basicConfig(level=logging.INFO)
 log = logging.getLogger('lvbstats')
 
 db_filename = lvbstats.paths.get_db_filename()
@@ -38,6 +38,10 @@ def check_db(db, delay, check_count, recheck_count, persist):
     log.debug('Scanning entries')
     for key in allkeys:
         entry = db[key]
+        from datetime import datetime
+        timediff = datetime.now() - datetime.fromtimestamp(entry['date'])
+        if (timediff.days < 14):
+            continue
         if not 'deleted' in entry:
             to_check.add(key)
         else:
@@ -76,6 +80,8 @@ def check_db(db, delay, check_count, recheck_count, persist):
                 continue
             if persist and copy != entry:
                 db.backend[tweetid] = entry
+            else:
+                log.debug('Not persisting:')
             log.info((tweetid, entry['deleted']))
         except Exception as e:
             log.error(e)

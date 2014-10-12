@@ -23,6 +23,11 @@
   stroke-width: 1.5px;
 }
 
+.deleted {
+  stroke: red;
+  stroke-dasharray: 1,2;
+}
+
 rect.bordered {
   stroke: #E6E6E6;
   stroke-width:2px;

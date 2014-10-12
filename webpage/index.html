@@ -185,6 +185,21 @@
                   <span class="badge uniqkeywords"></span>
                   Anzahl versch. Schlüsselwörter
                 </li>
+                <li class="list-group-item">
+                  <div class="progress tweetstatus">
+                    <div class="progress-bar progress-bar-success status-ok" style="width: 33%">
+                      <span></span>
+                    </div>
+                    <div class="progress-bar progress-bar-info status-unk" style="width: 34%">
+                      <span></span>
+                    </div>
+                    <div class="progress-bar progress-bar-danger status-del" style="width: 33%">
+                      <span></span>
+                    </div>
+                  </div>
+                  Tweet-Status
+                  <button type="button" class="btn btn-info btn-xs" data-toggle="popover" title="Status" data-content="Grün: Wahrscheinlich noch verfügbar,  Blau: Unbekannt,  Rot: Gelöscht">?</button>
+                </li>
               </ul>
             </div>
             <div class="col-md-4">
@@ -195,6 +210,7 @@
           </div>
 
           <h2 id="histEventsPerWeek">Ereignisse pro Woche (historisch) <button class="minifilter"></button></h2>
+          <p>Anteil gelöschter Tweets in rot markiert.</p>
           <div id="eventshist"></div>
 
           <div class="container-fluid"><div class="row">
@@ -299,6 +315,14 @@
               <span class="input-group-addon keyword-clear clear">&#10005;</span>
             </div>
             <p><small>Schlüsselwörter: <span class="keywordcheck"></span></small></p>
+            <h5>Nach Status</h5>
+            <label class="radio-inline">
+              <input type="radio" name="tweetStatusSelect" id="tweetStatusSelect1" checked value="all"> Alle
+            </label>
+            <label class="radio-inline">
+              <input type="radio" name="tweetStatusSelect" id="tweetStatusSelect2" value="deleted-only"> Nur gelöschte
+            </label>
+
           </div>
           <div class="modal-footer">
             <button type="button" class="btn btn-default" data-dismiss="modal">Schließen</button>

@@ -22,6 +22,19 @@ $.extend(lvbdata.data, {
     return this.unique_lines(events).length;
   },
 
+  render_tweet_status: function(progress_div, raw_data) {
+    var total = _.size(raw_data);
+    var ok = _.size(_.filter(raw_data, function(d) { return d.deleted === false; }));
+    var del = _.size(_.filter(raw_data, function(d) { return d.deleted === true; }));
+    var unk = _.size(_.filter(raw_data, function(d) { return d.deleted === undefined; }));
+    $(progress_div).children('.status-ok').attr('style', 'width:' + ok/total*100 + '%');
+    $(progress_div).children('.status-unk').attr('style', 'width:' + unk/total*100 + '%');
+    $(progress_div).children('.status-del').attr('style', 'width:' + del/total*100 + '%');
+    $(progress_div).children('.status-del').children('span').text(del);
+    $(progress_div).children('.status-unk').children('span').text(unk);
+    $(progress_div).children('.status-ok').children('span').text(ok);
+  },
+
   render_statistics: function() {
     var main = $('#general_stats');
     $(main).find('.tweetnum').text(this.get_tweets_count(this.raw_data));
@@ -31,6 +44,7 @@ $.extend(lvbdata.data, {
     var daterange = this.get_tweets_date_range(this.events);
     $(main).find('.tweetsfrom').text(daterange.min.toLocaleDateString());
     $(main).find('.tweetsto').text(daterange.max.toLocaleDateString());
+    this.render_tweet_status($(main).find('.tweetstatus'), this.raw_data);
   }
 }
 );

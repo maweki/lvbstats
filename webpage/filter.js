@@ -2,6 +2,7 @@ $.extend(lvbdata, {
   init_filter_dialog: function() {
     this.init_filter_dialog_lines();
     this.init_filter_dialog_daterange();
+    this.init_filter_dialog_status();
   },
 
   init_filter_dialog_lines: function() {
@@ -34,6 +35,10 @@ $.extend(lvbdata, {
     this.daterange_el.children('input').datepicker().on("changeDate", this.update_charts.bind(this));
   },
 
+  init_filter_dialog_status: function() {
+    $('#filterModal input[name="tweetStatusSelect"]').on('change', this.update_charts.bind(this));
+  },
+
   reset_filter_dialog_daterange: function() {
     var daterange = this.data.get_tweets_date_range(this.data.events);
     var endInput = this.daterange_el.children('[name="end"]'),
@@ -61,6 +66,18 @@ $.extend(lvbdata, {
     return _.filter(events, function(ev){ return (ev.date > start && ev.date < end); });
   },
 
+  filter_events_by_status: function(events, status) {
+    if (!status) {
+      status = $('#filterModal input[name="tweetStatusSelect"]:checked').val();
+    }
+    if (status == 'all') { return events; }
+
+    if (status == 'deleted-only') {
+      return _.filter(events, function(d) { return d.deleted; });
+    }
+    return events;
+  },
+
   update_charts: _.throttle(function() {
     console.log('Update Charts');
 
@@ -71,6 +88,7 @@ $.extend(lvbdata, {
     var events_filtered = this.filter_events_by_line(this.data.events);
     events_filtered = this.filter_events_by_date_range(events_filtered, daterange);
     events_filtered = this.filter_events_by_keywords(events_filtered, filter_values);
+    events_filtered = this.filter_events_by_status(events_filtered);
 
     this.refresh_historical_chart(events_filtered);
     this.create_heatmap(events_filtered);

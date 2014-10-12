@@ -49,7 +49,6 @@ def download_history(api, db, tweet_count=200, download_delay=90):
                 max_id = persisted_tweet
             if persisted_tweet and max_id and (int(max_id) > int(persisted_tweet)):
                 max_id = int(persisted_tweet)
-        db.sync()
         if statuses:
             del statuses # free memory
             from time import sleep

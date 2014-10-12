@@ -1,10 +1,8 @@
 from tinydb import TinyDB, where
 from tinydb.storages import JSONStorage
 from tinydb.middlewares import ConcurrencyMiddleware
-from lvbstats.lvbshelve import DudShelf
 
-
-class LvbDB(TinyDB, DudShelf):
+class LvbDB(TinyDB):
 
     @staticmethod
     def open(path):
