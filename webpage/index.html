@@ -5,11 +5,16 @@
     <title>Visualizing LVB</title>
     <script src="node_modules/d3/d3.min.js"></script>
     <script src="node_modules/jquery/dist/jquery.min.js"></script>
-    <script src="node_modules/lodash/dist/lodash.min.js"></script>
+    <script src="node_modules/lodash/index.js"></script>
+    <script src="node_modules/URIjs/src/URI.min.js"></script>
+    <script src="node_modules/zeroclipboard/dist/ZeroClipboard.min.js"></script>
+    <script>
+    ZeroClipboard.config( { swfPath: "node_modules/zeroclipboard/dist/ZeroClipboard.swf" } );
+    </script>
 
     <link rel="stylesheet" href="node_modules/bootstrap/dist/css/bootstrap.min.css">
     <link rel="stylesheet" href="node_modules/bootstrap/dist/css/bootstrap-theme.min.css">
-    <link rel="stylesheet" href="submodules/bootstrap-datepicker/css/datepicker3.css">
+    <link rel="stylesheet" href="submodules/bootstrap-datepicker/dist/css/bootstrap-datepicker3.min.css">
 
     <script src="node_modules/bootstrap/dist/js/bootstrap.min.js"></script>
     <script src="submodules/bootstrap-datepicker/js/bootstrap-datepicker.js"></script>
@@ -30,6 +35,14 @@
     .input-group .form-control + .input-group-addon {
       border-left-width: 0;
     }
+
+    h1 small span.version {
+      font-size: 50%;
+      color: #ccc;
+    }
+
+    #clipcopy.zeroclipboard-is-hover { background-color: #ddd; }
+    #clipcopy.zeroclipboard-is-active { background-color: #aaa; }
     </style>
 
     <script src="main.js"></script>
@@ -56,6 +69,7 @@
         lvbdata.update_keyword_table(lvbdata.data.events);
         lvbdata.update_sample_tweets(lvbdata.data.events);
         lvbdata.init_cooccurence_matrix(lvbdata.data.events);
+        lvbdata.urlToFilters();
       };
 
       lvbdata.init(start);
@@ -138,7 +152,9 @@
 
         <div class="col-md-8 col-md-offset-1 main">
           <div class="page-header">
-            <h1 id="intro">LVB Stats <small>durch Daten über Leipzig lernen</small></h1>
+            <h1 id="intro">LVB Stats <small>durch Daten über Leipzig lernen
+            <span class="version">0.7.0</span>
+            </small></h1>
           </div>
 
           <div class="row">
@@ -272,6 +288,9 @@
             <li>jQuery / <a href="http://jquery.com/">jquery.com</a></li>
             <li>Lo-Dash / <a href="http://lodash.com/">lodash.com</a></li>
             <li>Bootstrap / <a href="http://getbootstrap.com/">getbootstrap.com</a></li>
+            <li>bootstrap-datepicker / <a href="https://github.com/eternicode/bootstrap-datepicker">github.com/eternicode/bootstrap-datepicker</a></li>
+            <li>URI.js / <a href="http://medialize.github.io/URI.js/">medialize.github.io/URI.js</a></li>
+            <li>ZeroClipboard / <a href="http://zeroclipboard.org/">zeroclipboard.org</a></li>
           </ul>
           <h3>Lizenz</h3>
           <p>
@@ -324,7 +343,13 @@
             </label>
 
           </div>
-          <div class="modal-footer">
+          <div class="modal-footer form-inline">
+            <div class="input-group pull-left col-md-8">
+              <input type="text" class="form-control filter-url" id="filterurl" title="URL zu dieser Suchanfrage" placeholder="URL zu dieser Suchanfrage" readonly/>
+              <span title="URL in Zwischenablage kopieren" data-clipboard-target="filterurl" class="input-group-addon" id="clipcopy">
+                <span class="glyphicon glyphicon-copy"></span></span>
+              <script>new ZeroClipboard($("#clipcopy"));</script>
+            </div>
             <button type="button" class="btn btn-default" data-dismiss="modal">Schließen</button>
           </div>
         </div>

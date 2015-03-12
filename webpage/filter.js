@@ -8,7 +8,7 @@ $.extend(lvbdata, {
   init_filter_dialog_lines: function() {
     var filter_field = $("#filterModal fieldset.linesFilter");
     var lines = this.data.unique_lines(this.data.events);
-    _(lines).forEach(function(line) {
+    _.forEach(lines, function(line) {
       var html = '<div class="checkbox col-md-1"><label><input checked="checked" name="' + line + '" type="checkbox">' + line + '</label></div>';
       $(html).appendTo(filter_field);
     });
@@ -31,7 +31,10 @@ $.extend(lvbdata, {
       autoclose: true
     });
     this.reset_filter_dialog_daterange();
-    this.daterange_el.children('.date-clear').click(this.reset_filter_dialog_daterange.bind(this));
+    this.daterange_el.children('.date-clear').click(function() {
+          this.reset_filter_dialog_daterange();
+          this.update_charts();
+      }.bind(this));
     this.daterange_el.children('input').datepicker().on("changeDate", this.update_charts.bind(this));
   },
 
@@ -39,14 +42,17 @@ $.extend(lvbdata, {
     $('#filterModal input[name="tweetStatusSelect"]').on('change', this.update_charts.bind(this));
   },
 
+  get_default_daterange: _.memoize(function() {
+      return this.data.get_tweets_date_range(this.data.events);
+  }),
+
   reset_filter_dialog_daterange: function() {
-    var daterange = this.data.get_tweets_date_range(this.data.events);
+    var daterange = this.get_default_daterange();
     var endInput = this.daterange_el.children('[name="end"]'),
       startInput = this.daterange_el.children('[name="start"]');
-    startInput.val(daterange.min.toLocaleDateString());
-    endInput.val(daterange.max.toLocaleDateString());
-    $(endInput).datepicker("update");
-    $(startInput).datepicker("update");
+    $(startInput).datepicker("update", daterange.min.toLocaleDateString());
+    $(endInput).datepicker("update", daterange.max.toLocaleDateString());
+    $(endInput).datepicker("changeDate");
   },
 
   read_filter_daterange: function() {
@@ -66,9 +72,13 @@ $.extend(lvbdata, {
     return _.filter(events, function(ev){ return (ev.date > start && ev.date < end); });
   },
 
+  get_filter_status: function() {
+    return $('#filterModal input[name="tweetStatusSelect"]:checked').val();
+  },
+
   filter_events_by_status: function(events, status) {
     if (!status) {
-      status = $('#filterModal input[name="tweetStatusSelect"]:checked').val();
+      status = this.get_filter_status();
     }
     if (status == 'all') { return events; }
 
@@ -98,6 +108,9 @@ $.extend(lvbdata, {
     this.update_keyword_table(events_filtered);
     this.update_sample_tweets(events_filtered);
     this.update_cooccurence_matrix(events_filtered);
+
+    var t = this;
+    _.defer(function(){t.setFilterUrlField(t.filtersToUrl());});
   }, 1000),
 
   read_filters_lines: function() {
@@ -212,5 +225,109 @@ $.extend(lvbdata, {
 
       return filtered_events;
     }
+  },
+
+  urlToFilters: function() {
+      var m = new URI(_.trim(document.URL,'/')).search(true),
+      fixarr = ['kw', 'lin', 'lex'],
+      any = false;
+
+      while (fixarr.length) {
+        var s = fixarr.pop();
+        if (m[s] && _.isString(m[s])) { m[s] = [m[s]]; }
+      }
+
+      if (m.to) {
+        this.daterange_el.children('[name="end"]').val(new Date(Date.parse(m.to)).toLocaleDateString()).datepicker("update");
+      }
+
+      if (m.from) {
+        this.daterange_el.children('[name="start"]').val(new Date(Date.parse(m.from)).toLocaleDateString()).datepicker("update");
+      }
+
+      if (m.lex) {
+        _.forEach(m.lex, this.filter_exclude_line, this);
+      }
+
+      if (m.lin) {
+        _.forEach(_.difference(this.data.unique_lines(this.data.events),m.lin),this.filter_exclude_line, this);
+      }
+
+      if (m.kw) {
+        $("#filterModal input.keywordfilter").val(m.kw.join(' '));
+        any = any || true;
+      }
+
+      if (m.status) {
+        $('#filterModal input[name="tweetStatusSelect"][value="'+m.status+'"]').attr('checked', true).change();
+      }
+      if (any) this.update_charts();
+  },
+
+  filtersToUrl: function() {
+      var sameDate = function(a, b) {
+        return (a.getFullYear() == b.getFullYear()) && (a.getDate() == b.getDate()) && (a.getMonth() == b.getMonth());
+      };
+
+      var url = new URI(document.URL),
+      kws = this.read_filters_keywords(),
+      f_lines = this.read_filters_lines(),
+      all_lines = this.data.unique_lines(this.data.events);
+
+      // keywords
+      if (!_.isEmpty(kws)) {
+        url.setSearch("kw", kws);
+      }
+      else {
+        url.removeSearch("kw");
+      }
+
+      // lines
+      url.removeSearch("lin");
+      url.removeSearch("lex");
+      if (!_.isEmpty(_.difference(all_lines, f_lines))) {
+        if (f_lines.length > all_lines.length / 2) { // less lines are excluded
+            url.setSearch("lex", _.difference(all_lines, f_lines));
+        }
+        else { // less lines are included
+            url.setSearch("lin", f_lines);
+        }
+      }
+
+      // dates
+      var daterange = this.read_filter_daterange(),
+      daterange_default = this.get_default_daterange(),
+      showdate;
+      if (daterange_default.min.toLocaleDateString() == daterange.start.toLocaleDateString()) {
+        url.removeSearch('from');
+      }
+      else {
+        showdate = new Date(daterange.start + 1);
+        url.setSearch('from', showdate.getFullYear() + '-' + (showdate.getMonth() + 1) + '-' + showdate.getDate());
+      }
+
+      var datelimit = new Date();
+      datelimit.setDate(daterange_default.max.getDate() + 1);
+      if (sameDate(datelimit, daterange.end)) {
+        url.removeSearch('to');
+      }
+      else {
+        showdate = new Date(daterange.end - 1);
+        url.setSearch('to', showdate.getFullYear() + '-' + (showdate.getMonth() + 1) + '-' + showdate.getDate());
+      }
+
+      // deletemode
+      if (this.get_filter_status() == 'all') {
+        url.removeSearch('status');
+      }
+      else {
+        url.setSearch('status', this.get_filter_status());
+      }
+
+      return url.toString();
+  },
+
+  setFilterUrlField: function(url) {
+      $("#filterModal input.filter-url").val(url);
   }
 });
