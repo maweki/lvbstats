@@ -64,6 +64,7 @@
         lvbdata.update_keyword_table(lvbdata.data.events);
         lvbdata.update_sample_tweets(lvbdata.data.events);
         lvbdata.init_cooccurence_matrix(lvbdata.data.events);
+        lvbdata.urlToFilters();
       };
 
       lvbdata.init(start);
