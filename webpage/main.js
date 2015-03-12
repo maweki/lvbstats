@@ -54,7 +54,7 @@ lvbdata = {
     to_events: function(raw_data) {
       result = [];
       _.forOwn(raw_data, function(tweetobj, tweetid){
-        _(tweetobj.lines).forEach(function(thisline){
+        _.forEach(tweetobj.lines, function(thisline){
           var newevent = {
             line: thisline.toString(),
             tweetid: tweetid,
@@ -83,7 +83,7 @@ lvbdata = {
         return newitem;
       };
 
-      _(events).forEach(function(ev){
+      _.forEach(events, function(ev){
         var item = get_acc_obj((ev.date.getDay()+6)%7, ev.date.getHours());
         item.acc += 1;
       });
@@ -105,7 +105,7 @@ lvbdata = {
       }
 
       var accu_wdh = this.accumulate_by_weekday_hour(events);
-      _(accu_wdh).forEach(function(field){
+      _.forEach(accu_wdh, function(field){
         res[field.day].acc += field.acc;
       });
 
@@ -119,7 +119,7 @@ lvbdata = {
       }
 
       var accu_wdh = this.accumulate_by_weekday_hour(events);
-      _(accu_wdh).forEach(function(field){
+      _.forEach(accu_wdh, function(field){
         res[field.hour].acc += field.acc;
       });
 
@@ -137,8 +137,8 @@ lvbdata = {
         lookup[lc].acc += 1;
       };
 
-      _(events).forEach(function(event){
-        _(event.words).forEach(function(word){
+      _.forEach(events, function(event){
+        _.forEach(event.words, function(word){
           add_word(word);
         });
       });
@@ -149,7 +149,7 @@ lvbdata = {
     accumulate_by_week: function(events) {
       var lookup = {};
       var first_date = this.get_tweets_date_range(this.events).min;
-      _(events).forEach(function(event){
+      _.forEach(events, function(event){
         var newdate = new Date(event.date - ((event.date.getDay()+6)%7)*24*60*60*1000);
         if (newdate < first_date) {
           first_date = newdate;
@@ -179,7 +179,7 @@ lvbdata = {
     accumulate_by_day: function(events) {
       var lookup = {};
       var first_date = new Date();
-      _(events).forEach(function(event){
+      _.forEach(events, function(event){
         var newdate = new Date(event.date);
         if (newdate < first_date) {
           first_date = newdate;
@@ -208,7 +208,7 @@ lvbdata = {
 
     accumulate_by_line: function(events) {
       lookup = {};
-      _(events).forEach(function(event){
+      _.forEach(events, function(event){
         if (!lookup[event.line]) {
           lookup[event.line] = {line: event.line, acc: 0};
         }
