@@ -31,7 +31,10 @@ $.extend(lvbdata, {
       autoclose: true
     });
     this.reset_filter_dialog_daterange();
-    this.daterange_el.children('.date-clear').click(this.reset_filter_dialog_daterange.bind(this));
+    this.daterange_el.children('.date-clear').click(function() {
+          this.reset_filter_dialog_daterange();
+          this.update_charts();
+      }.bind(this));
     this.daterange_el.children('input').datepicker().on("changeDate", this.update_charts.bind(this));
   },
 
@@ -47,10 +50,9 @@ $.extend(lvbdata, {
     var daterange = this.get_default_daterange();
     var endInput = this.daterange_el.children('[name="end"]'),
       startInput = this.daterange_el.children('[name="start"]');
-    startInput.val(daterange.min.toLocaleDateString());
-    endInput.val(daterange.max.toLocaleDateString());
-    $(endInput).datepicker("update");
-    $(startInput).datepicker("update");
+    $(startInput).datepicker("update", daterange.min.toLocaleDateString());
+    $(endInput).datepicker("update", daterange.max.toLocaleDateString());
+    $(endInput).datepicker("changeDate");
   },
 
   read_filter_daterange: function() {
