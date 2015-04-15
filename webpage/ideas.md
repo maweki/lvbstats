@@ -1,4 +1,9 @@
 # Ideen
+
+## Refactor
+https://github.com/square/crossfilter/wiki/API-Reference
+
+
 ## Start
 Umwandeln der Tweets in Events
 {date, line, [word]}
