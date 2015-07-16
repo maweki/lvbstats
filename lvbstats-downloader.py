@@ -109,7 +109,10 @@ def main(options):
     if last_id:
         log.info('Lastid: %d', last_id)
 
-    db.close()
+    try:
+        db.close()
+    except:
+        pass
 
 if __name__ == "__main__":
     import lvbstats.lvbdb
