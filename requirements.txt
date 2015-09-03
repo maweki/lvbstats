@@ -1,3 +1,2 @@
 twitter
 more_itertools
-tinydb==1.4.0
