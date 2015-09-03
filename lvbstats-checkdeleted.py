@@ -60,8 +60,8 @@ def main(options):
     sink = tweetsaver(overwrite=True)
     next(sink)
 
-    to_check = 30
-    to_recheck = 30
+    to_check = options.max_check
+    to_recheck = options.max_recheck
     paths = (os.path.join(dbpath, f) for f in files)
     for f in paths:
         if '.gitignore' in f:
@@ -69,16 +69,17 @@ def main(options):
         with gzip.open(f, 'rb') as fp:
             tweet = json.loads(fp.read().decode())
             status = tweet.get("online", None)
-            if status is None and to_check > 0:
-                # unchecked
-                tweet["online"] = get_online_status(api, tweet["id"])
-                sink.send(tweet)
+            check_needed = False
+            if status is None and to_check > 0: # unchecked
+                check_needed = True
                 to_check = to_check - 1
-            elif status is True and to_recheck > 0:
-                # to recheck
+            elif status is True and to_recheck > 0: # to recheck
+                check_needed = True
+                to_recheck = to_recheck - 1
+
+            if check_needed:
                 tweet["online"] = get_online_status(api, tweet["id"])
                 sink.send(tweet)
-                to_recheck = to_recheck - 1
 
         if to_check == 0 and to_recheck == 0:
             break
