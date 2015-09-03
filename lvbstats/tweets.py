@@ -15,7 +15,7 @@ def purge_tweet(orig_tweet):
     for attr in ("followers_count", "friends_count", "id", "statuses_count"):
         new_tweet["user"][attr] = orig_tweet["user"][attr]
 
-    for attr in ("online",):
+    for attr in ("online", "fulltext"): # my attributes
         if attr in orig_tweet:
             new_tweet[attr] = orig_tweet[attr]
     return new_tweet

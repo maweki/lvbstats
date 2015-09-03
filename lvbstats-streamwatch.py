@@ -3,7 +3,7 @@
 from lvbstats import VERSION
 import lvbstats.paths
 from lvbstats.twit import twitter_login_stream
-from lvbstats.tweets import tweetsaver
+from lvbstats.tweets import tweetsaver, query_web
 
 import logging
 logging.basicConfig(level=logging.INFO)
@@ -92,13 +92,16 @@ def main(options):
             if tweet['user']['id'] != 221056350:
                 continue
             tweet["online"] = None
+
+            if options.web and '...' in tweet['text']:
+                tweet["fulltext"] = query_web(tweet['text'].partition(":")[2][0:-26])
+
             sink.send(tweet)
         else:
             # some data
             pass
 
 if __name__ == "__main__":
-    import lvbstats.lvbdb
     lvbstats.options = options = parse_args()
     if options.kill:
         kill_existing()
