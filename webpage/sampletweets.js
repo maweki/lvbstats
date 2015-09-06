@@ -9,7 +9,7 @@ $.extend(lvbdata, {
       var thisid = sampletweetids.pop();
       var thistweet = this.data.raw_data[thisid];
       var delicon = '';
-      if (thistweet.deleted === undefined) {
+      if (thistweet.deleted === null) {
         delicon = '<span data-toggle="tooltip" data-placement="right" title="Tweetstatus unbekannt" class="glyphicon glyphicon-question-sign"></span>';
       } else if (thistweet.deleted) {
         delicon = '<span data-toggle="tooltip" data-placement="right" title="Tweet gelöscht" class="glyphicon glyphicon-remove-sign"></span>';

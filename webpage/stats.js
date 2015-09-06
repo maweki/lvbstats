@@ -26,7 +26,7 @@ $.extend(lvbdata.data, {
     var total = _.size(raw_data);
     var ok = _.size(_.filter(raw_data, function(d) { return d.deleted === false; }));
     var del = _.size(_.filter(raw_data, function(d) { return d.deleted === true; }));
-    var unk = _.size(_.filter(raw_data, function(d) { return d.deleted === undefined; }));
+    var unk = _.size(_.filter(raw_data, function(d) { return d.deleted === null; }));
     $(progress_div).children('.status-ok').attr('style', 'width:' + ok/total*100 + '%');
     $(progress_div).children('.status-unk').attr('style', 'width:' + unk/total*100 + '%');
     $(progress_div).children('.status-del').attr('style', 'width:' + del/total*100 + '%');
