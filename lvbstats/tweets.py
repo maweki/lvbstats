@@ -1,8 +1,17 @@
 import gzip
 import json
 import os
+from functools import wraps
 import logging
 log = logging.getLogger('lvbstats')
+
+def prime(fun):
+    @wraps(fun)
+    def wrapper(*args, **kwargs):
+        g = fun(*args, **kwargs)
+        g.send(None)
+        return g
+    return wrapper
 
 def purge_tweet(orig_tweet):
     new_tweet = {}
@@ -20,6 +29,7 @@ def purge_tweet(orig_tweet):
             new_tweet[attr] = orig_tweet[attr]
     return new_tweet
 
+@prime
 def tweetsaver(overwrite=False):
     from .paths import get_db_path
     while True:
