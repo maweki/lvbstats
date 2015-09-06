@@ -4,6 +4,7 @@ from lvbstats import VERSION
 import lvbstats
 import lvbstats.paths
 from lvbstats.twit import twitter_login
+from lvbstats.tweets import tweetsaver
 import os
 from random import shuffle
 import gzip
@@ -35,7 +36,7 @@ def print_version():
 
 def get_online_status(api, tweetid):
     try:
-        api.statuses.oembed(_id=tweetid)
+        api.statuses.show(id=tweetid)
         return True
     except twitter.api.TwitterHTTPError as e:
         print(e)
@@ -59,7 +60,6 @@ def main(options):
     shuffle(files)
 
     sink = tweetsaver(overwrite=True)
-    next(sink)
 
     to_check = options.max_check
     to_recheck = options.max_recheck
