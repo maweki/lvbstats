@@ -16,11 +16,13 @@ def purge_tweet(orig_tweet):
     for attr in ("truncated", "text", "in_reply_to_status_id",
                 "in_reply_to_screen_name", "created_at", "retweet_count",
                  "id", "favorite_count", "in_reply_to_user_id"):
-        new_tweet[attr] = orig_tweet[attr]
+        if attr in orig_tweet:
+            new_tweet[attr] = orig_tweet[attr]
 
-    new_tweet["user"] = {}
-    for attr in ("followers_count", "friends_count", "id", "statuses_count"):
-        new_tweet["user"][attr] = orig_tweet["user"][attr]
+    if "user" in orig_tweet:
+        new_tweet["user"] = {}
+        for attr in ("followers_count", "friends_count", "id", "statuses_count"):
+            new_tweet["user"][attr] = orig_tweet["user"][attr]
 
     for attr in ("online", "fulltext"): # my attributes
         if attr in orig_tweet:
