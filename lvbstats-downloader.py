@@ -74,7 +74,7 @@ def main(options):
         exit(0)
 
     tweet_count = args.tweetcount
-    log.info('Requesting %d from %d', tweet_count,)
+    log.info('Requesting %d', tweet_count)
     twitter_args = {'screen_name': target, 'count': tweet_count, 'exclude_replies': 'true'}
 
     save = tweetsaver()
