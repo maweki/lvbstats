@@ -9,6 +9,7 @@ from random import shuffle
 import gzip
 import json
 import twitter
+from time import sleep
 
 import logging
 logging.basicConfig(level=logging.INFO)
@@ -80,6 +81,7 @@ def main(options):
             if check_needed:
                 tweet["online"] = get_online_status(api, tweet["id"])
                 sink.send(tweet)
+                sleep(options.download_delay)
 
         if to_check == 0 and to_recheck == 0:
             break
