@@ -3,13 +3,20 @@
 from lvbstats import VERSION
 import lvbstats
 import lvbstats.paths
+from lvbstats.twit import twitter_login
+from lvbstats.tweets import tweetsaver
+import os
+from random import shuffle
+import gzip
+import json
+import twitter
+from time import sleep
+from datetime import datetime
+from datetime import timezone
 
 import logging
 logging.basicConfig(level=logging.INFO)
 log = logging.getLogger('lvbstats')
-
-db_filename = lvbstats.paths.get_db_filename()
-db_live_filename = lvbstats.paths.get_db_filename(infix='live')
 
 def parse_args():
     import argparse
@@ -21,8 +28,6 @@ def parse_args():
     parser.add_argument('--max_recheck', default=30, type=int, help='Maximum tweets to recheck')
 
     parser.add_argument('--verbose', help='Enable verbose mode', action="store_true")
-    parser.add_argument('--nopersist', help='Do not persist data', action="store_true")
-
     parser.add_argument('--version', help='Print version information', action='store_true')
 
     return parser.parse_args()
@@ -31,83 +36,63 @@ def parse_args():
 def print_version():
     print(VERSION)
 
-def check_db(db, delay, check_count, recheck_count, persist):
-    allkeys = db.keys()
-    to_check = set()
-    to_recheck = set()
-    log.debug('Scanning entries')
-    for key in allkeys:
-        entry = db[key]
-        from datetime import datetime
-        timediff = datetime.now() - datetime.fromtimestamp(entry['date'])
-        if (timediff.days < 14):
-            continue
-        if not 'deleted' in entry:
-            to_check.add(key)
-        else:
-            if not entry['deleted']:
-                to_recheck.add(key)
-    from random import sample
-    log.debug(('to check', len(to_check), 'to recheck', len(to_recheck)))
-    check = []
-    check.extend(sample(to_check, min(check_count, len(to_check))))
-    check.extend(sample(to_recheck, min(recheck_count, len(to_recheck))))
-    log.info('Checking ' + str(len(check)))
-
-    def get_code(url):
-        from urllib.error import URLError
-        from urllib.request import urlopen
-        try:
-            log.debug(('checking:', url))
-            response = urlopen(url)
-            return response.status
-        except URLError as error:
-            return error.code
-
-    from time import sleep
-    url_prefix = 'https://twitter.com/LVB_direkt/status/'
-
-    for tweetid in check:
-        try:
-            status = get_code(url_prefix + str(tweetid))
-            entry = db[tweetid]
-            copy = dict(entry)
-            if status == 200:
-                entry['deleted'] = False
-            elif status == 404:
-                entry['deleted'] = True
-            else:
-                continue
-            if persist and copy != entry:
-                db.backend[tweetid] = entry
-            else:
-                log.debug('Not persisting:')
-            log.info((tweetid, entry['deleted']))
-        except Exception as e:
-            log.error(e)
-        sleep(delay)
+def get_online_status(api, tweetid):
+    try:
+        api.statuses.show(id=tweetid)
+        return True
+    except twitter.api.TwitterHTTPError as e:
+        print(e)
+        return False
+    except Exception:
+        return None
 
 def main(options):
     if not options.verbose:
         log.setLevel(logging.WARNING)
 
     args = options
-    from lvbstats.lvbdb import LvbDB
-    from lvbstats.twitdb import TwitDB
-    db = TwitDB(LvbDB, db_filename)
-
-    check_db(db, options.download_delay, options.max_check, options.max_recheck, not options.nopersist)
-
-    live_db = TwitDB(LvbDB, db_live_filename)
-    check_db(live_db, options.download_delay, options.max_check, options.max_recheck, not options.nopersist)
 
     if args.version:
         print_version()
         exit(0)
 
+    api = twitter_login()
+    dbpath = lvbstats.paths.get_db_path()
+    files = os.listdir(dbpath)
+    shuffle(files)
 
+    sink = tweetsaver(overwrite=True, logger=log)
+
+    to_check = options.max_check
+    to_recheck = options.max_recheck
+    paths = (os.path.join(dbpath, f) for f in files)
+    for f in paths:
+        if '.gitignore' in f:
+            continue
+        with gzip.open(f, 'rb') as fp:
+            tweet = json.loads(fp.read().decode())
+            status = tweet.get("online", None)
+            check_needed = False
+            created_at = datetime.strptime(tweet['created_at'], '%a %b %d %X %z %Y')
+            now = datetime.now(tz=timezone.utc)
+            diff = now - created_at
+            if diff.days < 21:
+                continue
+            if status is None and to_check > 0: # unchecked
+                check_needed = True
+                to_check = to_check - 1
+            elif status is True and to_recheck > 0: # to recheck
+                check_needed = True
+                to_recheck = to_recheck - 1
+
+            if check_needed:
+                tweet["online"] = get_online_status(api, tweet["id"])
+                sink.send(tweet)
+                sleep(options.download_delay)
+
+        if to_check == 0 and to_recheck == 0:
+            break
 
 if __name__ == "__main__":
-    import lvbstats.lvbdb
     lvbstats.options = options = parse_args()
     main(options)
