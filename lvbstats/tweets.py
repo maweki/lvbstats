@@ -30,7 +30,7 @@ def purge_tweet(orig_tweet):
     return new_tweet
 
 @prime
-def tweetsaver(overwrite=False):
+def tweetsaver(overwrite=False, logger=None):
     from .paths import get_db_path
     while True:
         thistweet = yield
@@ -39,6 +39,8 @@ def tweetsaver(overwrite=False):
         path = os.path.join(get_db_path(), str(tweetid))
         if not overwrite and os.path.exists(path):
             continue
+        if logger:
+            logger.info(str(purged))
         with gzip.open(path, 'w') as f:
             s = json.dumps(purged)
             f.write(s.encode("utf-8"))
