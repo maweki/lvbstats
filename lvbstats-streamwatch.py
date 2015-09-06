@@ -80,8 +80,7 @@ def main(options):
     stream = stream_api.statuses.filter(follow=target)
     from twitter.stream import Timeout, HeartbeatTimeout, Hangup
 
-    sink = tweetsaver()
-    next(sink)
+    save = tweetsaver(logger=log)
     for tweet in stream:
         log.debug(tweet)
         if tweet is None:
@@ -96,7 +95,7 @@ def main(options):
             if options.web and '...' in tweet['text']:
                 tweet["fulltext"] = query_web(tweet['text'].partition(":")[2][0:-26])
 
-            sink.send(tweet)
+            save.send(tweet)
         else:
             # some data
             pass

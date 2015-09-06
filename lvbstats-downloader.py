@@ -29,14 +29,11 @@ def parse_args():
 
     return parser.parse_args()
 
-
 def print_version():
     print(VERSION)
 
-
 def download_history(api, tweet_count=200, download_delay=90):
-    sink = tweetsaver()
-    next(sink)
+    saver = tweetsaver(logger=log)
 
     max_id = None
     while True:
@@ -46,7 +43,7 @@ def download_history(api, tweet_count=200, download_delay=90):
         statuses = api.statuses.user_timeline(**twitter_args)
         for s in statuses:
             s["online"] = None
-            sink.send(s)
+            saver.send(s)
             persisted_tweet = s["id"]
             if max_id is None:
                 max_id = persisted_tweet
@@ -71,32 +68,22 @@ def main(options):
         exit(0)
 
     api = twitter_login()
-    last_id = None
 
     if args.history:
         download_history(api, args.tweetcount, args.history_delay)
         exit(0)
 
     tweet_count = args.tweetcount
-
     log.info('Requesting %d from %d', tweet_count,)
     twitter_args = {'screen_name': target, 'count': tweet_count, 'exclude_replies': 'true'}
 
-    if last_id:
-        twitter_args['since_id'] = last_id
-
-    sink = tweetsaver()
-    next(sink)
-
+    save = tweetsaver()
     statuses = api.statuses.user_timeline(**twitter_args)
+
     for s in statuses:
         s["online"] = None
-        sink.send(s)
-
-    if last_id:
-        log.info('Lastid: %d', last_id)
+        save.send(s)
 
 if __name__ == "__main__":
-    import lvbstats.lvbdb
     lvbstats.options = options = parse_args()
     main(options)
