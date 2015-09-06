@@ -61,7 +61,7 @@ def main(options):
     files = os.listdir(dbpath)
     shuffle(files)
 
-    sink = tweetsaver(overwrite=True)
+    sink = tweetsaver(overwrite=True, logger=log)
 
     to_check = options.max_check
     to_recheck = options.max_recheck
