@@ -11,6 +11,8 @@ import gzip
 import json
 import twitter
 from time import sleep
+from datetime import datetime
+from datetime import timezone
 
 import logging
 logging.basicConfig(level=logging.INFO)
@@ -71,6 +73,11 @@ def main(options):
             tweet = json.loads(fp.read().decode())
             status = tweet.get("online", None)
             check_needed = False
+            created_at = datetime.strptime(tweet['created_at'], '%a %b %d %X %z %Y')
+            now = datetime.now(tz=timezone.utc)
+            diff = now - created_at
+            if diff.days < 21:
+                continue
             if status is None and to_check > 0: # unchecked
                 check_needed = True
                 to_check = to_check - 1
