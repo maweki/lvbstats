@@ -62,7 +62,7 @@ def get_match(haystack, needle):
                 return needle[:match_count]
     return None
 
-def find_full_text(partial, page):
+def find_full_text(partial, page, log):
     for line in page.splitlines():
         log.debug(line)
         match = get_match(line, partial)
@@ -83,7 +83,7 @@ def find_full_text(partial, page):
     log.info('No Webfind')
     return None
 
-def query_web(text):
+def query_web(text, log):
     text = text.strip()
     if not text:
         raise ValueError('No text to search web for')
@@ -98,8 +98,8 @@ def query_web(text):
         try:
             if ('Content-Encoding', 'gzip') in page.getheaders():
                 from gzip import decompress
-                return find_full_text(text, decompress(page.read()).decode('utf-8'))
-            return find_full_text(text, page.read().decode('utf-8'))
+                return find_full_text(text, decompress(page.read()).decode('utf-8'), log)
+            return find_full_text(text, page.read().decode('utf-8'), log)
         except UnicodeDecodeError as e:
             log.error((UnicodeDecodeError, e, 'page headers', page.getheaders()))
             raise

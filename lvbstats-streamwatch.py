@@ -93,7 +93,7 @@ def main(options):
             tweet["online"] = None
 
             if options.web and '...' in tweet['text']:
-                tweet["fulltext"] = query_web(tweet['text'].partition(":")[2][0:-26])
+                tweet["fulltext"] = query_web(tweet['text'].partition(":")[2][0:-26], log)
 
             save.send(tweet)
         else:
