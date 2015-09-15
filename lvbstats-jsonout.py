@@ -53,7 +53,7 @@ def tweet_date(json_in):
     return int(created_at)
 
 def tweet_text(json_in):
-    if 'fulltext' in json_in:
+    if 'fulltext' in json_in and json_in['fulltext']:
         return json_in['fulltext']
     if excl_regex.match(json_in['text']):
         raise UnusableTweetException()
