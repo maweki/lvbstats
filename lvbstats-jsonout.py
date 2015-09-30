@@ -59,7 +59,8 @@ def tweet_text(json_in):
         raise UnusableTweetException()
     # text is from tweet
     _, __, text = json_in['text'].partition(':')
-    text, _, __ = text.rpartition('http://')
+    if 'http://' in text:
+        text, _, __ = text.rpartition('http://')
     text = text.strip(' .')
     return text
 
