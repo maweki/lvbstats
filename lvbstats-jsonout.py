@@ -2,9 +2,10 @@
 
 from lvbstats import VERSION
 import lvbstats.paths
-
-db_filename = lvbstats.paths.get_db_filename()
-db_live_filename = lvbstats.paths.get_db_filename(infix='live')
+import json
+import os
+import gzip
+import re
 
 options = None
 
@@ -13,54 +14,91 @@ def parse_args():
     parser = argparse.ArgumentParser(description='Reads @lvb_direkt\'s Twitter feed and saves statistics on it',
                                      epilog=('Version: ' + VERSION))
 
-    parser.add_argument('--markdeleted', help='Mark deleted tweets', action="store_true")
-    parser.add_argument('--nostatic', help='Don\'t print data from static database', action="store_true")
-    parser.add_argument('--nolive', help='Don\'t print data from live/stream database', action='store_true')
-    parser.add_argument('--jsonstyle', type=str, default='indent', help='Style of JSON (plain or indent)')
-
     return parser.parse_args()
 
+class UnusableTweetException(Exception):
+    pass
 
-def return_json(db, deleted=frozenset()):
-    jsonstyle = options.jsonstyle
-    import json
-    result = {}
-    for key in db.keys():
-        result[key] = db[key]
-        del result[key]['id']
-        del result[key]['_id']
-        if key in deleted:
-            result[key]['deleted'] = True
-    if jsonstyle == 'plain':
-        return json.dumps(result)
-    elif jsonstyle == 'indent':
-        return json.dumps(result, indent=2)
-    return json.dumps(result, indent=2)
+line_regex = re.compile(r"^(?:(?:TRAM|BUS) ?)?((?:N )?\d{1,3}(?:(?: ?SEV)|E)?)$", re.IGNORECASE)
+excl_regex = re.compile(r"^\d{1,2}:\d{2} ?Uhr", re.IGNORECASE)
+
+def tweet_deleted(json_in):
+    online = json_in.get("online", None)
+    if online is None:
+        return None
+    else:
+        return not online
+
+def tweet_lines(json_in):
+
+    text = json_in["text"]
+    lines_str, _, __ = json_in["text"].partition(":")
+    lines = (l.strip() for l in lines_str.split(","))
+    try:
+        return list(line_regex.match(l).group(1) for l in lines)
+    except:
+        raise UnusableTweetException()
+
+def tweet_longest_words(json_in):
+    from more_itertools import unique_justseen
+    text = tweet_text(json_in)
+    words = sorted((item.strip('".,:!?/ \n()') for item in text.split(' ') if not (item.startswith('http://'))),
+                   key=len, reverse=True)
+    unique_words = unique_justseen(words)
+    return list(word for word in unique_words if len(word) > 3)
+
+def tweet_date(json_in):
+    from datetime import datetime
+    created_at = datetime.strptime(json_in['created_at'], '%a %b %d %X %z %Y').timestamp()
+    return int(created_at)
+
+def tweet_text(json_in):
+    if 'fulltext' in json_in and json_in['fulltext']:
+        return json_in['fulltext']
+    if excl_regex.match(json_in['text']):
+        raise UnusableTweetException()
+    # text is from tweet
+    _, __, text = json_in['text'].partition(':')
+    text, _, __ = text.rpartition('http://')
+    text = text.strip(' .')
+    return text
+
+
+def tweet_json(json_in):
+    tweetid = json_in['id']
+    jsondata = {}
+    jsondata['deleted'] = tweet_deleted(json_in)
+    jsondata['lines'] = tweet_lines(json_in)
+    jsondata['text'] = tweet_text(json_in)
+    jsondata['date'] = tweet_date(json_in)
+    jsondata['longest_words'] = tweet_longest_words(json_in)
+    return '"{id}" : {json}'.format(id=tweetid, json=json.dumps(jsondata, ensure_ascii=False))
+
 
 def main():
-    from lvbstats.lvbdb import LvbDB
-    from lvbstats.twitdb import TwitDB
-    db = TwitDB(LvbDB, db_filename)
-    live_db =  TwitDB(LvbDB, db_live_filename)
+    dbpath = lvbstats.paths.get_db_path()
+    tweetpaths = (os.path.join(dbpath, f) for f in os.listdir(dbpath) if f.isnumeric())
 
-    deleted = frozenset()
-    if options.markdeleted:
-        last_tweet_id = int(db.get_last_tweetid())
-        deleted = set(key for key in (set(live_db.keys()) - set(db.keys())) if int(key) < last_tweet_id)
+    def get_tweet_json(tweetpath):
+        try:
+            with gzip.open(tweetpath, 'rb') as tweetfile:
+                tweet = json.loads(tweetfile.read().decode())
+                return tweet_json(tweet)
+        except UnusableTweetException:
+            return None
 
-    if not options.nostatic and not options.nolive:
-        uniondict = {}
-        for key in db.keys():
-            uniondict[key] = db[key]
-        for key in live_db.keys():
-            uniondict[key] = live_db[key]
-        print(return_json(uniondict, deleted))
-
-    if not options.nostatic and options.nolive:
-        print(return_json(db, deleted))
-
-    if options.nostatic and not options.nolive:
-        print(return_json(live_db, deleted))
+    print("{", end='')
+    jsons = (get_tweet_json(tweetpath) for tweetpath in tweetpaths)
+    jsons_filtered = (j for j in jsons if j)
+    this = next(jsons_filtered)
+    while True:
+        try:
+            print(this, end='')
+            this = next(jsons_filtered)
+            print(', ', end='')
+        except StopIteration:
+            break
+    print("}")
 
     exit(0)
 

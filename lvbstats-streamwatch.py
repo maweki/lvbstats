@@ -3,14 +3,13 @@
 from lvbstats import VERSION
 import lvbstats.paths
 from lvbstats.twit import twitter_login_stream
+from lvbstats.tweets import tweetsaver, query_web
 
 import logging
 logging.basicConfig(level=logging.INFO)
 log = logging.getLogger('lvbstats')
 
 target = 221056350
-db_filename = lvbstats.paths.get_db_filename(infix='live')
-
 options = None
 
 def parse_args():
@@ -24,7 +23,6 @@ def parse_args():
     mutex_group.add_argument('--web', help='Retrieve full text from web', action="store_true", default=True)
 
     parser.add_argument('--verbose', help='Enable verbose mode', action="store_true")
-    parser.add_argument('--nopersist', help='Do not persist data', action="store_true")
 
     mutex_group.add_argument('--version', help='Print version information', action='store_true')
 
@@ -53,7 +51,6 @@ def kill_existing():
         log.info('Process not active active')
     else:
         os.kill(int(otherpid), 15)
-    exit(0)
 
 def deploy_mutex():
     import os, os.path
@@ -79,10 +76,11 @@ def main(options):
         print_version()
         exit(0)
 
-
     stream_api = twitter_login_stream()
     stream = stream_api.statuses.filter(follow=target)
     from twitter.stream import Timeout, HeartbeatTimeout, Hangup
+
+    save = tweetsaver(logger=log)
     for tweet in stream:
         log.debug(tweet)
         if tweet is None:
@@ -92,18 +90,20 @@ def main(options):
         elif tweet.get('text'):
             if tweet['user']['id'] != 221056350:
                 continue
-            from lvbstats.lvbdb import LvbDB
-            from lvbstats.twitdb import TwitDB
-            db = TwitDB(LvbDB, db_filename)
-            db.do_persist(tweet, web=options.web)
+            tweet["online"] = None
+
+            if options.web and '...' in tweet['text']:
+                tweet["fulltext"] = query_web(tweet['text'].partition(":")[2][0:-26], log)
+
+            save.send(tweet)
         else:
             # some data
             pass
 
 if __name__ == "__main__":
-    import lvbstats.lvbdb
     lvbstats.options = options = parse_args()
     if options.kill:
         kill_existing()
+        exit(0)
     deploy_mutex()
     main(options)
