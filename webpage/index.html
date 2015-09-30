@@ -7,10 +7,7 @@
     <script src="node_modules/jquery/dist/jquery.min.js"></script>
     <script src="node_modules/lodash/index.js"></script>
     <script src="node_modules/URIjs/src/URI.min.js"></script>
-    <script src="node_modules/zeroclipboard/dist/ZeroClipboard.min.js"></script>
-    <script>
-    ZeroClipboard.config( { swfPath: "node_modules/zeroclipboard/dist/ZeroClipboard.swf" } );
-    </script>
+    <script src="node_modules/clipboard/dist/clipboard.min.js"></script>
 
     <link rel="stylesheet" href="node_modules/bootstrap/dist/css/bootstrap.min.css">
     <link rel="stylesheet" href="node_modules/bootstrap/dist/css/bootstrap-theme.min.css">
@@ -41,8 +38,6 @@
       color: #ccc;
     }
 
-    #clipcopy.zeroclipboard-is-hover { background-color: #ddd; }
-    #clipcopy.zeroclipboard-is-active { background-color: #aaa; }
     </style>
 
     <script src="main.js"></script>
@@ -291,7 +286,7 @@
             <li>Bootstrap / <a href="http://getbootstrap.com/">getbootstrap.com</a></li>
             <li>bootstrap-datepicker / <a href="https://github.com/eternicode/bootstrap-datepicker">github.com/eternicode/bootstrap-datepicker</a></li>
             <li>URI.js / <a href="http://medialize.github.io/URI.js/">medialize.github.io/URI.js</a></li>
-            <li>ZeroClipboard / <a href="http://zeroclipboard.org/">zeroclipboard.org</a></li>
+            <li>clipboard.js / <a href="https://github.com/zenorocha/clipboard.js">github.com/zenorocha/clipboard.js</a></li>
           </ul>
           <h3>Lizenz</h3>
           <p>
@@ -347,9 +342,9 @@
           <div class="modal-footer form-inline">
             <div class="input-group pull-left col-md-8">
               <input type="text" class="form-control filter-url" id="filterurl" title="URL zu dieser Suchanfrage" placeholder="URL zu dieser Suchanfrage" readonly/>
-              <span title="URL in Zwischenablage kopieren" data-clipboard-target="filterurl" class="input-group-addon" id="clipcopy">
+              <span title="URL in Zwischenablage kopieren" data-clipboard-target="#filterurl" class="input-group-addon" id="clipcopy">
                 <span class="glyphicon glyphicon-copy"></span></span>
-              <script>new ZeroClipboard($("#clipcopy"));</script>
+              <script>new Clipboard("#clipcopy");</script>
             </div>
             <button type="button" class="btn btn-default" data-dismiss="modal">Schließen</button>
           </div>
