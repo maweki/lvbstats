@@ -9,4 +9,4 @@ def get_db_path(base_path=None):
 def get_pid_filename(base_path=None):
     if not base_path:
         base_path = BASE_PATH
-    return os.path.join(base_path, 'data', 'streamwatch.pid')
+    return os.path.join(base_path, 'streamwatch.pid')

@@ -44,3 +44,62 @@ def tweetsaver(overwrite=False, logger=None):
         with gzip.open(path, 'w') as f:
             s = json.dumps(purged)
             f.write(s.encode("utf-8"))
+
+def get_match(haystack, needle):
+    if len(haystack.strip()) < len(needle):
+        return None
+    from difflib import SequenceMatcher
+    matcher = SequenceMatcher(a=needle, b=haystack)
+    matching_acc = 0
+    for block in matcher.get_matching_blocks():
+        _, _, match_count = block
+        matching_acc += match_count
+
+    if matching_acc > 0.9 * len(needle):
+        for block in matcher.get_matching_blocks():
+            needle_idx, _, match_count = block
+            if needle_idx == 0 and match_count > 0:
+                return needle[:match_count]
+    return None
+
+def find_full_text(partial, page, log):
+    for line in page.splitlines():
+        log.debug(line)
+        match = get_match(line, partial)
+        if match and partial.strip():
+            start_index = line.find(match)
+            line = line[start_index:]
+            next_message_index = line.find('+++')
+            if next_message_index > -1:
+                line = line[:next_message_index]
+            next_tag_index = line.find('<')
+            if next_tag_index > -1:
+                line = line[:next_tag_index]
+            line = line.strip(' .\t\n<>*')
+            line = line.strip(' *.')
+            if line:
+                log.info(('Found on web', line))
+                return line
+    log.info('No Webfind')
+    return None
+
+def query_web(text, log):
+    text = text.strip()
+    if not text:
+        raise ValueError('No text to search web for')
+    log.info(('Querying web', text))
+    from http.client import HTTPConnection
+    v = HTTPConnection("v.lvb.de")
+    v.request("GET", "/")
+    page = v.getresponse()
+    if not page.status == 200:
+        return text
+    else:
+        try:
+            if ('Content-Encoding', 'gzip') in page.getheaders():
+                from gzip import decompress
+                return find_full_text(text, decompress(page.read()).decode('utf-8'), log)
+            return find_full_text(text, page.read().decode('utf-8'), log)
+        except UnicodeDecodeError as e:
+            log.error((UnicodeDecodeError, e, 'page headers', page.getheaders()))
+            raise
