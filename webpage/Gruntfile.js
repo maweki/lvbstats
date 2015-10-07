@@ -2,7 +2,17 @@ module.exports = function(grunt) {
 
   // Project configuration.
   grunt.initConfig({
+    pkg: grunt.file.readJSON('package.json'),
     clean: ["dist"],
+    watch: {
+      files: {
+        files: ['**/*.js', '**/*.css', 'index.html'],
+        tasks: ['dist'],
+        options: {
+          spawn: false,
+        }
+      }
+    },
     copy: {
       main: {
         files: [
@@ -33,11 +43,11 @@ module.exports = function(grunt) {
 
   grunt.loadNpmTasks('grunt-contrib-clean');
   grunt.loadNpmTasks('grunt-contrib-copy');
-
+  grunt.loadNpmTasks('grunt-contrib-watch');
 
   // Default task(s).
-  grunt.registerTask('default', ['dist']);
-  grunt.registerTask('dist', ['clean', 'copy']);
+  grunt.registerTask('default', ['clean', 'dist']);
+  grunt.registerTask('dist', ['copy']);
   grunt.registerTask('minify', ['dist']);
 
 };
