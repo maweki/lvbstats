@@ -1,7 +1,7 @@
 {
   "dependencies": {
     "urijs": "^1.16.1",
-    "bootstrap": "^3.2.0",
+    "bootstrap": "^3.3.5",
     "clipboard": "^1.2.0",
     "d3": "^3.4.11",
     "jquery": "^2.1.1",
