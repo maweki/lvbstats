@@ -41,11 +41,11 @@ module.exports = function(grunt) {
           {expand: true, src: ['node_modules/bootstrap/dist/css/bootstrap.min.css'
                               , 'node_modules/bootstrap/dist/css/bootstrap-theme.min.css'
                               , 'node_modules/bootstrap/dist/fonts/glyphicons-halflings-regular.*'
-                              , 'submodules/bootstrap-datepicker/dist/css/bootstrap-datepicker3.min.css'
+                              , 'node_modules/bootstrap-datepicker/dist/css/bootstrap-datepicker3.css'
                             ], dest: 'dist/' },
           {expand: true, src: ['node_modules/bootstrap/dist/js/bootstrap.min.js'
-                              , 'submodules/bootstrap-datepicker/js/bootstrap-datepicker.js'
-                              , 'submodules/bootstrap-datepicker/js/locales/bootstrap-datepicker.de.js'
+                              , 'node_modules/bootstrap-datepicker/dist/js/bootstrap-datepicker.js'
+                              , 'node_modules/bootstrap-datepicker/dist/locales/bootstrap-datepicker.de.min.js'
                             ], dest: 'dist/' }
         ]
       }
