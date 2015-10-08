@@ -281,9 +281,8 @@
           <h2 id="licence">Info und Lizenz</h2>
           <h3>Daten und Quellen</h3>
           <p>Die Tweets aus denen die Daten extrahiert worden sind ggf. Eigentum der Leipziger Verkehrsbetriebe (LVB) GmbH</p>
-          <p>Den Quelltext des Extraktors werde ich wahrscheinlich in naher
-            Zukunft veröffentlichen, sowie die Quellen für diese Internetseite
-            öffentlich machen. Bis dahin habe ich aber nichts am Quellcode minifiziert.</p>
+          <p>Den Quelltext des Extraktors und der nicht-minifizierten Seite findest du unter <a href="https://github.com/maweki/lvbstats">github.com/maweki/lvbstats</a>.
+          Ich freue mich auch sehr über pull-requests und bugreports über github.</p>
           <h3>Bibliotheken</h3>
           <ul>
             <li>d3.js &mdash;  Data-Driven Documents / <a href="http://d3js.org/">d3js.org</a></li>
@@ -350,7 +349,7 @@
               <input type="text" class="form-control filter-url" id="filterurl" title="URL zu dieser Suchanfrage" placeholder="URL zu dieser Suchanfrage" readonly/>
               <span title="URL in Zwischenablage kopieren" data-clipboard-target="#filterurl" class="input-group-addon" id="clipcopy">
                 <span class="glyphicon glyphicon-copy"></span></span>
-              <script>new Clipboard("#clipcopy");</script>
+              <script>new ZeroClipboard($("#clipcopy"));</script>
             </div>
             <button type="button" class="btn btn-default" data-dismiss="modal">Schließen</button>
           </div>
