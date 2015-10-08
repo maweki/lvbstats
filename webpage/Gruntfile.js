@@ -67,6 +67,15 @@ module.exports = function(grunt) {
     },
     usemin: {
       html: 'dist/index.html'
+    },
+    htmlmin: {
+      options: { removeComments: true, collapseWhitespace: true,
+                minifyJS: true,	minifyCSS: true },
+      dist: {
+        files: {
+          'dist/index.html': 'dist/index.html'
+        }
+      }
     }
   });
 
@@ -80,10 +89,12 @@ module.exports = function(grunt) {
   grunt.loadNpmTasks('grunt-contrib-uglify');
   grunt.loadNpmTasks('grunt-filerev');
 
+  grunt.loadNpmTasks('grunt-contrib-htmlmin');
+
 
   // Default task(s).
   grunt.registerTask('default', ['clean', 'dist']);
-  grunt.registerTask('dist', ['copy:main', 'copy:js', 'copy:css', 'copy:modules']);
+  grunt.registerTask('dist', ['copy:main', 'copy:html', 'copy:js', 'copy:css', 'copy:modules']);
   grunt.registerTask('minify', [
     'useminPrepare',
     'concat:generated',
@@ -92,7 +103,8 @@ module.exports = function(grunt) {
     'copy:html',
     'copy:main',
     'copy:fonts',
-    'usemin'
+    'usemin',
+    'htmlmin:dist'
   ]);
 
 };
