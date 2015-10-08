@@ -35,7 +35,7 @@ module.exports = function(grunt) {
           {expand: true, src: ['node_modules/d3/d3.min.js'
                               , 'node_modules/jquery/dist/jquery.min.js'
                               , 'node_modules/lodash/index.js'
-                              , 'node_modules/URIjs/src/URI.min.js'
+                              , 'node_modules/urijs/src/URI.min.js'
                               , 'node_modules/clipboard/dist/clipboard.min.js'
                             ], dest: 'dist/' },
           {expand: true, src: ['node_modules/bootstrap/dist/css/bootstrap.min.css'
