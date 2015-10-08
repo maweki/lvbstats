@@ -16,7 +16,27 @@ module.exports = function(grunt) {
     copy: {
       main: {
         files: [
-          {expand: true, src: ['*.js', '!Gruntfile.js', '.htaccess', 'style.css', 'index.html'], dest: 'dist/' }
+          {expand: true, src: ['.htaccess'], dest: 'dist/' }
+        ]
+      },
+      js: {
+        files: [
+          {expand: true, src: ['*.js', '!Gruntfile.js'], dest: 'dist/' }
+        ]
+      },
+      css: {
+        files: [
+          {expand: true, src: ['style.css'], dest: 'dist/' }
+        ]
+      },
+      html: {
+        files: [
+          {expand: true, src: ['index.html'], dest: 'dist/' }
+        ]
+      },
+      fonts: {
+        files: [
+          {expand: true, src: ['node_modules/bootstrap/dist/fonts/glyphicons-halflings-regular.*' ], dest: 'dist/fonts/', flatten: true },
         ]
       },
       modules: {
@@ -38,6 +58,15 @@ module.exports = function(grunt) {
                             ], dest: 'dist/' }
         ]
       }
+    },
+    useminPrepare: {
+      html: 'index.html',
+      options: {
+        dest: 'dist/'
+      }
+    },
+    usemin: {
+      html: 'dist/index.html'
     }
   });
 
@@ -45,9 +74,25 @@ module.exports = function(grunt) {
   grunt.loadNpmTasks('grunt-contrib-copy');
   grunt.loadNpmTasks('grunt-contrib-watch');
 
+  grunt.loadNpmTasks('grunt-usemin');
+  grunt.loadNpmTasks('grunt-contrib-concat');
+  grunt.loadNpmTasks('grunt-contrib-cssmin');
+  grunt.loadNpmTasks('grunt-contrib-uglify');
+  grunt.loadNpmTasks('grunt-filerev');
+
+
   // Default task(s).
   grunt.registerTask('default', ['clean', 'dist']);
-  grunt.registerTask('dist', ['copy']);
-  grunt.registerTask('minify', ['dist']);
+  grunt.registerTask('dist', ['copy:main', 'copy:js', 'copy:css', 'copy:modules']);
+  grunt.registerTask('minify', [
+    'useminPrepare',
+    'concat:generated',
+    'cssmin:generated',
+    'uglify:generated',
+    'copy:html',
+    'copy:main',
+    'copy:fonts',
+    'usemin'
+  ]);
 
 };
