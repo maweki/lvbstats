@@ -67,11 +67,19 @@ module.exports = function(grunt) {
           'dist/index.html': 'dist/index.html'
         }
       }
+    },
+    replace: {
+      version: {
+        src: ['dist/index.html'],
+        dest: 'dist/',
+        replacements: [{ from: '$devVersion$', to: "<%=pkg.version%>"}]
+      }
     }
   });
 
   grunt.loadNpmTasks('grunt-contrib-clean');
   grunt.loadNpmTasks('grunt-contrib-copy');
+  grunt.loadNpmTasks('grunt-text-replace');
 
   grunt.loadNpmTasks('grunt-usemin');
   grunt.loadNpmTasks('grunt-contrib-concat');
@@ -83,7 +91,7 @@ module.exports = function(grunt) {
 
   // Default task(s).
   grunt.registerTask('default', ['clean', 'dist']);
-  grunt.registerTask('dist', ['copy:main', 'copy:html', 'copy:js', 'copy:css', 'copy:modules']);
+  grunt.registerTask('dist', ['copy:main', 'copy:html', 'replace:version', 'copy:js', 'copy:css', 'copy:modules']);
   grunt.registerTask('minify', [
     'useminPrepare',
     'concat:generated',
@@ -93,6 +101,7 @@ module.exports = function(grunt) {
     'copy:main',
     'copy:fonts',
     'usemin',
+    'replace:version',
     'htmlmin:dist'
   ]);
 
