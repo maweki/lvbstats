@@ -1,11 +1,13 @@
 {
+  "version": "0.8.3",
   "dependencies": {
-    "URIjs": "^1.14.2",
-    "bootstrap": "^3.2.0",
-    "clipboard": "^1.2.0",
-    "d3": "^3.4.11",
+    "urijs": "^1.16.1",
+    "bootstrap": "^3.3.5",
+    "clipboard": "^1.4.0",
+    "d3": "^3.5.6",
     "jquery": "^2.1.1",
-    "lodash": "^3.5.0"
+    "lodash": "^3.10.1",
+    "bootstrap-datepicker": "^1.4.0"
   },
   "devDependencies": {
     "grunt": "^0.4.5",
@@ -15,6 +17,7 @@
     "grunt-contrib-cssmin": "^0.14.0",
     "grunt-contrib-htmlmin": "^0.5.0",
     "grunt-contrib-uglify": "^0.9.2",
+    "grunt-text-replace": "^0.4.0",
     "grunt-usemin": "^3.1.1"
   }
 }

@@ -35,17 +35,17 @@ module.exports = function(grunt) {
           {expand: true, src: ['node_modules/d3/d3.min.js'
                               , 'node_modules/jquery/dist/jquery.min.js'
                               , 'node_modules/lodash/index.js'
-                              , 'node_modules/URIjs/src/URI.min.js'
+                              , 'node_modules/urijs/src/URI.min.js'
                               , 'node_modules/clipboard/dist/clipboard.min.js'
                             ], dest: 'dist/' },
           {expand: true, src: ['node_modules/bootstrap/dist/css/bootstrap.min.css'
                               , 'node_modules/bootstrap/dist/css/bootstrap-theme.min.css'
                               , 'node_modules/bootstrap/dist/fonts/glyphicons-halflings-regular.*'
-                              , 'submodules/bootstrap-datepicker/dist/css/bootstrap-datepicker3.min.css'
+                              , 'node_modules/bootstrap-datepicker/dist/css/bootstrap-datepicker3.css'
                             ], dest: 'dist/' },
           {expand: true, src: ['node_modules/bootstrap/dist/js/bootstrap.min.js'
-                              , 'submodules/bootstrap-datepicker/js/bootstrap-datepicker.js'
-                              , 'submodules/bootstrap-datepicker/js/locales/bootstrap-datepicker.de.js'
+                              , 'node_modules/bootstrap-datepicker/dist/js/bootstrap-datepicker.js'
+                              , 'node_modules/bootstrap-datepicker/dist/locales/bootstrap-datepicker.de.min.js'
                             ], dest: 'dist/' }
         ]
       }
@@ -67,11 +67,19 @@ module.exports = function(grunt) {
           'dist/index.html': 'dist/index.html'
         }
       }
+    },
+    replace: {
+      version: {
+        src: ['dist/index.html'],
+        dest: 'dist/',
+        replacements: [{ from: '$devVersion$', to: "<%=pkg.version%>"}]
+      }
     }
   });
 
   grunt.loadNpmTasks('grunt-contrib-clean');
   grunt.loadNpmTasks('grunt-contrib-copy');
+  grunt.loadNpmTasks('grunt-text-replace');
 
   grunt.loadNpmTasks('grunt-usemin');
   grunt.loadNpmTasks('grunt-contrib-concat');
@@ -83,7 +91,7 @@ module.exports = function(grunt) {
 
   // Default task(s).
   grunt.registerTask('default', ['clean', 'dist']);
-  grunt.registerTask('dist', ['copy:main', 'copy:html', 'copy:js', 'copy:css', 'copy:modules']);
+  grunt.registerTask('dist', ['copy:main', 'copy:html', 'replace:version', 'copy:js', 'copy:css', 'copy:modules']);
   grunt.registerTask('minify', [
     'useminPrepare',
     'concat:generated',
@@ -93,6 +101,7 @@ module.exports = function(grunt) {
     'copy:main',
     'copy:fonts',
     'usemin',
+    'replace:version',
     'htmlmin:dist'
   ]);
 
