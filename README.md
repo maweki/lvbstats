@@ -19,6 +19,6 @@ Der Grabber hat mehrere Komponenten:
 * __lvbstats-streamwatch.py__: Beobachtet den Twitterstream und lädt (`--web`) den Volltext von abgekürzten Meldungen aus dem Internet runter
 * __lvbstats-redownloader.py__: Lädt den Tweet mit einer gewissen id erneut runter
 * __lvbstats-checkdeleted.py__: Checkt tweets aus der Datenbank, ob diese inzwischen gelöscht wurden
-* __lvbstats-jsonout.ph__: Generiert aus den Tweets der Datenbank eine gesamtdatei, die von der Webseite gelesen werden kann.
+* __lvbstats-jsonout.py__: Generiert aus den Tweets der Datenbank eine gesamtdatei, die von der Webseite gelesen werden kann.
 
 zum Ausführen werden die Anforderungen aus der `requirements.txt` benötigt. Installation mit `pip3 install --user -r requirements.txt`
