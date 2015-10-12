@@ -41,9 +41,11 @@ def tweetsaver(overwrite=False, logger=None):
             continue
         if logger:
             logger.info(str(purged))
-        with gzip.open(path, 'w') as f:
-            s = json.dumps(purged)
-            f.write(s.encode("utf-8"))
+        s = json.dumps(purged)
+        content = s.encode("utf-8")
+        opener = open if len(content) < 4*1024 else gzip.open
+        with opener(path, 'wb') as f:
+            f.write(content)
 
 def get_match(haystack, needle):
     if len(haystack.strip()) < len(needle):
