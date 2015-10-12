@@ -17,6 +17,9 @@ lvbdata = {
         // convert dates
         data.convert_dates(downloaded);
 
+        // calculate longest words
+        data.calc_longest_words(downloaded);
+
         // save raw data reference
         data.raw_data = downloaded;
 
@@ -31,6 +34,16 @@ lvbdata = {
     convert_dates: function(raw_data) {
       _.forOwn(raw_data, function(tweetobj, tweetid){
         tweetobj.date = new Date(tweetobj.date * 1000);
+      });
+    },
+
+    calc_longest_words: function(raw_data) {
+      _.forOwn(raw_data, function(tweetobj, tweetid){
+        var text = tweetobj.text,
+        text_items = text.split(" "),
+        trimmed_items = _.map(text_items, function (item) { return _.trim(item, '".,:!?/ \n()'); } ),
+        filtered_items = _.uniq(_.filter(trimmed_items, function (item) { return item.length > 3 && (!_.startsWith(item, 'http://')); } ));
+        tweetobj.longest_words = filtered_items;
       });
     },
 

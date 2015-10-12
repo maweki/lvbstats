@@ -1,2 +1,1 @@
 twitter
-more_itertools
