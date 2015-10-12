@@ -103,3 +103,18 @@ def query_web(text, log):
         except UnicodeDecodeError as e:
             log.error((UnicodeDecodeError, e, 'page headers', page.getheaders()))
             raise
+
+from contextlib import contextmanager
+import gzip
+
+@contextmanager
+def get_tweet_file(path, *args):
+    try:
+        try:
+            f = gzip.open(path, 'rb', *args)
+            f.peek(1024)
+        except OSError:
+            f = open(path, 'rb', *args)
+        yield f
+    finally:
+        f.close()

@@ -72,8 +72,9 @@ def main():
     tweetpaths = (os.path.join(dbpath, f) for f in os.listdir(dbpath) if f.isnumeric())
 
     def get_tweet_json(tweetpath):
+        from lvbstats.tweets import get_tweet_file
         try:
-            with gzip.open(tweetpath, 'rb') as tweetfile:
+            with get_tweet_file(tweetpath) as tweetfile:
                 tweet = json.loads(tweetfile.read().decode())
                 return tweet_json(tweet)
         except UnusableTweetException:
