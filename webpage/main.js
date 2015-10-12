@@ -9,22 +9,25 @@ lvbdata = {
       .on("progress", function() {
         var total = d3.event.total,
           progress = d3.event.loaded,
-          prog_rel = Math.round(progress/total * 100);
+          prog_rel = Math.round(progress/total * 70);
           lvbdata.progress_bar.set(prog_rel);
       })
       .on('error', error)
       .on('load', function(downloaded) {
         // convert dates
         data.convert_dates(downloaded);
+        lvbdata.progress_bar.set(80);
 
         // calculate longest words
         data.calc_longest_words(downloaded);
+        lvbdata.progress_bar.set(90);
 
         // save raw data reference
         data.raw_data = downloaded;
 
         // convert raw data to events
         data.events = data.to_events(downloaded);
+        lvbdata.progress_bar.set(100);
 
         lvbdata.progress_bar.remove();
         if (callback) { callback(); }
