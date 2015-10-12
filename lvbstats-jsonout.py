@@ -39,14 +39,6 @@ def tweet_lines(json_in):
     except:
         raise UnusableTweetException()
 
-def tweet_longest_words(json_in):
-    from more_itertools import unique_justseen
-    text = tweet_text(json_in)
-    words = sorted((item.strip('".,:!?/ \n()') for item in text.split(' ') if not (item.startswith('http://'))),
-                   key=len, reverse=True)
-    unique_words = unique_justseen(words)
-    return list(word for word in unique_words if len(word) > 3)
-
 def tweet_date(json_in):
     from datetime import datetime
     created_at = datetime.strptime(json_in['created_at'], '%a %b %d %X %z %Y').timestamp()
@@ -72,7 +64,6 @@ def tweet_json(json_in):
     jsondata['lines'] = tweet_lines(json_in)
     jsondata['text'] = tweet_text(json_in)
     jsondata['date'] = tweet_date(json_in)
-    jsondata['longest_words'] = tweet_longest_words(json_in)
     return '"{id}" : {json}'.format(id=tweetid, json=json.dumps(jsondata, ensure_ascii=False))
 
 
@@ -81,8 +72,9 @@ def main():
     tweetpaths = (os.path.join(dbpath, f) for f in os.listdir(dbpath) if f.isnumeric())
 
     def get_tweet_json(tweetpath):
+        from lvbstats.tweets import get_tweet_file
         try:
-            with gzip.open(tweetpath, 'rb') as tweetfile:
+            with get_tweet_file(tweetpath) as tweetfile:
                 tweet = json.loads(tweetfile.read().decode())
                 return tweet_json(tweet)
         except UnusableTweetException:

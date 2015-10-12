@@ -69,7 +69,9 @@ def main(options):
     for f in paths:
         if '.gitignore' in f:
             continue
-        with gzip.open(f, 'rb') as fp:
+
+        from lvbstats.tweets import get_tweet_file
+        with get_tweet_file(f) as fp:
             tweet = json.loads(fp.read().decode())
             status = tweet.get("online", None)
             check_needed = False
